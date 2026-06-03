@@ -20,6 +20,12 @@ final class AppEnvironment {
     /// Brugerens indstillinger (lyd/stemme/haptik, påmindelser, streak-fryser).
     let settings: SettingsStore
 
+    /// Planlægger venlige lokale påmindelser.
+    let notificationScheduler = NotificationScheduler()
+
+    /// HealthKit (valgfrit, med samtykke).
+    let healthKit = HealthKitService()
+
     init(clock: any MonotonicClock = SystemMonotonicClock(),
          store: SwiftDataStore? = nil,
          photoStore: any PhotoStore = FilePhotoStore(),

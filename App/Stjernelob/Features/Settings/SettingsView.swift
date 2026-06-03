@@ -6,6 +6,7 @@ struct SettingsView: View {
     @Bindable var settings: SettingsStore
     var onErase: () -> Void = {}
 
+    @Environment(AppEnvironment.self) private var environment
     @State private var showDeleteConfirm = false
 
     var body: some View {
@@ -46,6 +47,15 @@ struct SettingsView: View {
             }
 
             Section {
+                Toggle(isOn: $settings.healthKitEnabled) { Text(Strings.Settings.healthKit) }
+                    .disabled(!environment.healthKit.isAvailable)
+            } header: {
+                Text(Strings.Settings.healthSection)
+            } footer: {
+                Text(Strings.Settings.healthNote)
+            }
+
+            Section {
                 Button(role: .destructive) {
                     showDeleteConfirm = true
                 } label: {
@@ -58,6 +68,11 @@ struct SettingsView: View {
             }
         }
         .navigationTitle(Text(Strings.Settings.title))
+        .onChange(of: settings.remindersEnabled) { _, _ in Task { await reschedule() } }
+        .onChange(of: settings.reminderHour) { _, _ in Task { await reschedule() } }
+        .onChange(of: settings.healthKitEnabled) { _, isOn in
+            if isOn { Task { _ = await environment.healthKit.requestAuthorization() } }
+        }
         .confirmationDialog(
             Text(Strings.Settings.deleteConfirmTitle),
             isPresented: $showDeleteConfirm,
@@ -68,5 +83,14 @@ struct SettingsView: View {
         } message: {
             Text(Strings.Settings.deleteConfirmBody)
         }
+    }
+
+    private func reschedule() async {
+        let sessions = (try? environment.profileRepository.load())?.defaultWeeklySessions ?? 3
+        await environment.notificationScheduler.reschedule(
+            enabled: settings.remindersEnabled,
+            hour: settings.reminderHour,
+            mondayBasedDays: WeekScheduler.trainingDays(sessionsPerWeek: sessions)
+        )
     }
 }

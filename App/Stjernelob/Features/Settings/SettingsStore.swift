@@ -11,6 +11,7 @@ final class SettingsStore {
     var remindersEnabled: Bool { didSet { defaults.set(remindersEnabled, forKey: Keys.reminders) } }
     var reminderHour: Int { didSet { defaults.set(reminderHour, forKey: Keys.reminderHour) } }
     var streakFreezeEnabled: Bool { didSet { defaults.set(streakFreezeEnabled, forKey: Keys.streakFreeze) } }
+    var healthKitEnabled: Bool { didSet { defaults.set(healthKitEnabled, forKey: Keys.healthKit) } }
 
     private let defaults: UserDefaults
 
@@ -19,6 +20,7 @@ final class SettingsStore {
         static let reminders = "settings.remindersEnabled"
         static let reminderHour = "settings.reminderHour"
         static let streakFreeze = "settings.streakFreezeEnabled"
+        static let healthKit = "settings.healthKitEnabled"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -33,6 +35,7 @@ final class SettingsStore {
         remindersEnabled = defaults.object(forKey: Keys.reminders) as? Bool ?? false
         reminderHour = defaults.object(forKey: Keys.reminderHour) as? Int ?? 17
         streakFreezeEnabled = defaults.object(forKey: Keys.streakFreeze) as? Bool ?? true
+        healthKitEnabled = defaults.object(forKey: Keys.healthKit) as? Bool ?? false
     }
 
     private func persistFeedback() {

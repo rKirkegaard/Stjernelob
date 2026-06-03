@@ -39,6 +39,10 @@ targets:
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         TARGETED_DEVICE_FAMILY: "1"
+        INFOPLIST_KEY_NSHealthShareUsageDescription: "Stjerneløb kan læse din puls fra Helbred og vise den neutralt under en tur — kun hvis du vælger det."
+        INFOPLIST_KEY_NSHealthUpdateUsageDescription: "Stjerneløb kan gemme dine ture som workouts i Helbred — kun hvis du vælger det."
+        INFOPLIST_KEY_NSCameraUsageDescription: "Stjerneløb bruger kameraet, hvis du vil tage et billede fra din tur."
+        INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Stjerneløb bruger dine billeder, hvis du vil knytte et foto til en tur."
 
 schemes:
   Stjernelob:

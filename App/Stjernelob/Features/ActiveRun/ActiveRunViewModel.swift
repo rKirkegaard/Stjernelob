@@ -124,6 +124,12 @@ final class ActiveRunViewModel {
         )
         try? environment.workoutRepository.add(workout)
         awardBadges(for: summary)
+
+        if environment.settings.healthKitEnabled {
+            let end = now()
+            let start = end.addingTimeInterval(-TimeInterval(summary.activeDuration.components.seconds))
+            Task { await environment.healthKit.saveRun(start: start, duration: summary.activeDuration) }
+        }
     }
 
     private func awardBadges(for summary: WorkoutSummary) {

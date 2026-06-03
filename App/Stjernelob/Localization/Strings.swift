@@ -147,6 +147,15 @@ enum Strings {
         }
     }
 
+    /// Venlige, ikke-pressende påmindelser (spec afsnit 8). Aldrig skyld eller
+    /// frygt for at miste streak.
+    enum Notifications {
+        static let reminderTitle = LocalizedStringResource(
+            "notifications.reminderTitle", defaultValue: "Klar til en lille tur?")
+        static let reminderBody = LocalizedStringResource(
+            "notifications.reminderBody", defaultValue: "Det skal ikke være hårdt — bare en rolig tur, når det passer dig.")
+    }
+
     enum Settings {
         static let title = LocalizedStringResource("settings.title", defaultValue: "Indstillinger")
         static let feedbackSection = LocalizedStringResource("settings.feedback", defaultValue: "Lyd, stemme og haptik")
@@ -167,6 +176,11 @@ enum Strings {
         static let streakFreeze = LocalizedStringResource("settings.streakFreeze", defaultValue: "Tillad streak-fryser")
         static let streakNote = LocalizedStringResource(
             "settings.streakNote", defaultValue: "En travl uge bryder aldrig din stime. Hvile tæller med.")
+
+        static let healthSection = LocalizedStringResource("settings.health", defaultValue: "Helbred")
+        static let healthKit = LocalizedStringResource("settings.healthKit", defaultValue: "Gem ture i Helbred")
+        static let healthNote = LocalizedStringResource(
+            "settings.healthNote", defaultValue: "Valgfrit. Dine ture gemmes som workouts i Apples Helbred — kun med dit samtykke.")
 
         static let privacySection = LocalizedStringResource("settings.privacy", defaultValue: "Privatliv og data")
         static let exportData = LocalizedStringResource("settings.exportData", defaultValue: "Eksportér mine data")
