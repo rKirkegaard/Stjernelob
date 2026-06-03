@@ -7,5 +7,6 @@ import SwiftUI
 struct StjernelobWidgetBundle: WidgetBundle {
     var body: some Widget {
         NextRunWidget()
+        RunLiveActivity()
     }
 }

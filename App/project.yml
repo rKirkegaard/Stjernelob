@@ -29,6 +29,8 @@ targets:
       - path: Stjernelob
     dependencies:
       - package: StjernelobCore
+      - target: StjernelobShared
+        embed: true
       - target: StjernelobWidget
         embed: true
     settings:
@@ -48,11 +50,23 @@ targets:
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Stjerneløb bruger dine billeder, hvis du vil knytte et foto til en tur."
         INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Stjerneløb kan dele din position med en betroet voksen mens du løber — kun hvis du selv slår det til. Den slukkes, når turen slutter."
 
+  StjernelobShared:
+    type: framework
+    platform: iOS
+    sources:
+      - path: StjernelobShared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rkirkegaard.stjernelob.shared
+
   StjernelobWidget:
     type: app-extension
     platform: iOS
     sources:
       - path: StjernelobWidget
+    dependencies:
+      - target: StjernelobShared
+        embed: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rkirkegaard.stjernelob.widget

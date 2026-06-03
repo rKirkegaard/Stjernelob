@@ -24,6 +24,7 @@ final class ActiveRunViewModel {
     private var didSave = false
 
     private let engine: IntervalEngine
+    private let liveActivity = LiveActivityController()
     private let plan: WorkoutPlan
     private let programWeekId: Int
     private let programPhase: ProgramPhase
@@ -56,6 +57,11 @@ final class ActiveRunViewModel {
         }
         dispatch(engine.start())
         snapshot = engine.snapshot()
+        liveActivity.start(
+            planTitle: String(localized: Strings.App.name),
+            snapshot: snapshot,
+            intervalLabel: String(localized: snapshot.interval.kind.label)
+        )
     }
 
     /// Kaldes jævnligt (fx fra en timer i view'et).
@@ -63,6 +69,7 @@ final class ActiveRunViewModel {
         guard case .running = phase else { return }
         dispatch(engine.update())
         snapshot = engine.snapshot()
+        liveActivity.update(snapshot: snapshot, intervalLabel: String(localized: snapshot.interval.kind.label))
     }
 
     func pause() {
@@ -104,6 +111,7 @@ final class ActiveRunViewModel {
         if case .finished = phase { return }
         // Positionsdeling slukkes automatisk ved turslut (afsnit 12).
         environment.locationService.stopSharing()
+        liveActivity.end()
         phase = .finished(summary)
     }
 
