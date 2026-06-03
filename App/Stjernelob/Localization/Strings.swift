@@ -51,7 +51,7 @@ enum Strings {
             "onboarding.method.title", defaultValue: "Hvor stærkt skal jeg løbe?")
         static let methodBody = LocalizedStringResource(
             "onboarding.method.body",
-            defaultValue: "Du løber efter tid — ikke fart. Vælg et roligt tempo, du kan holde hele intervallet ud; løb aldrig hurtigere, end du kan klare tiden. Et godt tjek: kan du stadig tale i hele sætninger imens? For en begynder er langsomt næsten altid helt rigtigt.")
+            defaultValue: "Du løber efter tid — ikke fart. Vælg et roligt tempo, du kan holde hele intervallet ud; løb aldrig hurtigere, end du kan klare tiden. Et godt tjek: kan du stadig tale i hele sætninger imens?")
     }
 
     enum Home {
