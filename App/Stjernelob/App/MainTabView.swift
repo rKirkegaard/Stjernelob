@@ -38,6 +38,16 @@ struct MainTabView: View {
             .tabItem {
                 Label { Text(Strings.Badges.title) } icon: { Image(systemName: "rosette") }
             }
+
+            NavigationStack {
+                SettingsView(
+                    settings: environment.settings,
+                    onErase: { environment.eraseAllData() }
+                )
+            }
+            .tabItem {
+                Label { Text(Strings.Settings.title) } icon: { Image(systemName: "gearshape.fill") }
+            }
         }
         .sheet(isPresented: $showPlanner) {
             WeekPlannerView(viewModel: WeekPlannerViewModel(

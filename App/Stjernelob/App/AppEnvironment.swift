@@ -17,14 +17,26 @@ final class AppEnvironment {
     /// Billedfiler på disk (med Data Protection).
     let photoStore: any PhotoStore
 
+    /// Brugerens indstillinger (lyd/stemme/haptik, påmindelser, streak-fryser).
+    let settings: SettingsStore
+
     init(clock: any MonotonicClock = SystemMonotonicClock(),
          store: SwiftDataStore? = nil,
-         photoStore: any PhotoStore = FilePhotoStore()) {
+         photoStore: any PhotoStore = FilePhotoStore(),
+         settings: SettingsStore? = nil) {
         self.clock = clock
         // makeDefault() er @MainActor; kaldes her i init-kroppen (MainActor-
         // isoleret) frem for som default-argument (nonisolated kontekst).
         self.store = store ?? SwiftDataStore.makeDefault()
         self.photoStore = photoStore
+        self.settings = settings ?? SettingsStore()
+    }
+
+    /// Fuld datasletning (GDPR, afsnit 14): rydder lokal database og billedfiler.
+    /// (Synk til delt CloudKit-zone ryddes i synk-laget, når det kobles på.)
+    func eraseAllData() {
+        try? store.eraseAllData()
+        photoStore.deleteAll()
     }
 
     /// Bekvemmelig in-memory-opsætning til previews.

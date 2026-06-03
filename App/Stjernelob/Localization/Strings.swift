@@ -147,6 +147,39 @@ enum Strings {
         }
     }
 
+    enum Settings {
+        static let title = LocalizedStringResource("settings.title", defaultValue: "Indstillinger")
+        static let feedbackSection = LocalizedStringResource("settings.feedback", defaultValue: "Lyd, stemme og haptik")
+        static let voice = LocalizedStringResource("settings.voice", defaultValue: "Stemmecoach")
+        static let sound = LocalizedStringResource("settings.sound", defaultValue: "Lyde")
+        static let haptics = LocalizedStringResource("settings.haptics", defaultValue: "Vibration")
+        static let duckMusic = LocalizedStringResource("settings.duckMusic", defaultValue: "Sænk musik under signaler")
+        static let feedbackNote = LocalizedStringResource(
+            "settings.feedbackNote", defaultValue: "Alt kan slås fra hver for sig — appen virker fuldt uden lyd.")
+
+        static let remindersSection = LocalizedStringResource("settings.reminders", defaultValue: "Påmindelser")
+        static let remindersEnabled = LocalizedStringResource("settings.remindersEnabled", defaultValue: "Venlige påmindelser")
+        static let reminderTime = LocalizedStringResource("settings.reminderTime", defaultValue: "Tidspunkt")
+        static let remindersNote = LocalizedStringResource(
+            "settings.remindersNote", defaultValue: "Blide opfordringer — aldrig pres eller skyld.")
+
+        static let streakSection = LocalizedStringResource("settings.streak", defaultValue: "Stime")
+        static let streakFreeze = LocalizedStringResource("settings.streakFreeze", defaultValue: "Tillad streak-fryser")
+        static let streakNote = LocalizedStringResource(
+            "settings.streakNote", defaultValue: "En travl uge bryder aldrig din stime. Hvile tæller med.")
+
+        static let privacySection = LocalizedStringResource("settings.privacy", defaultValue: "Privatliv og data")
+        static let exportData = LocalizedStringResource("settings.exportData", defaultValue: "Eksportér mine data")
+        static let deleteData = LocalizedStringResource("settings.deleteData", defaultValue: "Slet alle mine data")
+        static let deleteConfirmTitle = LocalizedStringResource(
+            "settings.deleteConfirmTitle", defaultValue: "Slet alle dine data?")
+        static let deleteConfirmBody = LocalizedStringResource(
+            "settings.deleteConfirmBody", defaultValue: "Alt — ture, billeder og fremgang — slettes for altid. Det kan ikke fortrydes.")
+        static let cancel = LocalizedStringResource("settings.cancel", defaultValue: "Annullér")
+        static let privacyNote = LocalizedStringResource(
+            "settings.privacyNote", defaultValue: "Dine data er dine. De bliver på din enhed og i din egen iCloud — og deles aldrig uden dit valg.")
+    }
+
     enum Dashboard {
         static let weeksRun = LocalizedStringResource("dashboard.weeksRun", defaultValue: "Ugens tur")
     }

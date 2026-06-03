@@ -23,6 +23,7 @@ struct ActiveRunContainer: View {
 
     private func build() {
         let feedback = WorkoutFeedbackCoordinator(
+            settings: environment.settings.feedback,
             voice: SpeechVoiceCoach(),
             sound: SystemSoundPlayer(),
             haptics: CoreHapticsPlayer()
