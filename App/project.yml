@@ -18,6 +18,8 @@ settings:
     SWIFT_VERSION: "5.9"
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
+    # Alle targets får en genereret Info.plist (widgetten overrider med sin egen).
+    GENERATE_INFOPLIST_FILE: YES
     # Hæves til "complete" senere; holdes på standard under opbygningen.
     SWIFT_STRICT_CONCURRENCY: minimal
 
