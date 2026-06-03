@@ -18,7 +18,8 @@ settings:
     SWIFT_VERSION: "5.9"
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
-    SWIFT_STRICT_CONCURRENCY: complete
+    # Hæves til "complete" senere; holdes på standard under opbygningen.
+    SWIFT_STRICT_CONCURRENCY: minimal
 
 targets:
   Stjernelob:

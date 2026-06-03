@@ -4,13 +4,31 @@ import StjernelobCore
 
 /// Appens afhængigheds-container. Samler de tjenester, som ViewModels og views
 /// får injiceret (jf. `arkitektur.md`: afhængigheder injiceres, ingen skjulte
-/// singletons). Vokser efterhånden som datalag, lyd/haptik og synk kommer til.
+/// singletons). Vokser efterhånden som lyd/haptik, synk og sikkerhed kommer til.
+@MainActor
 @Observable
 final class AppEnvironment {
     /// Monotont ur til intervalmotoren — udskifteligt i test/preview.
     let clock: any MonotonicClock
 
-    init(clock: any MonotonicClock = SystemMonotonicClock()) {
+    /// Lokal datalagring (kilden til sandhed, offline-først).
+    let store: SwiftDataStore
+
+    init(clock: any MonotonicClock = SystemMonotonicClock(),
+         store: SwiftDataStore = SwiftDataStore.makeDefault()) {
         self.clock = clock
+        self.store = store
     }
+
+    /// Bekvemmelig in-memory-opsætning til previews.
+    static var preview: AppEnvironment {
+        AppEnvironment(clock: ManualClock(), store: .makeInMemory())
+    }
+
+    // Repository-adgang (SwiftDataStore opfylder alle protokoller).
+    var profileRepository: any ProfileRepository { store }
+    var workoutRepository: any WorkoutRepository { store }
+    var weeklyPlanRepository: any WeeklyPlanRepository { store }
+    var badgeRepository: any BadgeRepository { store }
+    var dataEraser: any DataEraser { store }
 }
