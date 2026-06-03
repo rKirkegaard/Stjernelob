@@ -1,0 +1,130 @@
+import SwiftUI
+import Combine
+import StjernelobCore
+
+/// Under-tur-skærmen (spec afsnit 4.1): store, enkle tal der kan ses i et blik,
+/// tydelig nedtælling, interval-status og stjernepop pr. interval. Tempo/distance
+/// kommer med GPS-integrationen (Core Location) i et senere trin.
+struct ActiveRunView: View {
+    @State var viewModel: ActiveRunViewModel
+    var onClose: () -> Void
+
+    @State private var starScale: CGFloat = 0.1
+    @State private var starVisible = false
+
+    private let ticker = Timer.publish(every: 0.2, on: .main, in: .common).autoconnect()
+
+    var body: some View {
+        switch viewModel.phase {
+        case let .finished(summary):
+            SummaryView(summary: summary) { effort in
+                viewModel.saveResult(perceivedEffort: effort)
+                onClose()
+            }
+        default:
+            runningBody
+        }
+    }
+
+    private var runningBody: some View {
+        let snapshot = viewModel.snapshot
+        return VStack(spacing: Theme.Spacing.large) {
+            Spacer()
+
+            if let ordinal = snapshot.runOrdinal {
+                Text(Strings.ActiveRun.intervalOfTotal(current: ordinal, total: snapshot.runCount))
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+            }
+
+            Image(systemName: snapshot.interval.kind.symbolName)
+                .font(.system(size: 56))
+                .foregroundStyle(snapshot.interval.kind.color)
+            Text(snapshot.interval.kind.label)
+                .font(.title.weight(.bold))
+                .foregroundStyle(snapshot.interval.kind.color)
+
+            Text(snapshot.remainingInInterval.minutesSecondsText)
+                .font(.runCountdown)
+                .contentTransition(.numericText())
+                .accessibilityLabel(Text(Strings.ActiveRun.intervalOfTotal(
+                    current: snapshot.runOrdinal ?? 0, total: snapshot.runCount)))
+
+            ProgressView(value: intervalProgress(snapshot))
+                .tint(snapshot.interval.kind.color)
+                .padding(.horizontal, Theme.Spacing.xLarge)
+
+            Label {
+                Text(snapshot.totalElapsed.minutesSecondsText).monospacedDigit()
+            } icon: {
+                Image(systemName: "clock")
+            }
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            Spacer()
+            controls
+        }
+        .padding(Theme.Spacing.large)
+        .overlay(alignment: .top) { starPop }
+        .onAppear { viewModel.start() }
+        .onReceive(ticker) { _ in viewModel.tick() }
+        .onChange(of: viewModel.starPops) { _, _ in popStar() }
+    }
+
+    private var controls: some View {
+        HStack(spacing: Theme.Spacing.large) {
+            Button(role: .destructive) {
+                viewModel.stop()
+            } label: {
+                Label { Text(Strings.ActiveRun.stop) } icon: { Image(systemName: "stop.fill") }
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+
+            if viewModel.phase == .paused {
+                Button {
+                    viewModel.resume()
+                } label: {
+                    Label { Text(Strings.ActiveRun.resume) } icon: { Image(systemName: "play.fill") }
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+            } else {
+                Button {
+                    viewModel.pause()
+                } label: {
+                    Label { Text(Strings.ActiveRun.pause) } icon: { Image(systemName: "pause.fill") }
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        }
+    }
+
+    private var starPop: some View {
+        Image(systemName: "star.fill")
+            .font(.system(size: 64))
+            .foregroundStyle(Theme.Colors.star)
+            .scaleEffect(starScale)
+            .opacity(starVisible ? 1 : 0)
+            .accessibilityHidden(true)
+    }
+
+    private func intervalProgress(_ snapshot: WorkoutSnapshot) -> Double {
+        let total = Double(snapshot.interval.duration.wholeSeconds)
+        guard total > 0 else { return 0 }
+        return Double(snapshot.elapsedInInterval.wholeSeconds) / total
+    }
+
+    private func popStar() {
+        starVisible = true
+        starScale = 0.1
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+            starScale = 1.4
+        }
+        withAnimation(.easeOut(duration: 0.5).delay(0.5)) {
+            starVisible = false
+        }
+    }
+}

@@ -6,15 +6,14 @@ import StjernelobCore
 struct MainTabView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var showPlanner = false
+    @State private var runRequest: RunRequest?
 
     var body: some View {
         TabView {
             NavigationStack {
                 HomeView(
                     viewModel: HomeViewModel(environment: environment),
-                    onStartRun: { _ in
-                        // Under-tur-skærmen kobles på her (task #11).
-                    },
+                    onStartRun: { runRequest = $0 },
                     onAdjustWeek: { showPlanner = true }
                 )
             }
@@ -31,6 +30,9 @@ struct MainTabView: View {
                 environment: environment,
                 onSaved: {}
             ))
+        }
+        .fullScreenCover(item: $runRequest) { request in
+            ActiveRunContainer(request: request, onClose: { runRequest = nil })
         }
     }
 }

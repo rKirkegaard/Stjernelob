@@ -65,6 +65,34 @@ enum Strings {
         static let adjustWeek = LocalizedStringResource("home.adjustWeek", defaultValue: "Tilpas ugen")
     }
 
+    enum ActiveRun {
+        static let pause = LocalizedStringResource("activeRun.pause", defaultValue: "Pause")
+        static let resume = LocalizedStringResource("activeRun.resume", defaultValue: "Fortsæt")
+        static let stop = LocalizedStringResource("activeRun.stop", defaultValue: "Stop")
+        static func intervalOfTotal(current: Int, total: Int) -> LocalizedStringResource {
+            LocalizedStringResource("activeRun.intervalOfTotal", defaultValue: "Interval \(current) af \(total)")
+        }
+        static let elapsed = LocalizedStringResource("activeRun.elapsed", defaultValue: "Forløbet")
+        static let distance = LocalizedStringResource("activeRun.distance", defaultValue: "Distance")
+        static let pace = LocalizedStringResource("activeRun.pace", defaultValue: "Tempo")
+    }
+
+    enum Summary {
+        static let title = LocalizedStringResource("summary.title", defaultValue: "Flot klaret!")
+        static func stars(_ count: Int) -> LocalizedStringResource {
+            LocalizedStringResource("summary.stars", defaultValue: "\(count) stjerner")
+        }
+        static let completed = LocalizedStringResource(
+            "summary.completed", defaultValue: "Du gennemførte hele turen — sådan!")
+        static let partial = LocalizedStringResource(
+            "summary.partial", defaultValue: "Godt gået — hver tur tæller.")
+        static let howDidItFeel = LocalizedStringResource(
+            "summary.howDidItFeel", defaultValue: "Hvordan føltes det?")
+        static let close = LocalizedStringResource("summary.close", defaultValue: "Luk")
+        static let effortEasy = LocalizedStringResource("summary.effort.easy", defaultValue: "Let")
+        static let effortHard = LocalizedStringResource("summary.effort.hard", defaultValue: "Hårdt")
+    }
+
     enum RestDay {
         static let title = LocalizedStringResource("restDay.title", defaultValue: "Hviledag")
         static let body = LocalizedStringResource(

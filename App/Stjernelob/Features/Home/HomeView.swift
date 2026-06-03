@@ -5,7 +5,7 @@ import StjernelobCore
 /// hyggelig hviledags-visning. Knapper fører videre til tur og ugeplanlægger.
 struct HomeView: View {
     @State var viewModel: HomeViewModel
-    var onStartRun: (WorkoutPlan) -> Void = { _ in }
+    var onStartRun: (RunRequest) -> Void = { _ in }
     var onAdjustWeek: () -> Void = {}
 
     var body: some View {
@@ -67,7 +67,13 @@ struct HomeView: View {
             PlanSummaryView(plan: plan)
 
             Button {
-                onStartRun(plan)
+                if let week = viewModel.currentWeek {
+                    onStartRun(RunRequest(
+                        plan: plan,
+                        programWeekId: week.id,
+                        programPhase: week.phase
+                    ))
+                }
             } label: {
                 Text(Strings.Home.startRun)
                     .frame(maxWidth: .infinity)
