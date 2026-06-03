@@ -51,7 +51,7 @@ enum Strings {
             "onboarding.method.title", defaultValue: "Hvor stærkt skal jeg løbe?")
         static let methodBody = LocalizedStringResource(
             "onboarding.method.body",
-            defaultValue: "Du løber efter tid — ikke fart. Find et roligt tempo, hvor du stadig kan tale i hele sætninger imens. Kan du ikke det, så sæt farten ned. For en begynder er langsomt næsten altid helt rigtigt.")
+            defaultValue: "Du løber efter tid — ikke fart. Vælg et roligt tempo, du kan holde hele intervallet ud; løb aldrig hurtigere, end du kan klare tiden. Et godt tjek: kan du stadig tale i hele sætninger imens? For en begynder er langsomt næsten altid helt rigtigt.")
     }
 
     enum Home {
@@ -79,7 +79,7 @@ enum Strings {
         }
         static let elapsed = LocalizedStringResource("activeRun.elapsed", defaultValue: "Forløbet")
         static let talkTestHint = LocalizedStringResource(
-            "activeRun.talkTestHint", defaultValue: "Løb så roligt, at du stadig kan tale")
+            "activeRun.talkTestHint", defaultValue: "Hold et tempo, du kan klare hele intervallet")
         static let resumeTitle = LocalizedStringResource("activeRun.resumeTitle", defaultValue: "Genoptag din tur?")
         static let resumeBody = LocalizedStringResource(
             "activeRun.resumeBody", defaultValue: "Du har en tur i gang. Vil du fortsætte, hvor du slap?")
