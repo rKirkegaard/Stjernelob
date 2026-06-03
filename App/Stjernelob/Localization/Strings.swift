@@ -12,6 +12,79 @@ enum Strings {
         static let name = LocalizedStringResource("app.name", defaultValue: "Stjerneløb")
     }
 
+    enum Common {
+        static let next = LocalizedStringResource("common.next", defaultValue: "Videre")
+        static let start = LocalizedStringResource("common.start", defaultValue: "Kom i gang")
+        static let save = LocalizedStringResource("common.save", defaultValue: "Gem")
+        static let done = LocalizedStringResource("common.done", defaultValue: "Færdig")
+        static let yes = LocalizedStringResource("common.yes", defaultValue: "Ja")
+        static let no = LocalizedStringResource("common.no", defaultValue: "Nej")
+    }
+
+    enum Onboarding {
+        static let welcomeTitle = LocalizedStringResource(
+            "onboarding.welcome.title", defaultValue: "Velkommen til Stjerneløb")
+        static let welcomeBody = LocalizedStringResource(
+            "onboarding.welcome.body",
+            defaultValue: "Vi tager den helt roligt og bygger dig op lidt ad gangen. Det handler om at have det sjovt og kunne mere — ikke om fart eller distance.")
+        static let experienceTitle = LocalizedStringResource(
+            "onboarding.experience.title", defaultValue: "Har du løbet før?")
+        static let experienceNew = LocalizedStringResource(
+            "onboarding.experience.new", defaultValue: "Nej, jeg er helt ny")
+        static let experienceSome = LocalizedStringResource(
+            "onboarding.experience.some", defaultValue: "Lidt")
+        static let sessionsTitle = LocalizedStringResource(
+            "onboarding.sessions.title", defaultValue: "Hvor mange ture har du tid til om ugen?")
+        static let sessionsBody = LocalizedStringResource(
+            "onboarding.sessions.body",
+            defaultValue: "Du kan altid ændre det. At vælge få ture i en travl uge er et helt fint valg.")
+        static let healthTitle = LocalizedStringResource(
+            "onboarding.health.title", defaultValue: "Lige et par trygheds-spørgsmål")
+        static let healthPain = LocalizedStringResource(
+            "onboarding.health.pain", defaultValue: "Har du smerter eller en skade lige nu?")
+        static let healthHeart = LocalizedStringResource(
+            "onboarding.health.heart", defaultValue: "Har du en kendt hjerte- eller lungesygdom?")
+        static let doctorAdvice = LocalizedStringResource(
+            "onboarding.health.doctorAdvice",
+            defaultValue: "Tal lige med din læge, før du går i gang — så er du på den sikre side. Appen er ikke lægefaglig rådgivning.")
+    }
+
+    enum Home {
+        static let nextSessionTitle = LocalizedStringResource(
+            "home.nextSession.title", defaultValue: "Din næste tur")
+        static let startRun = LocalizedStringResource("home.startRun", defaultValue: "Start turen")
+        static func streak(weeks: Int) -> LocalizedStringResource {
+            LocalizedStringResource("home.streak", defaultValue: "\(weeks) ugers stime")
+        }
+        static func starsTotal(_ stars: Int) -> LocalizedStringResource {
+            LocalizedStringResource("home.starsTotal", defaultValue: "\(stars) stjerner")
+        }
+        static func level(_ level: Int) -> LocalizedStringResource {
+            LocalizedStringResource("home.level", defaultValue: "Niveau \(level)")
+        }
+        static let adjustWeek = LocalizedStringResource("home.adjustWeek", defaultValue: "Tilpas ugen")
+    }
+
+    enum RestDay {
+        static let title = LocalizedStringResource("restDay.title", defaultValue: "Hviledag")
+        static let body = LocalizedStringResource(
+            "restDay.body",
+            defaultValue: "Hviledag i dag — din krop bliver stærkere imens. Vi ses i morgen!")
+    }
+
+    enum Planner {
+        static let title = LocalizedStringResource("planner.title", defaultValue: "Ugens plan")
+        static let sessionsQuestion = LocalizedStringResource(
+            "planner.sessionsQuestion", defaultValue: "Hvor mange ture i denne uge?")
+        static func sessionsValue(_ count: Int) -> LocalizedStringResource {
+            LocalizedStringResource("planner.sessionsValue", defaultValue: "\(count) ture")
+        }
+        static let suggestedDays = LocalizedStringResource(
+            "planner.suggestedDays", defaultValue: "Forslag til dage")
+        static let restDayNote = LocalizedStringResource(
+            "planner.restDayNote", defaultValue: "Vi lægger altid en hviledag ind imellem — hvile er en del af træningen.")
+    }
+
     enum Dashboard {
         static let weeksRun = LocalizedStringResource("dashboard.weeksRun", defaultValue: "Ugens tur")
     }

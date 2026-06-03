@@ -9,7 +9,7 @@ struct StjernelobApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
+            AppFlowView()
                 .environment(environment)
         }
     }
