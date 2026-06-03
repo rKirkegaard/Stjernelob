@@ -67,6 +67,13 @@ struct WorkoutDetailView: View {
                 .scaledToFill()
                 .frame(width: 100, height: 100)
                 .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.button))
+                .contextMenu {
+                    if let url = PhotoSharing.temporaryStrippedFile(from: data) {
+                        ShareLink(item: url) {
+                            Label { Text(Strings.Progress.sharePhoto) } icon: { Image(systemName: "square.and.arrow.up") }
+                        }
+                    }
+                }
         } else {
             RoundedRectangle(cornerRadius: Theme.Radius.button)
                 .fill(Color.secondary.opacity(0.15))

@@ -9,9 +9,23 @@ struct SettingsView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var showDeleteConfirm = false
     @State private var exportURL: URL?
+    @State private var role: UserRole = .runner
 
     var body: some View {
         Form {
+            Section {
+                Picker(selection: $role) {
+                    Text(Strings.Settings.roleRunner).tag(UserRole.runner)
+                    Text(Strings.Settings.roleParent).tag(UserRole.parent)
+                } label: {
+                    Text(Strings.Settings.roleSection)
+                }
+            } header: {
+                Text(Strings.Settings.roleSection)
+            } footer: {
+                Text(Strings.Settings.roleNote)
+            }
+
             Section {
                 Toggle(isOn: $settings.feedback.voiceEnabled) { Text(Strings.Settings.voice) }
                 Toggle(isOn: $settings.feedback.soundEnabled) { Text(Strings.Settings.sound) }
@@ -108,6 +122,15 @@ struct SettingsView: View {
         .onChange(of: settings.reminderHour) { _, _ in Task { await reschedule() } }
         .onChange(of: settings.healthKitEnabled) { _, isOn in
             if isOn { Task { _ = await environment.healthKit.requestAuthorization() } }
+        }
+        .task {
+            if let profile = try? environment.profileRepository.load() { role = profile.role }
+        }
+        .onChange(of: role) { _, newRole in
+            if var profile = try? environment.profileRepository.load() {
+                profile.role = newRole
+                try? environment.profileRepository.save(profile)
+            }
         }
         .confirmationDialog(
             Text(Strings.Settings.deleteConfirmTitle),

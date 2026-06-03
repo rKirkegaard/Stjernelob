@@ -134,6 +134,7 @@ enum Strings {
         static let photosLabel = LocalizedStringResource("progress.photos", defaultValue: "Billeder fra turen")
         static let noPhotos = LocalizedStringResource("progress.noPhotos", defaultValue: "Ingen billeder fra denne tur endnu.")
         static let addPhoto = LocalizedStringResource("progress.addPhoto", defaultValue: "Tilføj et billede")
+        static let sharePhoto = LocalizedStringResource("progress.sharePhoto", defaultValue: "Del billede")
         static let photoHint = LocalizedStringResource(
             "progress.photoHint", defaultValue: "Fang stedet eller øjeblikket — det er helt frivilligt.")
     }
@@ -181,6 +182,12 @@ enum Strings {
         static let healthKit = LocalizedStringResource("settings.healthKit", defaultValue: "Gem ture i Helbred")
         static let healthNote = LocalizedStringResource(
             "settings.healthNote", defaultValue: "Valgfrit. Dine ture gemmes som workouts i Apples Helbred — kun med dit samtykke.")
+
+        static let roleSection = LocalizedStringResource("settings.role", defaultValue: "Rolle")
+        static let roleRunner = LocalizedStringResource("settings.role.runner", defaultValue: "Løber")
+        static let roleParent = LocalizedStringResource("settings.role.parent", defaultValue: "Forælder/voksen")
+        static let roleNote = LocalizedStringResource(
+            "settings.roleNote", defaultValue: "Forælder-rollen er støtte, ikke overvågning. Du kan altid skifte tilbage.")
 
         static let privacySection = LocalizedStringResource("settings.privacy", defaultValue: "Privatliv og data")
         static let exportData = LocalizedStringResource("settings.exportData", defaultValue: "Eksportér mine data")
