@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Det rene domæne testes på macOS-værten (hurtigt, ingen simulator).
+  core-tests:
+    name: StjernelobCore unit-tests
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift test
+        working-directory: StjernelobCore
+        run: swift test --enable-code-coverage
+
+  # iOS-appen genereres med XcodeGen og bygges for iOS-simulator.
+  ios-build:
+    name: Byg iOS-app
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Installer XcodeGen
+        run: brew install xcodegen
+      - name: Generér Xcode-projekt
+        working-directory: App
+        run: xcodegen generate
+      - name: Byg (iOS Simulator)
+        working-directory: App
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Stjernelob.xcodeproj \
+            -scheme Stjernelob \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO
