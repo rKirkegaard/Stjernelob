@@ -63,6 +63,7 @@ struct OnboardingView: View {
                             .fontWeight(.semibold)
                     }
                     .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier("onboarding.start")
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 }

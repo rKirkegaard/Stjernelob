@@ -81,6 +81,14 @@ targets:
     dependencies:
       - target: Stjernelob
 
+  StjernelobUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: StjernelobUITests
+    dependencies:
+      - target: Stjernelob
+
   StjernelobShared:
     type: framework
     platform: iOS
@@ -116,6 +124,7 @@ schemes:
       gatherCoverageData: true
       targets:
         - StjernelobTests
+        - StjernelobUITests
     archive:
       config: Release
   StjernelobWatch:
