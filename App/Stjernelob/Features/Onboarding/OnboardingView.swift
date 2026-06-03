@@ -14,6 +14,17 @@ struct OnboardingView: View {
                 }
 
                 Section {
+                    Label {
+                        Text(Strings.Onboarding.methodBody)
+                    } icon: {
+                        Image(systemName: "bubble.left.and.bubble.right.fill")
+                            .foregroundStyle(Theme.Colors.accent)
+                    }
+                } header: {
+                    Text(Strings.Onboarding.methodTitle)
+                }
+
+                Section {
                     Picker(selection: $viewModel.hasRunBefore) {
                         Text(Strings.Onboarding.experienceNew).tag(false)
                         Text(Strings.Onboarding.experienceSome).tag(true)

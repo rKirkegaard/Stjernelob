@@ -76,6 +76,15 @@ struct ActiveRunView: View {
             .font(.subheadline)
             .foregroundStyle(.secondary)
 
+            Label {
+                Text(Strings.ActiveRun.talkTestHint)
+            } icon: {
+                Image(systemName: "bubble.left.and.bubble.right.fill")
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .padding(.top, Theme.Spacing.small)
+
             Spacer()
             controls
         }

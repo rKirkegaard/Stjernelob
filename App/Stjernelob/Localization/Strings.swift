@@ -47,6 +47,11 @@ enum Strings {
         static let doctorAdvice = LocalizedStringResource(
             "onboarding.health.doctorAdvice",
             defaultValue: "Tal lige med din læge, før du går i gang — så er du på den sikre side. Appen er ikke lægefaglig rådgivning.")
+        static let methodTitle = LocalizedStringResource(
+            "onboarding.method.title", defaultValue: "Hvor stærkt skal jeg løbe?")
+        static let methodBody = LocalizedStringResource(
+            "onboarding.method.body",
+            defaultValue: "Du løber efter tid — ikke fart. Find et roligt tempo, hvor du stadig kan tale i hele sætninger imens. Kan du ikke det, så sæt farten ned. For en begynder er langsomt næsten altid helt rigtigt.")
     }
 
     enum Home {
@@ -73,6 +78,8 @@ enum Strings {
             LocalizedStringResource("activeRun.intervalOfTotal", defaultValue: "Interval \(current) af \(total)")
         }
         static let elapsed = LocalizedStringResource("activeRun.elapsed", defaultValue: "Forløbet")
+        static let talkTestHint = LocalizedStringResource(
+            "activeRun.talkTestHint", defaultValue: "Løb så roligt, at du stadig kan tale")
         static let resumeTitle = LocalizedStringResource("activeRun.resumeTitle", defaultValue: "Genoptag din tur?")
         static let resumeBody = LocalizedStringResource(
             "activeRun.resumeBody", defaultValue: "Du har en tur i gang. Vil du fortsætte, hvor du slap?")
