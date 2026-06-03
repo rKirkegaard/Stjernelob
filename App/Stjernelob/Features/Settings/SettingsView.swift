@@ -8,6 +8,7 @@ struct SettingsView: View {
 
     @Environment(AppEnvironment.self) private var environment
     @State private var showDeleteConfirm = false
+    @State private var exportURL: URL?
 
     var body: some View {
         Form {
@@ -79,6 +80,18 @@ struct SettingsView: View {
             }
 
             Section {
+                if let exportURL {
+                    ShareLink(item: exportURL) {
+                        Label { Text(Strings.Settings.exportData) } icon: { Image(systemName: "square.and.arrow.up") }
+                    }
+                } else {
+                    Button {
+                        exportURL = DataExportService(environment: environment).writeTemporaryFile()
+                    } label: {
+                        Label { Text(Strings.Settings.exportData) } icon: { Image(systemName: "square.and.arrow.up") }
+                    }
+                }
+
                 Button(role: .destructive) {
                     showDeleteConfirm = true
                 } label: {
