@@ -62,6 +62,14 @@ struct SettingsView: View {
             }
 
             Section {
+                NavigationLink {
+                    SafetyView(settings: settings)
+                } label: {
+                    Label { Text(Strings.Safety.openInSettings) } icon: { Image(systemName: "shield.lefthalf.filled") }
+                }
+            }
+
+            Section {
                 Toggle(isOn: $settings.healthKitEnabled) { Text(Strings.Settings.healthKit) }
                     .disabled(!environment.healthKit.isAvailable)
             } header: {

@@ -205,6 +205,22 @@ enum Strings {
             "sharing.seeWhatParentSees", defaultValue: "Se præcis, hvad din forælder ser")
     }
 
+    enum Safety {
+        static let title = LocalizedStringResource("safety.title", defaultValue: "Tryghed udenfor")
+        static let livePosition = LocalizedStringResource("safety.livePosition", defaultValue: "Del min position under turen")
+        static let livePositionNote = LocalizedStringResource(
+            "safety.livePositionNote", defaultValue: "Kun mens du løber. Slukkes automatisk, når turen slutter. Du ser altid, at den er tændt.")
+        static let awayHome = LocalizedStringResource("safety.awayHome", defaultValue: "Send 'afsted' og 'hjemme igen'")
+        static let contactName = LocalizedStringResource("safety.contactName", defaultValue: "Betroet kontakt")
+        static let contactPhone = LocalizedStringResource("safety.contactPhone", defaultValue: "Telefonnummer")
+        static let sos = LocalizedStringResource("safety.sos", defaultValue: "SOS – ring efter hjælp")
+        static let sosNote = LocalizedStringResource(
+            "safety.sosNote", defaultValue: "Ringer til din betroede kontakt, eller 112 hvis ingen er valgt.")
+        static let tips = LocalizedStringResource(
+            "safety.tips", defaultValue: "Løb helst i dagslys og på kendte ruter, og hold lyden nede nok til at høre trafik og omgivelser.")
+        static let openInSettings = LocalizedStringResource("safety.title.link", defaultValue: "Tryghed og sikkerhed")
+    }
+
     enum Parent {
         static let title = LocalizedStringResource("parent.title", defaultValue: "Hvad din forælder ser")
         static let nothingShared = LocalizedStringResource(

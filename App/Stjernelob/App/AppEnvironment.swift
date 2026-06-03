@@ -26,6 +26,9 @@ final class AppEnvironment {
     /// HealthKit (valgfrit, med samtykke).
     let healthKit = HealthKitService()
 
+    /// Position til personlig sikkerhed (opt-in).
+    let locationService = LocationService()
+
     init(clock: any MonotonicClock = SystemMonotonicClock(),
          store: SwiftDataStore? = nil,
          photoStore: any PhotoStore = FilePhotoStore(),

@@ -14,12 +14,16 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$headers = @{ "User-Agent" = "claude"; "Accept" = "application/vnd.github+json" }
 
 function Get-Token {
     $cred = ("protocol=https`nhost=github.com`n`n" | git credential fill 2>$null)
     (($cred | Select-String "^password=") -replace "password=", "").Trim()
 }
+
+# Autentificér alle kald (5000/time i stedet for 60/time uautentificeret).
+$token = Get-Token
+$headers = @{ "User-Agent" = "claude"; "Accept" = "application/vnd.github+json" }
+if ($token) { $headers["Authorization"] = "Bearer $token" }
 
 Start-Sleep -Seconds 15
 $runId = $null

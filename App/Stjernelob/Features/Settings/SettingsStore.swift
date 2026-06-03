@@ -16,6 +16,11 @@ final class SettingsStore {
     var shareStreak: Bool { didSet { defaults.set(shareStreak, forKey: Keys.shareStreak) } }
     var shareWorkouts: Bool { didSet { defaults.set(shareWorkouts, forKey: Keys.shareWorkouts) } }
     var shareMilestones: Bool { didSet { defaults.set(shareMilestones, forKey: Keys.shareMilestones) } }
+    // Personlig sikkerhed (afsnit 12) — alt opt-in og altid synligt for barnet.
+    var livePositionEnabled: Bool { didSet { defaults.set(livePositionEnabled, forKey: Keys.livePosition) } }
+    var awayHomeEnabled: Bool { didSet { defaults.set(awayHomeEnabled, forKey: Keys.awayHome) } }
+    var emergencyContactName: String { didSet { defaults.set(emergencyContactName, forKey: Keys.contactName) } }
+    var emergencyContactPhone: String { didSet { defaults.set(emergencyContactPhone, forKey: Keys.contactPhone) } }
 
     private let defaults: UserDefaults
 
@@ -28,6 +33,10 @@ final class SettingsStore {
         static let shareStreak = "settings.shareStreak"
         static let shareWorkouts = "settings.shareWorkouts"
         static let shareMilestones = "settings.shareMilestones"
+        static let livePosition = "settings.livePosition"
+        static let awayHome = "settings.awayHome"
+        static let contactName = "settings.contactName"
+        static let contactPhone = "settings.contactPhone"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -46,6 +55,10 @@ final class SettingsStore {
         shareStreak = defaults.object(forKey: Keys.shareStreak) as? Bool ?? false
         shareWorkouts = defaults.object(forKey: Keys.shareWorkouts) as? Bool ?? false
         shareMilestones = defaults.object(forKey: Keys.shareMilestones) as? Bool ?? false
+        livePositionEnabled = defaults.object(forKey: Keys.livePosition) as? Bool ?? false
+        awayHomeEnabled = defaults.object(forKey: Keys.awayHome) as? Bool ?? false
+        emergencyContactName = defaults.string(forKey: Keys.contactName) ?? ""
+        emergencyContactPhone = defaults.string(forKey: Keys.contactPhone) ?? ""
     }
 
     private func persistFeedback() {

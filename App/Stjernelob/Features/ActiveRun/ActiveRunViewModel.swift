@@ -51,6 +51,9 @@ final class ActiveRunViewModel {
 
     func start() {
         feedback.begin()
+        if environment.settings.livePositionEnabled {
+            environment.locationService.startSharing()
+        }
         dispatch(engine.start())
         snapshot = engine.snapshot()
     }
@@ -99,6 +102,8 @@ final class ActiveRunViewModel {
 
     private func finish(with summary: WorkoutSummary) {
         if case .finished = phase { return }
+        // Positionsdeling slukkes automatisk ved turslut (afsnit 12).
+        environment.locationService.stopSharing()
         phase = .finished(summary)
     }
 
