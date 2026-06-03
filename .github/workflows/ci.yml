@@ -73,8 +73,7 @@ jobs:
           xcodebuild test \
             -project Stjernelob.xcodeproj \
             -scheme Stjernelob \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
-            CODE_SIGNING_ALLOWED=NO
+            -destination 'platform=iOS Simulator,name=iPhone 16'
 
   # watchOS-ledsageren bygges for watchOS-simulator.
   watch-build:
