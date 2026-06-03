@@ -20,6 +20,10 @@ settings:
     CODE_SIGN_STYLE: Automatic
     # Alle targets får en genereret Info.plist (widgetten overrider med sin egen).
     GENERATE_INFOPLIST_FILE: YES
+    # Version sættes på alle targets — ellers mangler den indlejrede widget en
+    # CFBundleVersion, og appen kan ikke installeres.
+    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "0.1.0"
     # Hæves til "complete" senere; holdes på standard under opbygningen.
     SWIFT_STRICT_CONCURRENCY: minimal
 
