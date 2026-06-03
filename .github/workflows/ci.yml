@@ -70,10 +70,13 @@ jobs:
         working-directory: App
         run: |
           set -o pipefail
+          # Find en tilgængelig iPhone-simulator dynamisk (navne varierer pr. runner-image).
+          DEVICE_ID=$(xcrun simctl list devices available | grep -m1 -oE 'iPhone[^(]*\(([0-9A-F-]{36})\)' | grep -oE '[0-9A-F-]{36}')
+          echo "Bruger simulator: $DEVICE_ID"
           xcodebuild test \
             -project Stjernelob.xcodeproj \
             -scheme Stjernelob \
-            -destination 'platform=iOS Simulator,name=iPhone 16'
+            -destination "id=$DEVICE_ID"
 
   # watchOS-ledsageren bygges for watchOS-simulator.
   watch-build:
