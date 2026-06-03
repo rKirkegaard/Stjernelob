@@ -72,6 +72,12 @@ final class WorkoutFeedbackCoordinator {
         }
     }
 
+    /// Blid talk-test-påmindelse undervejs (afsnit 4.2): sæt farten ned, hvis du
+    /// ikke kan tale imens. Kun via stemme, og kun hvis stemme er slået til.
+    func talkTestReminder() {
+        speak(Strings.Coaching.talkTest)
+    }
+
     // MARK: - Kanaler (gated af indstillinger)
 
     private func speak(_ text: LocalizedStringResource) {

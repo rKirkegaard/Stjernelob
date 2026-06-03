@@ -22,6 +22,8 @@ final class ActiveRunViewModel {
     /// Tæller op, hver gang et interval gennemføres — driver stjernepop-animationen.
     private(set) var starPops = 0
     private var didSave = false
+    /// Næste tidspunkt (sekunder) for en blid talk-test-påmindelse.
+    private var nextTalkTestSeconds = 300
 
     private let engine: IntervalEngine
     private let liveActivity = LiveActivityController()
@@ -70,6 +72,12 @@ final class ActiveRunViewModel {
         dispatch(engine.update())
         snapshot = engine.snapshot()
         liveActivity.update(snapshot: snapshot, intervalLabel: String(localized: snapshot.interval.kind.label))
+
+        // Blid talk-test-påmindelse hvert 5. minut undervejs.
+        if snapshot.totalElapsed.wholeSeconds >= nextTalkTestSeconds, snapshot.totalRemaining > .seconds(60) {
+            feedback.talkTestReminder()
+            nextTalkTestSeconds += 300
+        }
     }
 
     func pause() {
@@ -137,6 +145,8 @@ final class ActiveRunViewModel {
         )
         try? environment.workoutRepository.add(workout)
         awardBadges(for: summary)
+        ProgressionCoordinator(environment: environment)
+            .registerCompletedWorkout(programWeekId: programWeekId, now: now())
 
         if environment.settings.healthKitEnabled {
             let end = now()

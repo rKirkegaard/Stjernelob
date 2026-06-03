@@ -22,6 +22,7 @@ struct ProfileDTO: Sendable, Equatable {
     var hasRunBefore: Bool
     var defaultWeeklySessions: Int
     var currentWeekIndex: Int
+    var completedSessionsThisProgramWeek: Int = 0
     var role: UserRole
     var onboardingComplete: Bool
     var health: HealthScreening
@@ -58,6 +59,7 @@ extension ProfileDTO {
             hasRunBefore: entity.hasRunBefore,
             defaultWeeklySessions: entity.defaultWeeklySessions,
             currentWeekIndex: entity.currentWeekIndex,
+            completedSessionsThisProgramWeek: entity.completedSessionsThisProgramWeek,
             role: UserRole(rawValue: entity.roleRawValue) ?? .runner,
             onboardingComplete: entity.onboardingComplete,
             health: HealthScreening(
@@ -71,6 +73,7 @@ extension ProfileDTO {
         entity.hasRunBefore = hasRunBefore
         entity.defaultWeeklySessions = defaultWeeklySessions
         entity.currentWeekIndex = currentWeekIndex
+        entity.completedSessionsThisProgramWeek = completedSessionsThisProgramWeek
         entity.roleRawValue = role.rawValue
         entity.onboardingComplete = onboardingComplete
         entity.hasPainOrInjury = health.hasPainOrInjury

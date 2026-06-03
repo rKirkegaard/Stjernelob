@@ -13,6 +13,9 @@ final class ProfileEntity {
     var hasRunBefore: Bool
     var defaultWeeklySessions: Int
     var currentWeekIndex: Int
+    /// Antal ture gennemført på den aktuelle programuge — nulstilles, når ugen
+    /// vurderes og forløbet rykker (frem/gentag/tilbage).
+    var completedSessionsThisProgramWeek: Int
     var roleRawValue: String
     var onboardingComplete: Bool
     // Helbredsscreening fra onboarding (afsnit 7.1) — minimal og kun lokalt.
@@ -25,6 +28,7 @@ final class ProfileEntity {
         hasRunBefore: Bool = false,
         defaultWeeklySessions: Int = 3,
         currentWeekIndex: Int = 0,
+        completedSessionsThisProgramWeek: Int = 0,
         roleRawValue: String = UserRole.runner.rawValue,
         onboardingComplete: Bool = false,
         hasPainOrInjury: Bool = false,
@@ -35,6 +39,7 @@ final class ProfileEntity {
         self.hasRunBefore = hasRunBefore
         self.defaultWeeklySessions = defaultWeeklySessions
         self.currentWeekIndex = currentWeekIndex
+        self.completedSessionsThisProgramWeek = completedSessionsThisProgramWeek
         self.roleRawValue = roleRawValue
         self.onboardingComplete = onboardingComplete
         self.hasPainOrInjury = hasPainOrInjury

@@ -56,6 +56,8 @@ final class PhoneSyncService: NSObject, WCSessionDelegate {
             photos: []
         )
         try? environment.workoutRepository.add(workout)
+        ProgressionCoordinator(environment: environment)
+            .registerCompletedWorkout(programWeekId: payload.programWeekId)
     }
 
     // MARK: - WCSessionDelegate (nonisolated; hopper til MainActor)
