@@ -24,6 +24,20 @@ struct MainTabView: View {
                     Image(systemName: "house.fill")
                 }
             }
+
+            NavigationStack {
+                HistoryView(viewModel: HistoryViewModel(environment: environment))
+            }
+            .tabItem {
+                Label { Text(Strings.Progress.title) } icon: { Image(systemName: "chart.line.uptrend.xyaxis") }
+            }
+
+            NavigationStack {
+                BadgesView(viewModel: BadgesViewModel(environment: environment))
+            }
+            .tabItem {
+                Label { Text(Strings.Badges.title) } icon: { Image(systemName: "rosette") }
+            }
         }
         .sheet(isPresented: $showPlanner) {
             WeekPlannerView(viewModel: WeekPlannerViewModel(

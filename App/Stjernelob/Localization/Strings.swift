@@ -113,6 +113,37 @@ enum Strings {
             "planner.restDayNote", defaultValue: "Vi lægger altid en hviledag ind imellem — hvile er en del af træningen.")
     }
 
+    enum Progress {
+        static let title = LocalizedStringResource("progress.title", defaultValue: "Fremgang")
+        static let listTab = LocalizedStringResource("progress.listTab", defaultValue: "Liste")
+        static let calendarTab = LocalizedStringResource("progress.calendarTab", defaultValue: "Kalender")
+        static let empty = LocalizedStringResource(
+            "progress.empty", defaultValue: "Din første tur venter — den kommer her, når du er kommet afsted.")
+        static func totalRuns(_ count: Int) -> LocalizedStringResource {
+            LocalizedStringResource("progress.totalRuns", defaultValue: "\(count) gennemførte ture")
+        }
+        static let completedTag = LocalizedStringResource("progress.completedTag", defaultValue: "Gennemført")
+        static let partialTag = LocalizedStringResource("progress.partialTag", defaultValue: "Påbegyndt")
+        static func weekLabel(_ id: Int) -> LocalizedStringResource {
+            LocalizedStringResource("progress.weekLabel", defaultValue: "Uge \(id) i forløbet")
+        }
+        static let durationLabel = LocalizedStringResource("progress.duration", defaultValue: "Varighed")
+        static let intervalsLabel = LocalizedStringResource("progress.intervals", defaultValue: "Gennemførte intervaller")
+        static let starsLabel = LocalizedStringResource("progress.stars", defaultValue: "Stjerner")
+        static let effortLabel = LocalizedStringResource("progress.effort", defaultValue: "Sådan føltes det")
+        static let photosLabel = LocalizedStringResource("progress.photos", defaultValue: "Billeder fra turen")
+        static let noPhotos = LocalizedStringResource("progress.noPhotos", defaultValue: "Ingen billeder fra denne tur endnu.")
+    }
+
+    enum Badges {
+        static let title = LocalizedStringResource("badges.title", defaultValue: "Samling")
+        static let earnedSection = LocalizedStringResource("badges.earned", defaultValue: "Optjente mærker")
+        static let lockedSection = LocalizedStringResource("badges.locked", defaultValue: "Endnu ikke låst op")
+        static func levelProgress(into: Int, span: Int) -> LocalizedStringResource {
+            LocalizedStringResource("badges.levelProgress", defaultValue: "\(into) / \(span) point til næste niveau")
+        }
+    }
+
     enum Dashboard {
         static let weeksRun = LocalizedStringResource("dashboard.weeksRun", defaultValue: "Ugens tur")
     }
