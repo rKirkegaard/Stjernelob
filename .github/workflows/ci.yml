@@ -55,6 +55,27 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO
 
+  # App-lagets unit-tests køres på iOS-simulator.
+  app-tests:
+    name: App-tests (iOS Simulator)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Installer XcodeGen
+        run: brew install xcodegen
+      - name: Generér Xcode-projekt
+        working-directory: App
+        run: xcodegen generate
+      - name: Test (iOS Simulator)
+        working-directory: App
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project Stjernelob.xcodeproj \
+            -scheme Stjernelob \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            CODE_SIGNING_ALLOWED=NO
+
   # watchOS-ledsageren bygges for watchOS-simulator.
   watch-build:
     name: Byg watchOS-ledsager

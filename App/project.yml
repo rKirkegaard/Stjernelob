@@ -66,6 +66,14 @@ targets:
         INFOPLIST_KEY_WKApplication: YES
         INFOPLIST_KEY_CFBundleDisplayName: Stjerneløb
 
+  StjernelobTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: StjernelobTests
+    dependencies:
+      - target: Stjernelob
+
   StjernelobShared:
     type: framework
     platform: iOS
@@ -98,6 +106,9 @@ schemes:
       config: Debug
     test:
       config: Debug
+      gatherCoverageData: true
+      targets:
+        - StjernelobTests
     archive:
       config: Release
   StjernelobWatch:
