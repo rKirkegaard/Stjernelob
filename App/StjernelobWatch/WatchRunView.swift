@@ -69,7 +69,7 @@ struct WatchRunView: View {
             } else if model.started {
                 Text(model.label(for: model.snapshot.interval.kind))
                     .font(.headline)
-                Text(timeText(model.snapshot.remainingInInterval.wholeSeconds))
+                Text(timeText(Int(model.snapshot.remainingInInterval.components.seconds)))
                     .font(.system(size: 44, weight: .bold, design: .rounded))
                     .monospacedDigit()
                 Button(role: .destructive) {
