@@ -6,9 +6,11 @@ final class OnboardingUITests: XCTestCase {
     func testAppLaunchesToOnboarding() {
         let app = XCUIApplication()
         app.launch()
+        // Tjek et stabilt element øverst (knappen kan ligge under skærmkanten i
+        // en Form og er derfor ikke instansieret før der scrolles).
         XCTAssertTrue(
-            app.buttons["onboarding.start"].waitForExistence(timeout: 15),
-            "Onboardingens 'Kom i gang'-knap skulle være synlig ved start"
+            app.staticTexts["onboarding.welcome"].waitForExistence(timeout: 15),
+            "Onboardingen skulle vises ved start"
         )
     }
 }

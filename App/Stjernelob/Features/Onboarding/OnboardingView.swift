@@ -11,6 +11,7 @@ struct OnboardingView: View {
                 Section {
                     Text(Strings.Onboarding.welcomeBody)
                         .font(.body)
+                        .accessibilityIdentifier("onboarding.welcome")
                 }
 
                 Section {
