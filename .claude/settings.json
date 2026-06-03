@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Bash(swift build)",
+      "Bash(swift test)",
+      "Bash(swiftformat *)",
+      "Bash(xcodebuild *)",
+      "Bash(git status)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git diff *)",
+      "Bash(git log *)"
+    ],
+    "ask": [
+      "Bash(git push *)"
+    ],
+    "deny": [
+      "Read(./**/*.env)",
+      "Read(./secrets/**)",
+      "Read(./**/*.p8)",
+      "Read(./**/*.mobileprovision)",
+      "Bash(rm -rf *)"
+    ]
+  },
+  "env": {
+    "PROJECT_NAME": "Stjernelob"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "swiftformat . >/dev/null 2>&1 || true" }
+        ]
+      }
+    ]
+  }
+}

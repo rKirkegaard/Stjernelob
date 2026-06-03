@@ -1,0 +1,24 @@
+# Claude Code – private/personlige filer
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Hemmeligheder
+*.env
+.env.local
+secrets/
+
+# Xcode / Swift
+.build/
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+.swiftpm/
+.DS_Store
+
+# XcodeGen genererer projektet fra App/project.yml — selve projektet committes ikke
+*.xcodeproj/
+
+# Windows / værktøjer
+Thumbs.db

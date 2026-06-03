@@ -1,0 +1,4 @@
+# Gitignorerede filer der skal kopieres med til nye git worktrees.
+CLAUDE.local.md
+.claude/settings.local.json
+.env.local
