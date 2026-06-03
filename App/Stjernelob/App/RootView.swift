@@ -1,9 +1,10 @@
 import SwiftUI
 import StjernelobCore
 
-/// Midlertidig rod-skærm, der beviser integrationen med domænelaget: den viser
-/// den aktuelle uges første tur fra `ProgressionEngine`. Erstattes af det
-/// rigtige dashboard (spec afsnit 7.2), efterhånden som skærmene bygges.
+/// Midlertidig rod-skærm, der beviser integrationen med domænelaget og det nye
+/// fundament (lokalisering + designsystem): den viser den aktuelle uges første
+/// tur fra `ProgressionEngine`. Erstattes af det rigtige dashboard (spec
+/// afsnit 7.2), efterhånden som skærmene bygges.
 struct RootView: View {
     private let engine = ProgressionEngine()
     private let sessionsPerWeek = 3
@@ -17,8 +18,12 @@ struct RootView: View {
             List {
                 Section {
                     ForEach(Array(plan.intervals.enumerated()), id: \.offset) { _, interval in
-                        HStack {
-                            Text(label(for: interval.kind))
+                        HStack(spacing: Theme.Spacing.medium) {
+                            Image(systemName: interval.kind.symbolName)
+                                .foregroundStyle(interval.kind.color)
+                                .font(.title3)
+                                .frame(width: 28)
+                            Text(interval.kind.label)
                             Spacer()
                             Text(interval.duration.shortText)
                                 .monospacedDigit()
@@ -26,25 +31,20 @@ struct RootView: View {
                         }
                     }
                 } header: {
-                    Text("Ugens tur")
+                    Text(Strings.Dashboard.weeksRun)
                 } footer: {
-                    Text("\(plan.runIntervalCount) løbeintervaller · i alt \(plan.totalDuration.shortText)")
+                    Text(Strings.Units.sessionSummary(
+                        runCount: plan.runIntervalCount,
+                        total: plan.totalDuration.shortText
+                    ))
                 }
             }
-            .navigationTitle("Stjerneløb")
-        }
-    }
-
-    private func label(for kind: IntervalKind) -> String {
-        switch kind {
-        case .warmUp: return "Opvarmning"
-        case .run: return "Løb"
-        case .walk: return "Gå"
-        case .coolDown: return "Nedkøling"
+            .navigationTitle(Text(Strings.App.name))
         }
     }
 }
 
 #Preview {
     RootView()
+        .environment(AppEnvironment())
 }

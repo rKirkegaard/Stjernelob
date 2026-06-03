@@ -5,9 +5,12 @@ import SwiftUI
 /// ViewModels (jf. `.claude/rules/arkitektur.md`).
 @main
 struct StjernelobApp: App {
+    @State private var environment = AppEnvironment()
+
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environment(environment)
         }
     }
 }
