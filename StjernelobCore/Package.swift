@@ -11,6 +11,14 @@ import PackageDescription
 // Se docs/specifikation.md og .claude/rules/arkitektur.md.
 let package = Package(
     name: "StjernelobCore",
+    // `Duration` kræver disse minimumsversioner. Uden erklæringen antager SPM en
+    // for gammel platform på Apple-mål, og koden fejler ved kompilering (men ikke
+    // på Windows, hvor tilgængelighed ikke gates) — derfor sættes de eksplicit.
+    platforms: [
+        .iOS(.v17),
+        .macOS(.v13),
+        .watchOS(.v10),
+    ],
     products: [
         .library(name: "StjernelobCore", targets: ["StjernelobCore"]),
     ],
