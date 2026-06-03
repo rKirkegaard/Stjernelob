@@ -50,6 +50,21 @@ targets:
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Stjerneløb bruger dine billeder, hvis du vil knytte et foto til en tur."
         INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Stjerneløb kan dele din position med en betroet voksen mens du løber — kun hvis du selv slår det til. Den slukkes, når turen slutter."
 
+  StjernelobWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: StjernelobWatch
+    dependencies:
+      - package: StjernelobCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rkirkegaard.stjernelob.watchkitapp
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_WKApplication: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Stjerneløb
+
   StjernelobShared:
     type: framework
     platform: iOS
@@ -84,3 +99,9 @@ schemes:
       config: Debug
     archive:
       config: Release
+  StjernelobWatch:
+    build:
+      targets:
+        StjernelobWatch: all
+    run:
+      config: Debug

@@ -41,3 +41,24 @@ jobs:
             -scheme Stjernelob \
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO
+
+  # watchOS-ledsageren bygges for watchOS-simulator.
+  watch-build:
+    name: Byg watchOS-ledsager
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Installer XcodeGen
+        run: brew install xcodegen
+      - name: Generér Xcode-projekt
+        working-directory: App
+        run: xcodegen generate
+      - name: Byg (watchOS Simulator)
+        working-directory: App
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Stjernelob.xcodeproj \
+            -scheme StjernelobWatch \
+            -destination 'generic/platform=watchOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO
