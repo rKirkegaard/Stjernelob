@@ -1,0 +1,13 @@
+# Normalisér linjeskift: kildekode gemmes altid med LF i repoet, så filer
+# skrevet på Windows bygger rent på macOS-CI.
+* text=auto eol=lf
+
+# Binære filer røres ikke.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.caf binary
+*.wav binary
+*.mp3 binary
+*.m4a binary
