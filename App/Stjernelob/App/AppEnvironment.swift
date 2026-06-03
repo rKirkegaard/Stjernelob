@@ -29,6 +29,9 @@ final class AppEnvironment {
     /// Position til personlig sikkerhed (opt-in).
     let locationService = LocationService()
 
+    /// Gemmer en igangværende tur, så den kan genoptages efter app-luk.
+    let runStateStore = RunStateStore()
+
     /// WatchConnectivity (telefon-side). Aktiveres ved appstart.
     @ObservationIgnored private var phoneSync: PhoneSyncService?
 

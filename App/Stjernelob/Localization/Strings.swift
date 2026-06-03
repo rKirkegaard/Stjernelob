@@ -73,6 +73,11 @@ enum Strings {
             LocalizedStringResource("activeRun.intervalOfTotal", defaultValue: "Interval \(current) af \(total)")
         }
         static let elapsed = LocalizedStringResource("activeRun.elapsed", defaultValue: "Forløbet")
+        static let resumeTitle = LocalizedStringResource("activeRun.resumeTitle", defaultValue: "Genoptag din tur?")
+        static let resumeBody = LocalizedStringResource(
+            "activeRun.resumeBody", defaultValue: "Du har en tur i gang. Vil du fortsætte, hvor du slap?")
+        static let resumeYes = LocalizedStringResource("activeRun.resumeYes", defaultValue: "Genoptag")
+        static let discard = LocalizedStringResource("activeRun.discard", defaultValue: "Afslut turen")
         static let distance = LocalizedStringResource("activeRun.distance", defaultValue: "Distance")
         static let pace = LocalizedStringResource("activeRun.pace", defaultValue: "Tempo")
     }

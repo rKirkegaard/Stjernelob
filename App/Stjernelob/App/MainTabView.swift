@@ -7,6 +7,7 @@ struct MainTabView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var showPlanner = false
     @State private var runRequest: RunRequest?
+    @State private var resumableRecord: ActiveRunRecord?
 
     var body: some View {
         TabView {
@@ -52,6 +53,22 @@ struct MainTabView: View {
         .task {
             environment.activateWatchSync()
             environment.sendCurrentSessionToWatch()
+            if let record = environment.runStateStore.load(), record.isResumable(asOf: Date()) {
+                resumableRecord = record
+            }
+        }
+        .confirmationDialog(
+            Text(Strings.ActiveRun.resumeTitle),
+            isPresented: Binding(get: { resumableRecord != nil }, set: { if !$0 { resumableRecord = nil } }),
+            titleVisibility: .visible
+        ) {
+            Button { resumeSavedRun() } label: { Text(Strings.ActiveRun.resumeYes) }
+            Button(role: .destructive) {
+                environment.runStateStore.clear()
+                resumableRecord = nil
+            } label: { Text(Strings.ActiveRun.discard) }
+        } message: {
+            Text(Strings.ActiveRun.resumeBody)
         }
         .sheet(isPresented: $showPlanner) {
             WeekPlannerView(viewModel: WeekPlannerViewModel(
@@ -62,5 +79,16 @@ struct MainTabView: View {
         .fullScreenCover(item: $runRequest) { request in
             ActiveRunContainer(request: request, onClose: { runRequest = nil })
         }
+    }
+
+    private func resumeSavedRun() {
+        guard let record = resumableRecord else { return }
+        runRequest = RunRequest(
+            plan: record.plan,
+            programWeekId: record.programWeekId,
+            programPhase: record.programPhase,
+            resumeElapsed: record.elapsed(asOf: Date())
+        )
+        resumableRecord = nil
     }
 }

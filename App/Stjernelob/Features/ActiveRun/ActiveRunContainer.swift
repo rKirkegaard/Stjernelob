@@ -33,7 +33,8 @@ struct ActiveRunContainer: View {
             programWeekId: request.programWeekId,
             programPhase: request.programPhase,
             environment: environment,
-            feedback: feedback
+            feedback: feedback,
+            resumeElapsed: request.resumeElapsed
         )
     }
 }

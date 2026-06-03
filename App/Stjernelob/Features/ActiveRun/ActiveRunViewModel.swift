@@ -36,6 +36,12 @@ final class ActiveRunViewModel {
     private let feedback: WorkoutFeedbackCoordinator
     private let environment: AppEnvironment
     private let now: () -> Date
+    private let resumeElapsed: Duration?
+
+    // Vægur-tilstand til persistering, så turen kan genoptages efter app-luk.
+    private var recordStartDate = Date(timeIntervalSince1970: 0)
+    private var recordPausedAccumulated: Double = 0
+    private var recordPauseStart: Date?
 
     init(
         plan: WorkoutPlan,
@@ -43,6 +49,7 @@ final class ActiveRunViewModel {
         programPhase: ProgramPhase,
         environment: AppEnvironment,
         feedback: WorkoutFeedbackCoordinator,
+        resumeElapsed: Duration? = nil,
         now: @escaping () -> Date = { Date() }
     ) {
         self.plan = plan
@@ -50,6 +57,7 @@ final class ActiveRunViewModel {
         self.programPhase = programPhase
         self.environment = environment
         self.feedback = feedback
+        self.resumeElapsed = resumeElapsed
         self.now = now
         self.engine = IntervalEngine(plan: plan, clock: environment.clock)
         self.snapshot = IntervalEngine(plan: plan, clock: environment.clock).snapshot()
@@ -61,7 +69,18 @@ final class ActiveRunViewModel {
         if environment.settings.livePositionEnabled {
             environment.locationService.startSharing()
         }
-        dispatch(engine.start())
+
+        if let resumeElapsed {
+            dispatch(engine.resume(atElapsed: resumeElapsed))
+            recordStartDate = now().addingTimeInterval(-Double(resumeElapsed.components.seconds))
+        } else {
+            dispatch(engine.start())
+            recordStartDate = now()
+        }
+        recordPausedAccumulated = 0
+        recordPauseStart = nil
+        persistRecord()
+
         snapshot = engine.snapshot()
         liveActivity.start(
             planTitle: String(localized: Strings.App.name),
@@ -87,14 +106,34 @@ final class ActiveRunViewModel {
 
     func pause() {
         dispatch(engine.pause())
-        if engine.status == .paused { phase = .paused }
+        if engine.status == .paused {
+            phase = .paused
+            recordPauseStart = now()
+            persistRecord()
+        }
         snapshot = engine.snapshot()
     }
 
     func resume() {
+        if let pauseStart = recordPauseStart {
+            recordPausedAccumulated += now().timeIntervalSince(pauseStart)
+            recordPauseStart = nil
+        }
         engine.resume()
         phase = .running
+        persistRecord()
         snapshot = engine.snapshot()
+    }
+
+    private func persistRecord() {
+        environment.runStateStore.save(ActiveRunRecord(
+            plan: plan,
+            programWeekId: programWeekId,
+            programPhase: programPhase,
+            startDate: recordStartDate,
+            pausedAccumulatedSeconds: recordPausedAccumulated,
+            pauseStartDate: recordPauseStart
+        ))
     }
 
     /// Afbryd turen før tid — gemmer det gennemførte (stjerner gives for det,
@@ -127,6 +166,7 @@ final class ActiveRunViewModel {
         distanceTracker.stop()
         distanceMeters = distanceTracker.distanceMeters
         liveActivity.end()
+        environment.runStateStore.clear() // turen er slut — intet at genoptage
         phase = .finished(summary)
     }
 

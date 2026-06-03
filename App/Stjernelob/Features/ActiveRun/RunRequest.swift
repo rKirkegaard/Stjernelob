@@ -8,4 +8,6 @@ struct RunRequest: Identifiable {
     let plan: WorkoutPlan
     let programWeekId: Int
     let programPhase: ProgramPhase
+    /// Sat, hvis turen genoptages efter en afbrydelse (forløbet tid at starte ved).
+    var resumeElapsed: Duration? = nil
 }
