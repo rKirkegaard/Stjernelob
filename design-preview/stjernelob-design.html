@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stjerneløb — design-preview</title>
+<style>
+  :root {
+    --brand: #735CDB;
+    --accent: #33B39E;
+    --star: #FAC22E;
+    --restful: #5C9EDB;
+    --running: #E6734D;
+    --walking: #4DA8C7;
+    --ink: #1c1c22;
+    --muted: #6b6b78;
+    --card: rgba(255,255,255,0.86);
+    --line: rgba(20,20,30,0.07);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "SF Pro Text", "SF Pro", "Segoe UI", Roboto, system-ui, sans-serif;
+    color: var(--ink);
+    background: #eceaf4;
+    -webkit-font-smoothing: antialiased;
+  }
+  header.page {
+    padding: 32px 24px 8px;
+    text-align: center;
+  }
+  header.page h1 { margin: 0 0 4px; font-size: 26px; font-weight: 800; }
+  header.page p { margin: 0; color: var(--muted); font-size: 14px; }
+  .legend { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:16px 0 8px; }
+  .legend span { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+  .swatch { width:14px; height:14px; border-radius:4px; display:inline-block; }
+
+  .gallery {
+    display: flex; flex-wrap: wrap; gap: 36px;
+    justify-content: center; align-items: flex-start;
+    padding: 24px 24px 64px;
+  }
+  .device { width: 300px; }
+  .device > .label { text-align:center; font-size:13px; font-weight:600; color:var(--muted); margin-bottom:10px; }
+
+  .phone {
+    width: 300px; height: 640px;
+    background: #fff; border-radius: 44px;
+    box-shadow: 0 18px 50px rgba(60,40,120,0.22), 0 2px 8px rgba(0,0,0,0.08);
+    border: 10px solid #15131f; overflow: hidden; position: relative;
+  }
+  .island { position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:96px; height:26px; background:#15131f; border-radius:16px; z-index:5; }
+  .screen {
+    position:absolute; inset:0; padding: 44px 16px 16px;
+    background: linear-gradient(150deg, rgba(115,92,219,0.16), rgba(51,179,158,0.06));
+    overflow-y: auto;
+  }
+  .navtitle { font-size: 22px; font-weight: 800; margin: 4px 4px 14px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 14px; margin-bottom: 14px;
+    backdrop-filter: blur(6px);
+  }
+  .muted { color: var(--muted); }
+  .small { font-size: 12px; }
+  .center { text-align:center; }
+
+  .btn {
+    display:block; width:100%; text-align:center; border:none; cursor:default;
+    background: var(--brand); color:#fff; font-weight:700; font-size:15px;
+    padding: 13px; border-radius: 14px; margin-top: 6px;
+  }
+  .btn.secondary { background: rgba(115,92,219,0.12); color: var(--brand); }
+  .btn.danger { background: rgba(230,77,77,0.14); color:#c0392b; }
+
+  .row { display:flex; align-items:center; gap:10px; padding:8px 0; }
+  .row + .row { border-top: 1px solid var(--line); }
+  .row .grow { flex:1; }
+  .row .val { color:var(--muted); font-variant-numeric: tabular-nums; }
+  .ico { width:26px; text-align:center; font-size:18px; }
+
+  .chips { display:flex; gap:10px; margin-bottom:14px; }
+  .chip { flex:1; background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:12px 8px; text-align:center; }
+  .chip .big { font-size:20px; }
+  .chip .lab { font-size:11px; color:var(--muted); margin-top:2px; }
+
+  /* hero */
+  .hero { display:flex; align-items:center; gap:14px; }
+  .mascot { width:64px; height:64px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; font-size:30px; flex:none; }
+  .bar { height:8px; border-radius:6px; background:rgba(20,20,30,0.08); overflow:hidden; margin:6px 0 4px; }
+  .bar > i { display:block; height:100%; background:var(--brand); border-radius:6px; }
+
+  .seg { display:flex; background:rgba(20,20,30,0.06); border-radius:10px; padding:3px; font-size:13px; }
+  .seg > div { flex:1; text-align:center; padding:7px; border-radius:8px; }
+  .seg > div.on { background:#fff; font-weight:700; box-shadow:0 1px 3px rgba(0,0,0,0.12); }
+
+  .toggle { width:42px; height:26px; border-radius:13px; background:var(--accent); position:relative; flex:none; }
+  .toggle.off { background:rgba(20,20,30,0.18); }
+  .toggle::after { content:""; position:absolute; top:3px; left:19px; width:20px; height:20px;
+    border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,0.3); }
+  .toggle.off::after { left:3px; }
+
+  .tag { font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px; }
+  .tag.done { background:rgba(51,179,158,0.2); color:#1d7d6c; }
+  .tag.part { background:rgba(77,168,199,0.2); color:#2b6d82; }
+
+  .section-h { font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase;
+    letter-spacing:0.4px; margin:6px 4px; }
+
+  /* active run ring */
+  .ring-wrap { display:flex; justify-content:center; margin:8px 0 14px; }
+  .metrics { display:flex; justify-content:space-around; color:var(--muted); font-size:13px; }
+  .metrics b { color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums; }
+
+  /* badges grid */
+  .grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  .badge { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 6px;
+    text-align:center; }
+  .badge .b-ico { font-size:26px; }
+  .badge .b-lab { font-size:10px; margin-top:4px; }
+  .badge.locked { opacity:0.45; }
+
+  /* calendar */
+  .cal { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+  .cal .d { aspect-ratio:1; border-radius:8px; background:rgba(20,20,30,0.05); display:flex;
+    align-items:center; justify-content:center; font-size:11px; position:relative; }
+  .cal .d.run { background:rgba(115,92,219,0.22); }
+  .cal .d.run::after { content:""; position:absolute; bottom:3px; width:5px; height:5px; border-radius:50%;
+    background:var(--star); }
+
+  /* confetti */
+  .confetti i { position:absolute; width:8px; height:8px; border-radius:2px; top:-10px; }
+  .interval-pill { display:flex; align-items:center; gap:10px; padding:7px 0; }
+  .interval-pill + .interval-pill { border-top:1px solid var(--line); }
+  .dur { margin-left:auto; color:var(--muted); font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+  <header class="page">
+    <h1>Stjerneløb — design-preview</h1>
+    <p>Statisk browser-gengivelse af SwiftUI-designet (farver, layout, hierarki). Ikke den rigtige app — til at se og vurdere designet før implementering.</p>
+    <div class="legend">
+      <span><i class="swatch" style="background:#735CDB"></i>Brand</span>
+      <span><i class="swatch" style="background:#33B39E"></i>Accent</span>
+      <span><i class="swatch" style="background:#FAC22E"></i>Stjerne</span>
+      <span><i class="swatch" style="background:#5C9EDB"></i>Hvile</span>
+      <span><i class="swatch" style="background:#E6734D"></i>Løb</span>
+      <span><i class="swatch" style="background:#4DA8C7"></i>Gå</span>
+    </div>
+  </header>
+
+  <div class="gallery">
+
+    <!-- ONBOARDING -->
+    <div class="device">
+      <div class="label">Onboarding</div>
+      <div class="phone"><div class="island"></div><div class="screen">
+        <div class="navtitle">Velkommen til Stjerneløb</div>
+        <div class="card muted small">Vi tager den helt roligt og bygger dig op lidt ad gangen. Det handler om at have det sjovt og kunne mere — ikke om fart eller distance.</div>
+        <div class="section-h">Har du løbet før?</div>
+        <div class="card"><div class="seg"><div class="on">Nej, jeg er helt ny</div><div>Lidt</div></div></div>
+        <div class="section-h">Ture om ugen</div>
+        <div class="card"><div class="row"><span class="grow">3 ture</span><span class="val">−   +</span></div>
+          <div class="small muted" style="margin-top:6px">At vælge få ture i en travl uge er et helt fint valg.</div></div>
+        <div class="section-h">Lige et par trygheds-spørgsmål</div>
+        <div class="card">
+          <div class="row"><span class="grow">Smerter eller skade nu?</span><span class="toggle off"></span></div>
+          <div class="row"><span class="grow">Hjerte-/lungesygdom?</span><span class="toggle off"></span></div>
+        </div>
+        <button class="btn">Kom i gang</button>
+      </div></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="device">
+      <div class="label">Hjem / dashboard</div>
+      <div class="phone"><div class="island"></div><div class="screen">
+        <div class="navtitle">Stjerneløb</div>
+        <div class="card hero">
+          <div class="mascot" style="background:rgba(51,179,158,0.16);color:#33B39E">🚶</div>
+          <div style="flex:1">
+            <div style="font-weight:800;font-size:18px">Niveau 2</div>
+            <div class="bar"><i style="width:49%"></i></div>
+            <div class="small muted">17 / 35 point til næste niveau</div>
+          </div>
+        </div>
+        <div class="chips">
+          <div class="chip"><div class="big">⭐</div><div>42 stjerner</div><div class="lab"></div></div>
+          <div class="chip"><div class="big">🔥</div><div>3 ugers stime</div><div class="lab"></div></div>
+        </div>
+        <div class="card">
+          <div style="font-weight:700;margin-bottom:6px">Din næste tur</div>
+          <div class="interval-pill"><span style="color:var(--walking)">🚶</span> Opvarmning <span class="dur">5 min</span></div>
+          <div class="interval-pill"><span style="color:var(--running)">🏃</span> Løb <span class="dur">2 min</span></div>
+          <div class="interval-pill"><span style="color:var(--walking)">🚶</span> Gå <span class="dur">1 min</span></div>
+          <div class="interval-pill"><span style="color:var(--walking)">🚶</span> Nedkøling <span class="dur">5 min</span></div>
+          <div class="small muted" style="margin-top:6px;border-top:1px solid var(--line);padding-top:6px">6 løbeintervaller · i alt 28 min</div>
+          <button class="btn" style="margin-top:10px">Start turen</button>
+        </div>
+        <button class="btn secondary">📅 Tilpas ugen</button>
+      </div></div>
+    </div>
+
+    <!-- ACTIVE RUN -->
+    <div class="device">
+      <div class="label">Under turen</div>
+      <div class="phone"><div class="island"></div><div class="screen" style="display:flex;flex-direction:column">
+        <div class="center muted" style="margin-top:10px;font-weight:600">Interval 3 af 6</div>
+        <div class="center" style="font-size:40px;margin:4px">🏃</div>
+        <div class="center" style="color:var(--running);font-weight:800;font-size:22px">Løb</div>
+        <div class="ring-wrap">
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="88" fill="none" stroke="rgba(230,115,77,0.15)" stroke-width="14"/>
+            <circle cx="100" cy="100" r="88" fill="none" stroke="#E6734D" stroke-width="14" stroke-linecap="round"
+              stroke-dasharray="553" stroke-dashoffset="180" transform="rotate(-90 100 100)"/>
+            <text x="100" y="112" text-anchor="middle" font-size="46" font-weight="800" fill="#1c1c22">1:18</text>
+          </svg>
+        </div>
+        <div class="metrics">
+          <div>🕐 <b>12:30</b></div><div>📏 <b>2,10 km</b></div><div>⏱ <b>5:58 /km</b></div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="display:flex;gap:12px">
+          <button class="btn danger" style="flex:1">⏹ Stop</button>
+          <button class="btn" style="flex:1">⏸ Pause</button>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="device">
+      <div class="label">Resumé / fejring</div>
+      <div class="phone"><div class="island"></div><div class="screen center">
+        <div class="confetti">
+          <i style="left:30px;background:#735CDB"></i><i style="left:80px;background:#FAC22E;top:30px"></i>
+          <i style="left:140px;background:#33B39E"></i><i style="left:200px;background:#E6734D;top:24px"></i>
+          <i style="left:240px;background:#5C9EDB"></i><i style="left:110px;background:#FAC22E;top:60px"></i>
+        </div>
+        <div style="font-size:30px;font-weight:800;margin-top:30px">Flot klaret!</div>
+        <div style="font-size:22px;font-weight:800;margin:14px 0;color:#caa01f">⭐ 13 stjerner</div>
+        <div class="muted small" style="padding:0 16px">Du gennemførte hele turen — sådan!</div>
+        <div class="card" style="margin-top:18px;text-align:left">
+          <div style="font-weight:700;text-align:center;margin-bottom:8px">Hvordan føltes det?</div>
+          <div class="bar"><i style="width:45%;background:var(--brand)"></i></div>
+          <div class="row small muted"><span class="grow">Let</span><span>Hårdt</span></div>
+        </div>
+        <button class="btn">Luk</button>
+      </div></div>
+    </div>
+
+    <!-- REST DAY -->
+    <div class="device">
+      <div class="label">Hviledag</div>
+      <div class="phone"><div class="island"></div><div class="screen center" style="display:flex;flex-direction:column;justify-content:center">
+        <div style="font-size:76px">🌙</div>
+        <div style="font-size:26px;font-weight:800;margin-top:10px">Hviledag</div>
+        <div class="muted" style="padding:0 22px;margin-top:10px">Hviledag i dag — din krop bliver stærkere imens. Vi ses i morgen!</div>
+      </div></div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="device">
+      <div class="label">Fremgang / historik</div>
+      <div class="phone"><div class="island"></div><div class="screen">
+        <div class="navtitle">Fremgang</div>
+        <div class="card"><b>12 gennemførte ture</b></div>
+        <div class="card">
+          <div class="cal">
+            <div class="d">M</div><div class="d">T</div><div class="d">O</div><div class="d">T</div><div class="d">F</div><div class="d">L</div><div class="d">S</div>
+            <div class="d run">2</div><div class="d">3</div><div class="d run">4</div><div class="d">5</div><div class="d run">6</div><div class="d">7</div><div class="d">8</div>
+            <div class="d run">9</div><div class="d">10</div><div class="d run">11</div><div class="d">12</div><div class="d run">13</div><div class="d">14</div><div class="d">15</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="row"><span class="grow"><b>3. jun</b><div class="small muted">Uge 3 i forløbet · <span class="tag done">Gennemført</span></div></span><span style="color:#caa01f">⭐ 13</span></div>
+          <div class="row"><span class="grow"><b>1. jun</b><div class="small muted">Uge 3 i forløbet · <span class="tag part">Påbegyndt</span></div></span><span style="color:#caa01f">⭐ 7</span></div>
+          <div class="row"><span class="grow"><b>29. maj</b><div class="small muted">Uge 2 i forløbet · <span class="tag done">Gennemført</span></div></span><span style="color:#caa01f">⭐ 12</span></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- BADGES -->
+    <div class="device">
+      <div class="label">Samling / badges</div>
+      <div class="phone"><div class="island"></div><div class="screen">
+        <div class="navtitle">Samling</div>
+        <div class="card hero">
+          <div class="mascot" style="background:rgba(51,179,158,0.16)">🏅</div>
+          <div style="flex:1"><div style="font-weight:800">Niveau 2</div>
+            <div class="bar"><i style="width:49%"></i></div>
+            <div class="small muted">17 / 35 point til næste niveau</div></div>
+        </div>
+        <div class="section-h">Optjente mærker</div>
+        <div class="grid" style="margin-bottom:14px">
+          <div class="badge"><div class="b-ico">🏃</div><div class="b-lab">Første tur</div></div>
+          <div class="badge"><div class="b-ico">🔥</div><div class="b-lab">Tre ugers stime</div></div>
+          <div class="badge"><div class="b-ico">⏱</div><div class="b-lab">Fem min i træk</div></div>
+        </div>
+        <div class="section-h">Endnu ikke låst op</div>
+        <div class="grid">
+          <div class="badge locked"><div class="b-ico">🔟</div><div class="b-lab">Ti ture</div></div>
+          <div class="badge locked"><div class="b-ico">🌅</div><div class="b-lab">Morgenfugl</div></div>
+          <div class="badge locked"><div class="b-ico">🏵</div><div class="b-lab">Grundforløb</div></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="device">
+      <div class="label">Indstillinger</div>
+      <div class="phone"><div class="island"></div><div class="screen">
+        <div class="navtitle">Indstillinger</div>
+        <div class="section-h">Rolle</div>
+        <div class="card"><div class="seg"><div class="on">Løber</div><div>Forælder/voksen</div></div></div>
+        <div class="section-h">Lyd, stemme og haptik</div>
+        <div class="card">
+          <div class="row"><span class="grow">Stemmecoach</span><span class="toggle"></span></div>
+          <div class="row"><span class="grow">Lyde</span><span class="toggle"></span></div>
+          <div class="row"><span class="grow">Vibration</span><span class="toggle"></span></div>
+        </div>
+        <div class="section-h">Forælder-deling</div>
+        <div class="card">
+          <div class="row"><span class="grow">Del min stime</span><span class="toggle off"></span></div>
+          <div class="row"><span class="grow">Del mine milepæle</span><span class="toggle off"></span></div>
+          <div class="row"><span class="grow">👁 Se hvad din forælder ser</span><span class="val">›</span></div>
+        </div>
+        <div class="section-h">Privatliv og data</div>
+        <div class="card">
+          <div class="row"><span class="grow">⬆️ Eksportér mine data</span></div>
+          <div class="row"><span class="grow" style="color:#c0392b">Slet alle mine data</span></div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</body>
+</html>
