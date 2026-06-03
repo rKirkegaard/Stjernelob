@@ -47,6 +47,21 @@ struct SettingsView: View {
             }
 
             Section {
+                Toggle(isOn: $settings.shareStreak) { Text(Strings.Sharing.shareStreak) }
+                Toggle(isOn: $settings.shareWorkouts) { Text(Strings.Sharing.shareWorkouts) }
+                Toggle(isOn: $settings.shareMilestones) { Text(Strings.Sharing.shareMilestones) }
+                NavigationLink {
+                    ParentDashboardView()
+                } label: {
+                    Label { Text(Strings.Sharing.seeWhatParentSees) } icon: { Image(systemName: "eye") }
+                }
+            } header: {
+                Text(Strings.Sharing.section)
+            } footer: {
+                Text(Strings.Sharing.note)
+            }
+
+            Section {
                 Toggle(isOn: $settings.healthKitEnabled) { Text(Strings.Settings.healthKit) }
                     .disabled(!environment.healthKit.isAvailable)
             } header: {

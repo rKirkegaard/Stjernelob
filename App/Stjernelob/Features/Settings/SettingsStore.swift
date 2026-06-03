@@ -12,6 +12,10 @@ final class SettingsStore {
     var reminderHour: Int { didSet { defaults.set(reminderHour, forKey: Keys.reminderHour) } }
     var streakFreezeEnabled: Bool { didSet { defaults.set(streakFreezeEnabled, forKey: Keys.streakFreeze) } }
     var healthKitEnabled: Bool { didSet { defaults.set(healthKitEnabled, forKey: Keys.healthKit) } }
+    // Forælder-deling — alt opt-in (privacy by default, afsnit 11.2/14).
+    var shareStreak: Bool { didSet { defaults.set(shareStreak, forKey: Keys.shareStreak) } }
+    var shareWorkouts: Bool { didSet { defaults.set(shareWorkouts, forKey: Keys.shareWorkouts) } }
+    var shareMilestones: Bool { didSet { defaults.set(shareMilestones, forKey: Keys.shareMilestones) } }
 
     private let defaults: UserDefaults
 
@@ -21,6 +25,9 @@ final class SettingsStore {
         static let reminderHour = "settings.reminderHour"
         static let streakFreeze = "settings.streakFreezeEnabled"
         static let healthKit = "settings.healthKitEnabled"
+        static let shareStreak = "settings.shareStreak"
+        static let shareWorkouts = "settings.shareWorkouts"
+        static let shareMilestones = "settings.shareMilestones"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -36,6 +43,9 @@ final class SettingsStore {
         reminderHour = defaults.object(forKey: Keys.reminderHour) as? Int ?? 17
         streakFreezeEnabled = defaults.object(forKey: Keys.streakFreeze) as? Bool ?? true
         healthKitEnabled = defaults.object(forKey: Keys.healthKit) as? Bool ?? false
+        shareStreak = defaults.object(forKey: Keys.shareStreak) as? Bool ?? false
+        shareWorkouts = defaults.object(forKey: Keys.shareWorkouts) as? Bool ?? false
+        shareMilestones = defaults.object(forKey: Keys.shareMilestones) as? Bool ?? false
     }
 
     private func persistFeedback() {

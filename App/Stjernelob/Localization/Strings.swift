@@ -194,6 +194,32 @@ enum Strings {
             "settings.privacyNote", defaultValue: "Dine data er dine. De bliver på din enhed og i din egen iCloud — og deles aldrig uden dit valg.")
     }
 
+    enum Sharing {
+        static let section = LocalizedStringResource("sharing.section", defaultValue: "Forælder-deling")
+        static let shareStreak = LocalizedStringResource("sharing.shareStreak", defaultValue: "Del min stime")
+        static let shareWorkouts = LocalizedStringResource("sharing.shareWorkouts", defaultValue: "Del mine ture")
+        static let shareMilestones = LocalizedStringResource("sharing.shareMilestones", defaultValue: "Del mine milepæle")
+        static let note = LocalizedStringResource(
+            "sharing.note", defaultValue: "Du bestemmer selv, hvad en voksen kan se — og kan slå det fra når som helst. Ingen kan følge dig i det skjulte.")
+        static let seeWhatParentSees = LocalizedStringResource(
+            "sharing.seeWhatParentSees", defaultValue: "Se præcis, hvad din forælder ser")
+    }
+
+    enum Parent {
+        static let title = LocalizedStringResource("parent.title", defaultValue: "Hvad din forælder ser")
+        static let nothingShared = LocalizedStringResource(
+            "parent.nothingShared", defaultValue: "Lige nu deler du ikke noget. Det er helt op til dig.")
+        static func streak(_ weeks: Int) -> LocalizedStringResource {
+            LocalizedStringResource("parent.streak", defaultValue: "\(weeks) ugers stime")
+        }
+        static func completed(_ count: Int) -> LocalizedStringResource {
+            LocalizedStringResource("parent.completed", defaultValue: "\(count) gennemførte ture")
+        }
+        static let milestonesTitle = LocalizedStringResource("parent.milestones", defaultValue: "Milepæle")
+        static let supportNote = LocalizedStringResource(
+            "parent.supportNote", defaultValue: "Forælderen kan heppe og fejre med dig — men kan aldrig ændre dit program eller presse dig.")
+    }
+
     enum Dashboard {
         static let weeksRun = LocalizedStringResource("dashboard.weeksRun", defaultValue: "Ugens tur")
     }
