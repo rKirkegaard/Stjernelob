@@ -15,9 +15,11 @@ final class AppEnvironment {
     let store: SwiftDataStore
 
     init(clock: any MonotonicClock = SystemMonotonicClock(),
-         store: SwiftDataStore = SwiftDataStore.makeDefault()) {
+         store: SwiftDataStore? = nil) {
         self.clock = clock
-        self.store = store
+        // makeDefault() er @MainActor; kaldes her i init-kroppen (MainActor-
+        // isoleret) frem for som default-argument (nonisolated kontekst).
+        self.store = store ?? SwiftDataStore.makeDefault()
     }
 
     /// Bekvemmelig in-memory-opsætning til previews.

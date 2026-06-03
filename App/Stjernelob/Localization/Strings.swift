@@ -23,6 +23,27 @@ enum Strings {
         static let coolDown = LocalizedStringResource("interval.coolDown", defaultValue: "Nedkøling")
     }
 
+    /// Stemmecoachens replikker (afsnit 4.2). Varme, korte, opmuntrende — aldrig
+    /// pres eller fart-fokus.
+    enum Coaching {
+        static func runStart(duration: String) -> LocalizedStringResource {
+            LocalizedStringResource("coaching.runStart", defaultValue: "Løb nu i \(duration)")
+        }
+        static func walkStart(duration: String) -> LocalizedStringResource {
+            LocalizedStringResource("coaching.walkStart", defaultValue: "Godt klaret — gå roligt i \(duration)")
+        }
+        static let warmUpStart = LocalizedStringResource(
+            "coaching.warmUpStart", defaultValue: "Vi varmer op med en rask gåtur")
+        static let coolDownStart = LocalizedStringResource(
+            "coaching.coolDownStart", defaultValue: "Flot — så køler vi af med rolig gang")
+        static let halfway = LocalizedStringResource(
+            "coaching.halfway", defaultValue: "Du er halvvejs — flot!")
+        static let finished = LocalizedStringResource(
+            "coaching.finished", defaultValue: "Fantastisk — du gennemførte hele turen!")
+        static let talkTest = LocalizedStringResource(
+            "coaching.talkTest", defaultValue: "Husk: kan du ikke tale imens, så sæt lidt farten ned")
+    }
+
     enum Units {
         /// "3 løbeintervaller · i alt 18 min"
         static func sessionSummary(runCount: Int, total: String) -> LocalizedStringResource {
