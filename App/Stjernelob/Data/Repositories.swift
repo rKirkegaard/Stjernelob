@@ -30,6 +30,8 @@ protocol WorkoutRepository {
     func all() throws -> [CompletedWorkoutDTO]
     func recent(limit: Int) throws -> [CompletedWorkoutDTO]
     func count() throws -> Int
+    /// Knyt et billede (allerede gemt som fil) til en eksisterende tur.
+    func addPhoto(_ photo: WorkoutPhotoDTO, toWorkoutWithId id: UUID) throws
 }
 
 @MainActor

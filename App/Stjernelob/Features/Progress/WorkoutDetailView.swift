@@ -1,10 +1,17 @@
 import SwiftUI
+import PhotosUI
+import UIKit
 import StjernelobCore
 
-/// Detaljer for én gennemført tur (spec afsnit 6.4): dato, trin i forløbet,
-/// hvad hun lavede, hvordan det føltes, stjerner og billeder.
+/// Detaljer for én gennemført tur (spec afsnit 6.4 + 4.5): dato, trin i forløbet,
+/// hvad hun lavede, hvordan det føltes, stjerner — og billedarkivet for turen.
 struct WorkoutDetailView: View {
-    let workout: CompletedWorkoutDTO
+    @State var viewModel: WorkoutDetailViewModel
+    @State private var pickerItem: PhotosPickerItem?
+
+    private let photoColumns = [GridItem(.adaptive(minimum: 100), spacing: Theme.Spacing.small)]
+
+    private var workout: CompletedWorkoutDTO { viewModel.workout }
 
     var body: some View {
         List {
@@ -21,19 +28,51 @@ struct WorkoutDetailView: View {
 
             Section {
                 if workout.photos.isEmpty {
-                    Text(Strings.Progress.noPhotos)
-                        .foregroundStyle(.secondary)
+                    Text(Strings.Progress.noPhotos).foregroundStyle(.secondary)
                 } else {
-                    // Billedindlæsning fra fil-laget tilføjes med billedarkivet.
-                    ForEach(workout.photos) { photo in
-                        Text(photo.caption ?? photo.fileName)
+                    LazyVGrid(columns: photoColumns, spacing: Theme.Spacing.small) {
+                        ForEach(workout.photos) { photo in
+                            photoThumbnail(photo)
+                        }
                     }
+                }
+
+                PhotosPicker(selection: $pickerItem, matching: .images) {
+                    Label { Text(Strings.Progress.addPhoto) } icon: { Image(systemName: "camera") }
                 }
             } header: {
                 Text(Strings.Progress.photosLabel)
+            } footer: {
+                Text(Strings.Progress.photoHint)
             }
         }
         .navigationTitle(Text(workout.date.formatted(date: .abbreviated, time: .shortened)))
+        .onAppear { viewModel.load() }
+        .onChange(of: pickerItem) { _, newItem in
+            guard let newItem else { return }
+            Task { @MainActor in
+                if let data = try? await newItem.loadTransferable(type: Data.self) {
+                    viewModel.addPhoto(data: data)
+                }
+                pickerItem = nil
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func photoThumbnail(_ photo: WorkoutPhotoDTO) -> some View {
+        if let data = viewModel.imageData[photo.id], let uiImage = UIImage(data: data) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 100, height: 100)
+                .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.button))
+        } else {
+            RoundedRectangle(cornerRadius: Theme.Radius.button)
+                .fill(Color.secondary.opacity(0.15))
+                .frame(width: 100, height: 100)
+                .overlay { Image(systemName: "photo") }
+        }
     }
 
     private func row(_ label: LocalizedStringResource, value: String) -> some View {

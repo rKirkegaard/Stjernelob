@@ -121,6 +121,20 @@ extension SwiftDataStore: WorkoutRepository {
     func count() throws -> Int {
         try context.fetchCount(FetchDescriptor<CompletedWorkoutEntity>())
     }
+
+    func addPhoto(_ photo: WorkoutPhotoDTO, toWorkoutWithId id: UUID) throws {
+        let descriptor = FetchDescriptor<CompletedWorkoutEntity>(
+            predicate: #Predicate { $0.id == id }
+        )
+        guard let workout = try context.fetch(descriptor).first else { return }
+        let entity = WorkoutPhotoEntity(
+            id: photo.id, fileName: photo.fileName,
+            caption: photo.caption, createdAt: photo.createdAt
+        )
+        entity.workout = workout
+        context.insert(entity)
+        try context.save()
+    }
 }
 
 // MARK: - WeeklyPlanRepository

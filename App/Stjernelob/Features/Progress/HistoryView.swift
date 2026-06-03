@@ -5,6 +5,7 @@ import StjernelobCore
 struct HistoryView: View {
     @State var viewModel: HistoryViewModel
     @State private var showCalendar = false
+    @Environment(AppEnvironment.self) private var environment
 
     var body: some View {
         Group {
@@ -48,7 +49,9 @@ struct HistoryView: View {
                 }
                 ForEach(viewModel.workouts) { workout in
                     NavigationLink {
-                        WorkoutDetailView(workout: workout)
+                        WorkoutDetailView(viewModel: WorkoutDetailViewModel(
+                            workout: workout, environment: environment
+                        ))
                     } label: {
                         row(workout)
                     }

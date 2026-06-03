@@ -133,6 +133,9 @@ enum Strings {
         static let effortLabel = LocalizedStringResource("progress.effort", defaultValue: "Sådan føltes det")
         static let photosLabel = LocalizedStringResource("progress.photos", defaultValue: "Billeder fra turen")
         static let noPhotos = LocalizedStringResource("progress.noPhotos", defaultValue: "Ingen billeder fra denne tur endnu.")
+        static let addPhoto = LocalizedStringResource("progress.addPhoto", defaultValue: "Tilføj et billede")
+        static let photoHint = LocalizedStringResource(
+            "progress.photoHint", defaultValue: "Fang stedet eller øjeblikket — det er helt frivilligt.")
     }
 
     enum Badges {

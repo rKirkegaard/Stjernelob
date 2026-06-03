@@ -14,12 +14,17 @@ final class AppEnvironment {
     /// Lokal datalagring (kilden til sandhed, offline-først).
     let store: SwiftDataStore
 
+    /// Billedfiler på disk (med Data Protection).
+    let photoStore: any PhotoStore
+
     init(clock: any MonotonicClock = SystemMonotonicClock(),
-         store: SwiftDataStore? = nil) {
+         store: SwiftDataStore? = nil,
+         photoStore: any PhotoStore = FilePhotoStore()) {
         self.clock = clock
         // makeDefault() er @MainActor; kaldes her i init-kroppen (MainActor-
         // isoleret) frem for som default-argument (nonisolated kontekst).
         self.store = store ?? SwiftDataStore.makeDefault()
+        self.photoStore = photoStore
     }
 
     /// Bekvemmelig in-memory-opsætning til previews.
