@@ -21,6 +21,19 @@ jobs:
         working-directory: StjernelobCore
         run: swift test --enable-code-coverage
 
+  # Rapporterer formaterings-afvigelser (ikke-blokerende, indtil koden er kørt
+  # gennem swiftformat på en Mac — den kan ikke køre på Windows-udviklingsmaskinen).
+  format-lint:
+    name: SwiftFormat (rapport)
+    runs-on: macos-15
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Installer SwiftFormat
+        run: brew install swiftformat
+      - name: Lint
+        run: swiftformat --lint .
+
   # iOS-appen genereres med XcodeGen og bygges for iOS-simulator.
   ios-build:
     name: Byg iOS-app

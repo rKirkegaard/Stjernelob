@@ -1,0 +1,18 @@
+# SwiftFormat-konfiguration for Stjerneløb.
+# Afspejler .claude/rules/swift-style.md. Kører som hook (se .claude/settings.json)
+# og håndhæves i CI (format-lint-jobbet).
+
+--swiftversion 5.9
+--indent 4
+--maxwidth 100
+--self remove
+--importgrouping testable-bottom
+--commas always
+--trimwhitespace always
+--ranges no-space
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+
+# Undgå at røre genererede/eksterne mapper.
+--exclude .build,DerivedData,**/*.xcodeproj

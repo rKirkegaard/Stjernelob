@@ -29,6 +29,20 @@ final class AppEnvironment {
     /// Position til personlig sikkerhed (opt-in).
     let locationService = LocationService()
 
+    /// WatchConnectivity (telefon-side). Aktiveres ved appstart.
+    @ObservationIgnored private var phoneSync: PhoneSyncService?
+
+    /// Aktivér ur-synk (kald én gang ved appstart).
+    func activateWatchSync() {
+        guard phoneSync == nil else { return }
+        phoneSync = PhoneSyncService(environment: self)
+    }
+
+    /// Send den aktuelle uges tur til uret.
+    func sendCurrentSessionToWatch() {
+        phoneSync?.sendCurrentSession()
+    }
+
     init(clock: any MonotonicClock = SystemMonotonicClock(),
          store: SwiftDataStore? = nil,
          photoStore: any PhotoStore = FilePhotoStore(),

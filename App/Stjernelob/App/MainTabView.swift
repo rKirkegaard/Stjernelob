@@ -49,10 +49,14 @@ struct MainTabView: View {
                 Label { Text(Strings.Settings.title) } icon: { Image(systemName: "gearshape.fill") }
             }
         }
+        .task {
+            environment.activateWatchSync()
+            environment.sendCurrentSessionToWatch()
+        }
         .sheet(isPresented: $showPlanner) {
             WeekPlannerView(viewModel: WeekPlannerViewModel(
                 environment: environment,
-                onSaved: {}
+                onSaved: { environment.sendCurrentSessionToWatch() }
             ))
         }
         .fullScreenCover(item: $runRequest) { request in
