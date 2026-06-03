@@ -11,6 +11,7 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Theme.Spacing.large) {
+                heroCard
                 statsRow
 
                 if viewModel.isRestDay {
@@ -27,20 +28,40 @@ struct HomeView: View {
                     } icon: {
                         Image(systemName: "calendar")
                     }
+                    .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
             }
             .padding(Theme.Spacing.medium)
         }
+        .background(Theme.Colors.screenGradient.ignoresSafeArea())
         .navigationTitle(Text(Strings.App.name))
         .onAppear { viewModel.load() }
+    }
+
+    private var heroCard: some View {
+        HStack(spacing: Theme.Spacing.large) {
+            MascotView(level: viewModel.level)
+            VStack(alignment: .leading, spacing: Theme.Spacing.small) {
+                Text(Strings.Home.level(viewModel.level))
+                    .font(.title3.weight(.bold))
+                ProgressView(value: viewModel.levelProgress.fraction)
+                    .tint(Theme.Colors.brand)
+                if let span = viewModel.levelProgress.pointsForLevel {
+                    Text(Strings.Badges.levelProgress(into: viewModel.levelProgress.pointsIntoLevel, span: span))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .card()
     }
 
     private var statsRow: some View {
         HStack(spacing: Theme.Spacing.medium) {
             stat(systemImage: "star.fill", tint: Theme.Colors.star, text: Text(Strings.Home.starsTotal(viewModel.totalStars)))
             stat(systemImage: "flame.fill", tint: Theme.Colors.running, text: Text(Strings.Home.streak(weeks: viewModel.streakWeeks)))
-            stat(systemImage: "rosette", tint: Theme.Colors.brand, text: Text(Strings.Home.level(viewModel.level)))
         }
     }
 

@@ -16,6 +16,7 @@ final class HomeViewModel {
     private(set) var streakWeeks = 0
     private(set) var totalStars = 0
     private(set) var level = 1
+    private(set) var levelProgress = LevelSystem.standard.progress(forPoints: 0)
     private(set) var sessionsPerWeek = 3
 
     init(environment: AppEnvironment) {
@@ -45,6 +46,7 @@ final class HomeViewModel {
 
         let workouts = (try? environment.workoutRepository.all()) ?? []
         totalStars = workouts.reduce(0) { $0 + $1.starsEarned }
-        level = LevelSystem.standard.level(forPoints: Points.fromStars(totalStars))
+        levelProgress = LevelSystem.standard.progress(forPoints: Points.fromStars(totalStars))
+        level = levelProgress.level
     }
 }

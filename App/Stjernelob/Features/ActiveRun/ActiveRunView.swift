@@ -44,15 +44,25 @@ struct ActiveRunView: View {
                 .font(.title.weight(.bold))
                 .foregroundStyle(snapshot.interval.kind.color)
 
-            Text(snapshot.remainingInInterval.minutesSecondsText)
-                .font(.runCountdown)
-                .contentTransition(.numericText())
-                .accessibilityLabel(Text(Strings.ActiveRun.intervalOfTotal(
-                    current: snapshot.runOrdinal ?? 0, total: snapshot.runCount)))
-
-            ProgressView(value: intervalProgress(snapshot))
-                .tint(snapshot.interval.kind.color)
-                .padding(.horizontal, Theme.Spacing.xLarge)
+            ZStack {
+                Circle()
+                    .stroke(snapshot.interval.kind.color.opacity(0.15), lineWidth: 14)
+                Circle()
+                    .trim(from: 0, to: intervalProgress(snapshot))
+                    .stroke(
+                        snapshot.interval.kind.color.gradient,
+                        style: StrokeStyle(lineWidth: 14, lineCap: .round)
+                    )
+                    .rotationEffect(.degrees(-90))
+                    .animation(.easeInOut(duration: 0.3), value: intervalProgress(snapshot))
+                Text(snapshot.remainingInInterval.minutesSecondsText)
+                    .font(.runCountdown)
+                    .contentTransition(.numericText())
+                    .accessibilityLabel(Text(Strings.ActiveRun.intervalOfTotal(
+                        current: snapshot.runOrdinal ?? 0, total: snapshot.runCount)))
+            }
+            .frame(width: 260, height: 260)
+            .padding(.vertical, Theme.Spacing.medium)
 
             HStack(spacing: Theme.Spacing.large) {
                 metric(icon: "clock", value: snapshot.totalElapsed.minutesSecondsText)
