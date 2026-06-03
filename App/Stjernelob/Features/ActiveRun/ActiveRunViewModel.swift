@@ -27,6 +27,9 @@ final class ActiveRunViewModel {
 
     private let engine: IntervalEngine
     private let liveActivity = LiveActivityController()
+    private let distanceTracker = DistanceTracker()
+    /// Målt distance i meter (vist neutralt; aldrig grundlag for belønning).
+    private(set) var distanceMeters: Double = 0
     private let plan: WorkoutPlan
     private let programWeekId: Int
     private let programPhase: ProgramPhase
@@ -54,6 +57,7 @@ final class ActiveRunViewModel {
 
     func start() {
         feedback.begin()
+        distanceTracker.start()
         if environment.settings.livePositionEnabled {
             environment.locationService.startSharing()
         }
@@ -71,6 +75,7 @@ final class ActiveRunViewModel {
         guard case .running = phase else { return }
         dispatch(engine.update())
         snapshot = engine.snapshot()
+        distanceMeters = distanceTracker.distanceMeters
         liveActivity.update(snapshot: snapshot, intervalLabel: String(localized: snapshot.interval.kind.label))
 
         // Blid talk-test-påmindelse hvert 5. minut undervejs.
@@ -119,6 +124,8 @@ final class ActiveRunViewModel {
         if case .finished = phase { return }
         // Positionsdeling slukkes automatisk ved turslut (afsnit 12).
         environment.locationService.stopSharing()
+        distanceTracker.stop()
+        distanceMeters = distanceTracker.distanceMeters
         liveActivity.end()
         phase = .finished(summary)
     }
@@ -141,6 +148,7 @@ final class ActiveRunViewModel {
             isComplete: summary.isComplete,
             starsEarned: Stars.earned(for: summary),
             perceivedEffort: perceivedEffort,
+            distanceMeters: distanceMeters > 0 ? distanceMeters : nil,
             photos: []
         )
         try? environment.workoutRepository.add(workout)

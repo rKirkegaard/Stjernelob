@@ -128,6 +128,7 @@ enum Strings {
             LocalizedStringResource("progress.weekLabel", defaultValue: "Uge \(id) i forløbet")
         }
         static let durationLabel = LocalizedStringResource("progress.duration", defaultValue: "Varighed")
+        static let distanceLabel = LocalizedStringResource("progress.distance", defaultValue: "Distance")
         static let intervalsLabel = LocalizedStringResource("progress.intervals", defaultValue: "Gennemførte intervaller")
         static let starsLabel = LocalizedStringResource("progress.stars", defaultValue: "Stjerner")
         static let effortLabel = LocalizedStringResource("progress.effort", defaultValue: "Sådan føltes det")

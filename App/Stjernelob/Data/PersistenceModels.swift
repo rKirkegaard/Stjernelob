@@ -63,6 +63,8 @@ final class CompletedWorkoutEntity {
     var isComplete: Bool
     var starsEarned: Int
     var perceivedEffort: Int?
+    /// Målt distance i meter (valgfrit; vist neutralt, aldrig grundlag for belønning).
+    var distanceMeters: Double?
 
     @Relationship(deleteRule: .cascade, inverse: \WorkoutPhotoEntity.workout)
     var photos: [WorkoutPhotoEntity]
@@ -79,6 +81,7 @@ final class CompletedWorkoutEntity {
         isComplete: Bool,
         starsEarned: Int,
         perceivedEffort: Int? = nil,
+        distanceMeters: Double? = nil,
         photos: [WorkoutPhotoEntity] = []
     ) {
         self.id = id
@@ -92,6 +95,7 @@ final class CompletedWorkoutEntity {
         self.isComplete = isComplete
         self.starsEarned = starsEarned
         self.perceivedEffort = perceivedEffort
+        self.distanceMeters = distanceMeters
         self.photos = photos
     }
 }

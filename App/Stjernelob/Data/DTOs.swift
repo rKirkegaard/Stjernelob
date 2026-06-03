@@ -41,6 +41,7 @@ struct CompletedWorkoutDTO: Sendable, Equatable, Identifiable {
     var isComplete: Bool
     var starsEarned: Int
     var perceivedEffort: Int?
+    var distanceMeters: Double? = nil
     var photos: [WorkoutPhotoDTO]
 }
 
@@ -103,6 +104,7 @@ extension CompletedWorkoutDTO {
             isComplete: entity.isComplete,
             starsEarned: entity.starsEarned,
             perceivedEffort: entity.perceivedEffort,
+            distanceMeters: entity.distanceMeters,
             photos: entity.photos
                 .sorted { $0.createdAt < $1.createdAt }
                 .map(WorkoutPhotoDTO.init(entity:))

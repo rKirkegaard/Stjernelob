@@ -54,10 +54,14 @@ struct ActiveRunView: View {
                 .tint(snapshot.interval.kind.color)
                 .padding(.horizontal, Theme.Spacing.xLarge)
 
-            Label {
-                Text(snapshot.totalElapsed.minutesSecondsText).monospacedDigit()
-            } icon: {
-                Image(systemName: "clock")
+            HStack(spacing: Theme.Spacing.large) {
+                metric(icon: "clock", value: snapshot.totalElapsed.minutesSecondsText)
+                metric(icon: "point.topleft.down.curvedto.point.bottomright.up",
+                       value: RunFormatting.distance(meters: viewModel.distanceMeters))
+                metric(icon: "speedometer",
+                       value: RunFormatting.pace(
+                           elapsedSeconds: Double(snapshot.totalElapsed.wholeSeconds),
+                           meters: viewModel.distanceMeters))
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
@@ -70,6 +74,15 @@ struct ActiveRunView: View {
         .onAppear { viewModel.start() }
         .onReceive(ticker) { _ in viewModel.tick() }
         .onChange(of: viewModel.starPops) { _, _ in popStar() }
+    }
+
+    private func metric(icon: String, value: String) -> some View {
+        Label {
+            Text(value).monospacedDigit()
+        } icon: {
+            Image(systemName: icon)
+        }
+        .accessibilityElement(children: .combine)
     }
 
     private var controls: some View {

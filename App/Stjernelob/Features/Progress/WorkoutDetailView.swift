@@ -17,6 +17,9 @@ struct WorkoutDetailView: View {
         List {
             Section {
                 row(Strings.Progress.durationLabel, value: workout.activeDuration.shortText)
+                if let distance = workout.distanceMeters {
+                    row(Strings.Progress.distanceLabel, value: RunFormatting.distance(meters: distance))
+                }
                 row(Strings.Progress.intervalsLabel, value: "\(workout.intervalsCompleted) / \(workout.plannedIntervalCount)")
                 row(Strings.Progress.starsLabel, value: "\(workout.starsEarned)")
                 if let effort = workout.perceivedEffort {

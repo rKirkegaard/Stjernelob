@@ -228,6 +228,40 @@ final class IntervalEngineTests: XCTestCase {
         XCTAssertEqual(engine.status, .finished)
     }
 
+    // MARK: - Genoptag efter afbrydelse
+
+    func testResumeAnnouncesCurrentIntervalAndSkipsPast() {
+        let clock = ManualClock()
+        let engine = IntervalEngine(plan: makePlan(), clock: clock)
+        // Genoptag 12s inde (midt i første løbeinterval, indeks 1).
+        let resumed = engine.resume(atElapsed: .seconds(12))
+        XCTAssertEqual(resumed, [.intervalStarted(index: 1, interval: .run(.seconds(10)))])
+        XCTAssertEqual(engine.status, .active)
+
+        // Fortsæt 3s frem til grænsen ved 15s — næste skift skal komme,
+        // men intet fra de allerede passerede intervaller.
+        clock.advance(seconds: 3)
+        let events = engine.update()
+        XCTAssertTrue(events.contains(.intervalCompleted(index: 1, interval: .run(.seconds(10)))))
+        XCTAssertTrue(events.contains(.intervalStarted(index: 2, interval: .walk(.seconds(5)))))
+        XCTAssertFalse(events.contains(.intervalStarted(index: 0, interval: .warmUp(.seconds(5)))))
+    }
+
+    func testResumeNearEndFinishes() {
+        let clock = ManualClock()
+        let engine = IntervalEngine(plan: makePlan(), clock: clock)
+        XCTAssertEqual(engine.resume(atElapsed: .seconds(35)), [])
+        XCTAssertEqual(engine.status, .finished)
+    }
+
+    func testResumePreservesRemainingTime() {
+        let clock = ManualClock(.seconds(500))
+        let engine = IntervalEngine(plan: makePlan(), clock: clock)
+        engine.resume(atElapsed: .seconds(8))
+        XCTAssertEqual(engine.snapshot().totalElapsed, .seconds(8))
+        XCTAssertEqual(engine.snapshot().remainingInInterval, .seconds(7)) // løb 10s, 8-5=3 inde
+    }
+
     func testUpdateAfterFinishIsEmpty() {
         let clock = ManualClock()
         let engine = IntervalEngine(plan: makePlan(), clock: clock)

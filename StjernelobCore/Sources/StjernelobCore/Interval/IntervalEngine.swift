@@ -63,6 +63,25 @@ public final class IntervalEngine {
         return [.started, .intervalStarted(index: 0, interval: first)]
     }
 
+    /// Genoptag en tur, der allerede er nået et stykke inde — fx efter at appen
+    /// blev lukket midt i en tur (jf. edge cases i `test.md`). Hændelser, der
+    /// allerede er sket før `elapsed`, springes over; det aktuelle interval
+    /// annonceres til orientering. Kan kun kaldes på en ikke-startet motor.
+    @discardableResult
+    public func resume(atElapsed elapsed: Duration) -> [WorkoutEvent] {
+        guard status == .notStarted else { return [] }
+        let clamped = clamp(elapsed, lower: .zero, upper: timeline.totalDuration)
+        startInstant = clock.now() - clamped
+        processedElapsed = clamped
+        if clamped >= timeline.totalDuration {
+            status = .finished
+            return []
+        }
+        status = .active
+        let snapshot = timeline.snapshot(at: clamped, phase: .active)
+        return [.intervalStarted(index: snapshot.intervalIndex, interval: snapshot.interval)]
+    }
+
     /// Udsend de hændelser, der er indtruffet siden sidste kald. Kald jævnligt.
     @discardableResult
     public func update() -> [WorkoutEvent] {

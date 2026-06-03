@@ -55,7 +55,8 @@ targets:
         INFOPLIST_KEY_NSHealthUpdateUsageDescription: "Stjerneløb kan gemme dine ture som workouts i Helbred — kun hvis du vælger det."
         INFOPLIST_KEY_NSCameraUsageDescription: "Stjerneløb bruger kameraet, hvis du vil tage et billede fra din tur."
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Stjerneløb bruger dine billeder, hvis du vil knytte et foto til en tur."
-        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Stjerneløb kan dele din position med en betroet voksen mens du løber — kun hvis du selv slår det til. Den slukkes, når turen slutter."
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Stjerneløb bruger din position til at måle distance og rute under en tur, og kan dele den med en betroet voksen, hvis du selv slår det til. Den slukkes, når turen slutter."
+        INFOPLIST_KEY_NSMotionUsageDescription: "Stjerneløb bruger bevægelsessensoren til at måle distance, når GPS ikke er tilgængelig (fx på løbebånd)."
 
   StjernelobWatch:
     type: application
