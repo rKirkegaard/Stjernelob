@@ -10,6 +10,7 @@ struct SettingsView: View {
     @State private var showDeleteConfirm = false
     @State private var exportURL: URL?
     @State private var role: UserRole = .runner
+    @State private var soundPreview = ToneSoundPlayer()
 
     var body: some View {
         Form {
@@ -147,6 +148,7 @@ struct SettingsView: View {
         }
         .onChange(of: settings.feedback.runStartSound) { _, sound in playPreview(sound) }
         .onChange(of: settings.feedback.walkStartSound) { _, sound in playPreview(sound) }
+        .onDisappear { soundPreview.deactivateSession() }
         .task {
             if let profile = try? environment.profileRepository.load() { role = profile.role }
         }
@@ -171,7 +173,8 @@ struct SettingsView: View {
     /// Afspil den netop valgte signallyd, så man straks hører forskellen.
     private func playPreview(_ sound: SignalSound) {
         guard settings.feedback.soundEnabled else { return }
-        SystemSoundPlayer().play(.intervalSignal(sound))
+        soundPreview.activateSession(duckMusic: settings.feedback.duckMusic)
+        soundPreview.play(.intervalSignal(sound))
     }
 
     private func reschedule() async {

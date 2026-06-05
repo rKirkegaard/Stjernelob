@@ -449,13 +449,14 @@
     // Gentag et motiv et par gange, så signalet er nemt at høre — også når
     // telefonen ligger i en løbetaske eller et armbånd.
     function repeated(times, gap, fn) { for (let i = 0; i < times; i++) fn(i * gap); }
+    // Samme motiver som appens genererede toner (ToneSoundPlayer), gentaget 2×.
     const recipes = {
-      energetic() { repeated(3, 0.26, s => { tone(880, s, 0.1, "square", 0.2); tone(1180, s + 0.09, 0.11, "square", 0.18); }); },
-      soft()      { repeated(3, 0.34, s => tone(523, s, 0.24, "sine", 0.26)); },
-      bell()      { repeated(3, 0.36, s => { tone(1318, s, 0.42, "sine", 0.26); tone(2637, s, 0.3, "sine", 0.06); }); },
-      chime()     { repeated(3, 0.32, s => { tone(1047, s, 0.18, "sine", 0.22); tone(1568, s + 0.08, 0.2, "sine", 0.18); }); },
-      whistle()   { repeated(3, 0.32, s => sweep(1500, 2200, s, 0.18, "sine", 0.16)); },
-      marimba()   { repeated(4, 0.24, s => { tone(587, s, 0.18, "triangle", 0.28); tone(1174, s, 0.09, "triangle", 0.09); }); }
+      energetic() { repeated(2, 0.62, s => { tone(523, s, 0.08, "square", 0.2); tone(659, s + 0.13, 0.08, "square", 0.2); tone(784, s + 0.26, 0.08, "square", 0.2); }); },
+      soft()      { repeated(2, 0.56, s => { tone(784, s, 0.16, "sine", 0.18); tone(523, s + 0.2, 0.18, "sine", 0.18); }); },
+      bell()      { repeated(2, 0.6, s => tone(1319, s, 0.45, "sine", 0.16)); },
+      chime()     { repeated(2, 0.46, s => { tone(784, s, 0.12, "sine", 0.2); tone(1047, s + 0.14, 0.18, "sine", 0.2); }); },
+      whistle()   { repeated(2, 0.4, s => { tone(1760, s, 0.09, "sine", 0.16); tone(1760, s + 0.11, 0.12, "sine", 0.16); }); },
+      marimba()   { repeated(2, 0.46, s => { tone(523, s, 0.1, "triangle", 0.22); tone(784, s + 0.13, 0.12, "triangle", 0.22); }); }
     };
     document.addEventListener("click", function (e) {
       const btn = e.target.closest(".snd");

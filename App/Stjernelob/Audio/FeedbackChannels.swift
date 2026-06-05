@@ -102,6 +102,16 @@ protocol VoiceCoach: AnyObject {
 @MainActor
 protocol SoundPlayer: AnyObject {
     func play(_ cue: SoundCue)
+    /// Aktivér lydsessionen før en tur (mixer med eller dukker musik).
+    func activateSession(duckMusic: Bool)
+    /// Luk lydsessionen igen, når turen slutter.
+    func deactivateSession()
+}
+
+/// Standard-no-op, så fx test-attrapper kun behøver `play(_:)`.
+extension SoundPlayer {
+    func activateSession(duckMusic: Bool) {}
+    func deactivateSession() {}
 }
 
 @MainActor

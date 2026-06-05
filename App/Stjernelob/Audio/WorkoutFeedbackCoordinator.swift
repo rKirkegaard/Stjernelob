@@ -28,17 +28,13 @@ final class WorkoutFeedbackCoordinator {
     /// Kald før en tur: gør haptik-motoren klar og aktivér lydsessionen.
     func begin() {
         if settings.hapticsEnabled { haptics.prepare() }
-        if settings.soundEnabled, let system = sound as? SystemSoundPlayer {
-            system.activateSession(duckMusic: settings.duckMusic)
-        }
+        if settings.soundEnabled { sound.activateSession(duckMusic: settings.duckMusic) }
     }
 
     /// Kald når turen slutter/afbrydes.
     func end() {
         voice.stopSpeaking()
-        if let system = sound as? SystemSoundPlayer {
-            system.deactivateSession()
-        }
+        sound.deactivateSession()
     }
 
     func handle(_ event: WorkoutEvent) {

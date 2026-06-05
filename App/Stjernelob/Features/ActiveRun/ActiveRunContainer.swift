@@ -25,7 +25,7 @@ struct ActiveRunContainer: View {
         let feedback = WorkoutFeedbackCoordinator(
             settings: environment.settings.feedback,
             voice: SpeechVoiceCoach(),
-            sound: SystemSoundPlayer(),
+            sound: ToneSoundPlayer(),
             haptics: CoreHapticsPlayer()
         )
         viewModel = ActiveRunViewModel(
