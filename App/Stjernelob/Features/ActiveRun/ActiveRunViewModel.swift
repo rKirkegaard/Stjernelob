@@ -204,25 +204,40 @@ final class ActiveRunViewModel {
     }
 
     private func awardBadges(for summary: WorkoutSummary) {
-        let totalCompleted = (try? environment.workoutRepository.count()) ?? 0
+        // Turen er allerede gemt, så `all()` indeholder den netop afsluttede tur.
+        let workouts = (try? environment.workoutRepository.all()) ?? []
         let streakWeeks = streakWeeksNow()
-        let longestRun = summary.isComplete ? longestRunInterval() : .zero
         let finishedBase = programPhase == .base && programWeekId == 8 && summary.isComplete
 
+        let date = now()
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: date)
+        // Løbestykker (gennemførte løbeintervaller) — også fra afbrudte ture,
+        // så delvist arbejde stadig tæller med og motiverer.
+        let runIntervals = workouts.map(\.runIntervalsCompleted)
+        let datesNewestFirst = workouts.map(\.date).sorted(by: >)
+        let daysSincePrevious = datesNewestFirst.count >= 2
+            ? (calendar.dateComponents([.day], from: datesNewestFirst[1], to: datesNewestFirst[0]).day ?? 0)
+            : 0
+
         let context = BadgeContext(
-            totalCompletedWorkouts: totalCompleted,
+            totalCompletedWorkouts: workouts.count,
             currentStreakWeeks: streakWeeks,
-            longestContinuousRun: longestRun,
+            maxRunIntervalsInOneRun: runIntervals.max() ?? 0,
+            totalRunIntervals: runIntervals.reduce(0, +),
+            runsWithFourPlusIntervals: runIntervals.filter { $0 >= 4 }.count,
+            startedInMorning: hour < 12,
+            startedInEvening: hour >= 18,
+            isWeekendWorkout: calendar.isDateInWeekend(date),
+            tookPhoto: workouts.contains { !$0.photos.isEmpty },
+            isComeback: datesNewestFirst.count >= 2 && daysSincePrevious >= 14,
+            month: calendar.component(.month, from: date),
             finishedBaseProgram: finishedBase
         )
         let already = (try? environment.badgeRepository.earned()) ?? []
         for badge in BadgeEvaluator.newlyEarned(context: context, alreadyEarned: already) {
             try? environment.badgeRepository.award(badge)
         }
-    }
-
-    private func longestRunInterval() -> Duration {
-        plan.intervals.lazy.filter { $0.kind == .run }.map(\.duration).max() ?? .zero
     }
 
     private func streakWeeksNow() -> Int {
