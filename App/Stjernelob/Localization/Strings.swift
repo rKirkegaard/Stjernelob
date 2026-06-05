@@ -180,6 +180,16 @@ enum Strings {
         static let feedbackNote = LocalizedStringResource(
             "settings.feedbackNote", defaultValue: "Alt kan slås fra hver for sig — appen virker fuldt uden lyd.")
 
+        static let signalSoundsSection = LocalizedStringResource(
+            "settings.signalSounds", defaultValue: "Signallyde")
+        static let runStartSound = LocalizedStringResource(
+            "settings.runStartSound", defaultValue: "Når du skal løbe")
+        static let walkStartSound = LocalizedStringResource(
+            "settings.walkStartSound", defaultValue: "Når du skal gå")
+        static let signalSoundsNote = LocalizedStringResource(
+            "settings.signalSoundsNote",
+            defaultValue: "Vælg hver sin lyd til løb og gå, så du kan høre skiftet uden at kigge på skærmen.")
+
         static let remindersSection = LocalizedStringResource("settings.reminders", defaultValue: "Påmindelser")
         static let remindersEnabled = LocalizedStringResource("settings.remindersEnabled", defaultValue: "Venlige påmindelser")
         static let reminderTime = LocalizedStringResource("settings.reminderTime", defaultValue: "Tidspunkt")
@@ -212,6 +222,15 @@ enum Strings {
         static let cancel = LocalizedStringResource("settings.cancel", defaultValue: "Annullér")
         static let privacyNote = LocalizedStringResource(
             "settings.privacyNote", defaultValue: "Dine data er dine. De bliver på din enhed og i din egen iCloud — og deles aldrig uden dit valg.")
+    }
+
+    enum SignalSounds {
+        static let energetic = LocalizedStringResource("signalSound.energetic", defaultValue: "Energisk")
+        static let soft = LocalizedStringResource("signalSound.soft", defaultValue: "Blød")
+        static let bell = LocalizedStringResource("signalSound.bell", defaultValue: "Klokke")
+        static let chime = LocalizedStringResource("signalSound.chime", defaultValue: "Klang")
+        static let whistle = LocalizedStringResource("signalSound.whistle", defaultValue: "Fløjt")
+        static let marimba = LocalizedStringResource("signalSound.marimba", defaultValue: "Marimba")
     }
 
     enum Sharing {

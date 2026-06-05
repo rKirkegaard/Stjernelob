@@ -28,12 +28,25 @@ final class SystemSoundPlayer: SoundPlayer {
     /// Pladsholder-tildeling af systemlyde til hvert signal.
     private func systemSoundID(for cue: SoundCue) -> SystemSoundID {
         switch cue {
-        case .runStart: return 1113      // begin record (energisk)
-        case .walkStart: return 1114     // end record (blødere)
+        case let .intervalSignal(sound): return systemSoundID(for: sound)
         case .countdownTick: return 1103 // tink
         case .star: return 1057          // tink/positiv
         case .halfway: return 1109
         case .fanfare: return 1025       // fanfare-agtig
+        }
+    }
+
+    /// Pladsholder-tildeling af systemlyde til hver valgbar signallyd. Hver er
+    /// hørbart forskellig, så løb og gå kan kendes fra hinanden. Skiftes ud med
+    /// designede assets senere (afsnit 15).
+    private func systemSoundID(for sound: SignalSound) -> SystemSoundID {
+        switch sound {
+        case .energetic: return 1113 // begin record (energisk)
+        case .soft: return 1114      // end record (blødere)
+        case .bell: return 1013
+        case .chime: return 1057
+        case .whistle: return 1071
+        case .marimba: return 1109
         }
     }
 }

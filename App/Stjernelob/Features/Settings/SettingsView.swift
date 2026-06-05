@@ -39,6 +39,28 @@ struct SettingsView: View {
             }
 
             Section {
+                Picker(selection: $settings.feedback.runStartSound) {
+                    ForEach(SignalSound.allCases) { sound in
+                        Text(sound.displayName).tag(sound)
+                    }
+                } label: {
+                    Label { Text(Strings.Settings.runStartSound) } icon: { Image(systemName: "figure.run") }
+                }
+                Picker(selection: $settings.feedback.walkStartSound) {
+                    ForEach(SignalSound.allCases) { sound in
+                        Text(sound.displayName).tag(sound)
+                    }
+                } label: {
+                    Label { Text(Strings.Settings.walkStartSound) } icon: { Image(systemName: "figure.walk") }
+                }
+            } header: {
+                Text(Strings.Settings.signalSoundsSection)
+            } footer: {
+                Text(Strings.Settings.signalSoundsNote)
+            }
+            .disabled(!settings.feedback.soundEnabled)
+
+            Section {
                 Toggle(isOn: $settings.remindersEnabled) { Text(Strings.Settings.remindersEnabled) }
                 if settings.remindersEnabled {
                     Stepper(value: $settings.reminderHour, in: 6...22) {
@@ -123,6 +145,8 @@ struct SettingsView: View {
         .onChange(of: settings.healthKitEnabled) { _, isOn in
             if isOn { Task { _ = await environment.healthKit.requestAuthorization() } }
         }
+        .onChange(of: settings.feedback.runStartSound) { _, sound in playPreview(sound) }
+        .onChange(of: settings.feedback.walkStartSound) { _, sound in playPreview(sound) }
         .task {
             if let profile = try? environment.profileRepository.load() { role = profile.role }
         }
@@ -142,6 +166,12 @@ struct SettingsView: View {
         } message: {
             Text(Strings.Settings.deleteConfirmBody)
         }
+    }
+
+    /// Afspil den netop valgte signallyd, så man straks hører forskellen.
+    private func playPreview(_ sound: SignalSound) {
+        guard settings.feedback.soundEnabled else { return }
+        SystemSoundPlayer().play(.intervalSignal(sound))
     }
 
     private func reschedule() async {

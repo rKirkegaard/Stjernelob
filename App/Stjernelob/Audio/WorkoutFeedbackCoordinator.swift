@@ -49,7 +49,8 @@ final class WorkoutFeedbackCoordinator {
         case let .intervalStarted(_, interval):
             speak(CoachScript.line(forStartOf: interval))
             let isRun = interval.kind.isRunning
-            playSound(isRun ? .runStart : .walkStart)
+            let signal = isRun ? settings.runStartSound : settings.walkStartSound
+            playSound(.intervalSignal(signal))
             playHaptic(isRun ? .runStart : .walkStart)
 
         case .countdown:

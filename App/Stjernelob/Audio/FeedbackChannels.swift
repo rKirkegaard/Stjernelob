@@ -10,13 +10,73 @@ struct FeedbackSettings: Sendable, Equatable, Codable {
     var hapticsEnabled: Bool = true
     /// Sænk anden lyd (musik) mens coachen taler, frem for at stoppe den.
     var duckMusic: Bool = true
+    /// Valgt lyd for "begynd at løbe". Løb og gå har hver sin lyd, så skiftet
+    /// kan høres uden at kigge på skærmen (afsnit 4.2). Kan ændres i indstillinger.
+    var runStartSound: SignalSound = .energetic
+    /// Valgt lyd for "begynd at gå".
+    var walkStartSound: SignalSound = .soft
+
+    init(
+        voiceEnabled: Bool = true,
+        soundEnabled: Bool = true,
+        hapticsEnabled: Bool = true,
+        duckMusic: Bool = true,
+        runStartSound: SignalSound = .energetic,
+        walkStartSound: SignalSound = .soft
+    ) {
+        self.voiceEnabled = voiceEnabled
+        self.soundEnabled = soundEnabled
+        self.hapticsEnabled = hapticsEnabled
+        self.duckMusic = duckMusic
+        self.runStartSound = runStartSound
+        self.walkStartSound = walkStartSound
+    }
+
+    /// Tolerant afkodning: felter, der mangler i ældre gemte indstillinger
+    /// (fx før signallyde fandtes), falder tilbage til standardværdien i stedet
+    /// for at nulstille hele objektet.
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        voiceEnabled = try container.decodeIfPresent(Bool.self, forKey: .voiceEnabled) ?? true
+        soundEnabled = try container.decodeIfPresent(Bool.self, forKey: .soundEnabled) ?? true
+        hapticsEnabled = try container.decodeIfPresent(Bool.self, forKey: .hapticsEnabled) ?? true
+        duckMusic = try container.decodeIfPresent(Bool.self, forKey: .duckMusic) ?? true
+        runStartSound = try container.decodeIfPresent(SignalSound.self, forKey: .runStartSound) ?? .energetic
+        walkStartSound = try container.decodeIfPresent(SignalSound.self, forKey: .walkStartSound) ?? .soft
+    }
+}
+
+/// Et lille katalog af valgbare signallyde for interval-skift. Brugeren kan
+/// vælge hver sin lyd til "begynd at løbe" og "begynd at gå", så de er nemme at
+/// kende fra hinanden uden at se på skærmen. Konkrete lyde er pladsholdere,
+/// indtil designede assets leveres (afsnit 15).
+enum SignalSound: String, Sendable, Equatable, Codable, CaseIterable, Identifiable {
+    case energetic
+    case soft
+    case bell
+    case chime
+    case whistle
+    case marimba
+
+    var id: String { rawValue }
+
+    var displayName: LocalizedStringResource {
+        switch self {
+        case .energetic: return Strings.SignalSounds.energetic
+        case .soft: return Strings.SignalSounds.soft
+        case .bell: return Strings.SignalSounds.bell
+        case .chime: return Strings.SignalSounds.chime
+        case .whistle: return Strings.SignalSounds.whistle
+        case .marimba: return Strings.SignalSounds.marimba
+        }
+    }
 }
 
 /// Signallyde for skift og milepæle. Konkrete lyde er pladsholdere, indtil
 /// designede assets leveres (afsnit 15).
 enum SoundCue: Sendable, Equatable {
-    case runStart
-    case walkStart
+    /// Et interval-skift med den valgte signallyd (løb eller gå).
+    case intervalSignal(SignalSound)
     case countdownTick
     case star          // stjernepop pr. interval (afsnit 4.3)
     case halfway
