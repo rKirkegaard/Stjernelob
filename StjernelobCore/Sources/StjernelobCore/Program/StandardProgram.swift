@@ -1,60 +1,45 @@
 import Foundation
 
-/// Det indbyggede forløb fra specifikationen (afsnit 6.1).
+/// Det indbyggede forløb (jf. docs/loebeplan.md): det 20-ugers program "fra sofa
+/// til løber", målrettet en teenager-begynder i ringe form. Hver uges tur er
+/// nøjagtigt fastlagt i `CouchToRunnerPlan` (produktets "sandhed"); her
+/// projiceres planen ind i forløbs-modellen, så resten af appen er uændret.
 ///
-/// Grundforløbet bringer en begynder fra "har aldrig løbet" til 20–30 min
-/// sammenhængende løb over 8 uger. Hver tur starter med 5 min rask gang og
-/// slutter med 5 min gang. Derefter følger videre-forløb, så brugeren aldrig
-/// står uden mål.
-///
-/// Tallene her er produktets "sandhed" og skal være fagligt gennemgået
-/// (afsnit 15). Titlerne er lokaliseringsnøgler — den viste tekst ligger i
-/// app-lagets strengkatalog.
+/// Titlerne er lokaliseringsnøgler — den viste tekst ligger i app-lagets
+/// strengkatalog.
 public enum StandardProgram {
-    private static let warmUp: Duration = .minutes(5)
-    private static let coolDown: Duration = .minutes(5)
-
-    /// Hele rejsen som én ordnet række uger (grundforløb + videre-forløb).
+    /// Hele rejsen som én ordnet række uger (alle 20 uger).
     public static let journey = TrainingProgram(weeks: makeWeeks())
 
-    /// Kun grundforløbets 8 uger.
+    /// Grundforløbet: de tidlige faser ("Første skridt" + "Bygger op").
     public static var base: TrainingProgram {
         TrainingProgram(weeks: journey.weeks.filter { $0.phase == .base })
     }
 
     private static func makeWeeks() -> [ProgramWeek] {
-        var weeks: [ProgramWeek] = []
-        var id = 1
-        func add(_ phase: ProgramPhase, _ session: SessionTemplate) {
-            weeks.append(ProgramWeek(
-                id: id,
-                phase: phase,
-                titleKey: "program.week.\(id).title",
-                session: session
-            ))
-            id += 1
+        CouchToRunnerPlan.weeks.map { week in
+            ProgramWeek(
+                id: week.id,
+                phase: programPhase(for: week.phase),
+                titleKey: week.titleKey,
+                session: representativeSession(for: week)
+            )
         }
+    }
 
-        // --- Grundforløb (afsnit 6.1) ---
-        add(.base, .intervals(warmUp: warmUp, run: .minutes(1),   walk: .minutes(2),   reps: 6...8, coolDown: coolDown))
-        add(.base, .intervals(warmUp: warmUp, run: .minutes(1.5), walk: .minutes(1.5), reps: 6...8, coolDown: coolDown))
-        add(.base, .intervals(warmUp: warmUp, run: .minutes(2),   walk: .minutes(1),   reps: 6...6, coolDown: coolDown))
-        add(.base, .intervals(warmUp: warmUp, run: .minutes(3),   walk: .minutes(1),   reps: 5...5, coolDown: coolDown))
-        add(.base, .intervals(warmUp: warmUp, run: .minutes(5),   walk: .minutes(1),   reps: 4...4, coolDown: coolDown))
-        add(.base, .intervals(warmUp: warmUp, run: .minutes(8),   walk: .minutes(1),   reps: 3...3, coolDown: coolDown))
-        add(.base, .intervals(warmUp: warmUp, run: .minutes(10),  walk: .minutes(1),   reps: 2...3, coolDown: coolDown))
-        add(.base, .continuous(warmUp: warmUp, run: .minutes(20) ... .minutes(30), coolDown: coolDown))
+    /// Afbild planens fem faser ind på forløbs-modellens fire faser.
+    private static func programPhase(for phase: PlanPhase) -> ProgramPhase {
+        switch phase {
+        case .firstSteps, .buildingUp: return .base
+        case .findingStrength: return .maintain
+        case .confidentRunner: return .towardFiveKilometre
+        case .continuousRunner: return .beyond
+        }
+    }
 
-        // --- Videre-forløb (afsnit 6.1) ---
-        // Hold ved: faste 20–30 min ture.
-        add(.maintain, .continuous(warmUp: warmUp, run: .minutes(20) ... .minutes(30), coolDown: coolDown))
-        add(.maintain, .continuous(warmUp: warmUp, run: .minutes(20) ... .minutes(30), coolDown: coolDown))
-        // Mod 5 km uden pause (bygger varigheden lidt op).
-        add(.towardFiveKilometre, .continuous(warmUp: warmUp, run: .minutes(25) ... .minutes(35), coolDown: coolDown))
-        add(.towardFiveKilometre, .continuous(warmUp: warmUp, run: .minutes(30) ... .minutes(40), coolDown: coolDown))
-        // Længere distancer — kan gentages som "hold ved / pres lidt videre".
-        add(.beyond, .continuous(warmUp: warmUp, run: .minutes(35) ... .minutes(45), coolDown: coolDown))
-
-        return weeks
+    /// Ugens repræsentative tur (den første ikke-bonus-tur) som skabelon.
+    private static func representativeSession(for week: PlannedWeek) -> SessionTemplate {
+        let session = week.sessions.first { !$0.isBonus } ?? week.sessions[0]
+        return .blocks(warmUp: session.warmUp, blocks: session.blocks, coolDown: session.coolDown)
     }
 }

@@ -29,6 +29,15 @@ public enum SessionTemplate: Sendable, Equatable, Codable {
     /// overskrides (jf. spec afsnit 6.2: "den kan i stedet lægge en let gå-tur ind").
     case easyWalk(duration: Duration)
 
+    /// En fast tur defineret som eksplicitte blokke (jf. docs/loebeplan.md) —
+    /// opvarmning → blokke af `reps` × (løb + gang) → nedkøling. Bruges af det
+    /// indbyggede 20-ugers program, hvor hver uges tur er nøjagtigt fastlagt.
+    case blocks(
+        warmUp: Duration,
+        blocks: [IntervalBlock],
+        coolDown: Duration
+    )
+
     /// Byg den konkrete plan for et givet ugentligt træningsantal.
     ///
     /// Færre ture om ugen → flere gentagelser/længere løb pr. tur (mod den øvre
@@ -57,6 +66,17 @@ public enum SessionTemplate: Sendable, Equatable, Codable {
 
         case let .easyWalk(duration):
             return WorkoutPlan(intervals: [.warmUp(duration)])
+
+        case let .blocks(warmUp, blocks, coolDown):
+            var intervals: [Interval] = [.warmUp(warmUp)]
+            for block in blocks {
+                for _ in 0..<block.reps {
+                    intervals.append(.run(block.run))
+                    if block.walk > .zero { intervals.append(.walk(block.walk)) }
+                }
+            }
+            intervals.append(.coolDown(coolDown))
+            return WorkoutPlan(intervals: intervals)
         }
     }
 

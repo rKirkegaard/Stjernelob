@@ -33,33 +33,33 @@ final class ProgramTests: XCTestCase {
 
     func testWeekOneStructure() {
         let week = StandardProgram.base.weeks[0]
-        let plan = week.plan(forSessionsPerWeek: 1)   // 1 tur/uge → øvre ende = 8 reps
+        let plan = week.plan(forSessionsPerWeek: 3)
         XCTAssertEqual(plan.intervals.first?.kind, .warmUp)
-        XCTAssertEqual(plan.intervals.first?.duration, .minutes(5))
+        XCTAssertEqual(plan.intervals.first?.duration, .minutes(3))
         XCTAssertEqual(plan.intervals.last?.kind, .coolDown)
-        XCTAssertEqual(plan.intervals.last?.duration, .minutes(5))
-        XCTAssertEqual(plan.runIntervalCount, 8)
-        // 1 opvarmning + 8×(løb+gå) + 1 nedkøling
-        XCTAssertEqual(plan.intervals.count, 1 + 8 * 2 + 1)
-        // Et løbeinterval er 1 minut, et gå-interval 2 minutter.
-        XCTAssertEqual(plan.intervals[1], .run(.minutes(1)))
-        XCTAssertEqual(plan.intervals[2], .walk(.minutes(2)))
+        XCTAssertEqual(plan.intervals.last?.duration, .minutes(3))
+        XCTAssertEqual(plan.runIntervalCount, 4)
+        // 1 opvarmning + 4×(løb+gå) + 1 nedkøling — en blid start (20 sek løb).
+        XCTAssertEqual(plan.intervals.count, 1 + 4 * 2 + 1)
+        XCTAssertEqual(plan.intervals[1], .run(.seconds(20)))
+        XCTAssertEqual(plan.intervals[2], .walk(.seconds(90)))
     }
 
-    func testFewerSessionsMeanMoreRepsPerSession() {
-        let week = StandardProgram.base.weeks[0]   // reps 6...8
-        XCTAssertEqual(week.plan(forSessionsPerWeek: 1).runIntervalCount, 8)
-        XCTAssertEqual(week.plan(forSessionsPerWeek: 3).runIntervalCount, 7)
-        XCTAssertEqual(week.plan(forSessionsPerWeek: 5).runIntervalCount, 6)
+    func testFixedPlanIsIndependentOfSessionsPerWeek() {
+        // Det 20-ugers program har faste ture; turen ændrer sig ikke med antallet
+        // af ture om ugen (modsat det gamle skalerede forløb).
+        let week = StandardProgram.base.weeks[0]
+        XCTAssertEqual(week.plan(forSessionsPerWeek: 1).runIntervalCount, 4)
+        XCTAssertEqual(week.plan(forSessionsPerWeek: 3).runIntervalCount, 4)
+        XCTAssertEqual(week.plan(forSessionsPerWeek: 5).runIntervalCount, 4)
     }
 
-    func testContinuousWeekScalesRunDuration() {
+    func testWeekEightIsBlockBased() {
+        // Uge 8 (slutningen af "Bygger op") løber 6 × 2,5 min / 45 sek gang.
         let week8 = StandardProgram.base.weeks[7]
-        let few = week8.plan(forSessionsPerWeek: 1)
-        let many = week8.plan(forSessionsPerWeek: 5)
-        XCTAssertEqual(few.intervals.count, 3)              // opvarmning, løb, nedkøling
-        XCTAssertEqual(few.intervals[1], .run(.minutes(30)))  // 1 tur/uge → 30 min
-        XCTAssertEqual(many.intervals[1], .run(.minutes(20))) // 5 ture/uge → 20 min
+        let plan = week8.plan(forSessionsPerWeek: 3)
+        XCTAssertEqual(plan.runIntervalCount, 6)
+        XCTAssertEqual(plan.intervals.first { $0.kind == .run }, .run(.seconds(150)))
     }
 
     // MARK: - Adaptiv justering
