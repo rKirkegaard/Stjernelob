@@ -159,6 +159,14 @@ enum Strings {
         static func levelProgress(into: Int, span: Int) -> LocalizedStringResource {
             LocalizedStringResource("badges.levelProgress", defaultValue: "\(into) / \(span) point til næste niveau")
         }
+        static let tapToUnlock = LocalizedStringResource("badges.tapToUnlock", defaultValue: "Tryk for at låse op")
+        static let unlock = LocalizedStringResource("badges.unlock", defaultValue: "Lås op")
+        static let cancel = LocalizedStringResource("badges.cancel", defaultValue: "Ikke endnu")
+        static func claimTitle(_ name: String) -> LocalizedStringResource {
+            LocalizedStringResource("badges.claimTitle", defaultValue: "Lås '\(name)' op?")
+        }
+        static let manualNote = LocalizedStringResource(
+            "badges.manualNote", defaultValue: "Nogle mærker giver du dig selv, når du har gjort tingen.")
     }
 
     /// Venlige, ikke-pressende påmindelser (spec afsnit 8). Aldrig skyld eller

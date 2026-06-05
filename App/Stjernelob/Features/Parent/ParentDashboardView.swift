@@ -28,7 +28,7 @@ struct ParentDashboardView: View {
                             Label {
                                 Text(badge.displayTitle)
                             } icon: {
-                                Image(systemName: badge.symbolName).foregroundStyle(Theme.Colors.star)
+                                Text(badge.emoji)
                             }
                         }
                     }

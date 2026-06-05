@@ -60,73 +60,29 @@ final class GamificationTests: XCTestCase {
 
     // MARK: - Badges
 
-    func testFirstRunIntervalIsAnEarlyWin() {
-        // Allerede ét gennemført løbestykke på den allerførste tur giver mærke.
-        let context = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 0,
-                                   maxRunIntervalsInOneRun: 1, totalRunIntervals: 1)
-        let earned = Set(BadgeEvaluator.newlyEarned(context: context, alreadyEarned: []))
-        XCTAssertEqual(earned, [.firstRunInterval, .firstWorkout])
+    func testFirstStepIsAnEarlyWin() {
+        // Den allerførste loggede tur giver "Første skridt".
+        let context = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 0)
+        XCTAssertEqual(BadgeEvaluator.newlyEarned(context: context, alreadyEarned: []), [.firstStep])
     }
 
-    func testRunIntervalsInOneRunMilestones() {
-        func earned(maxInOneRun: Int) -> Set<Badge> {
+    func testBraveStarterNeedsAFullRun() {
+        let aborted = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 0, hasCompletedFullRun: false)
+        XCTAssertFalse(Set(BadgeEvaluator.newlyEarned(context: aborted, alreadyEarned: [])).contains(.braveStarter))
+        let full = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 0, hasCompletedFullRun: true)
+        XCTAssertTrue(Set(BadgeEvaluator.newlyEarned(context: full, alreadyEarned: [])).contains(.braveStarter))
+    }
+
+    func testSessionsPerWeekBadges() {
+        func earned(sessions: Int) -> Set<Badge> {
             Set(BadgeEvaluator.newlyEarned(
-                context: BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0,
-                                      maxRunIntervalsInOneRun: maxInOneRun),
+                context: BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0, sessionsThisWeek: sessions),
                 alreadyEarned: []
             ))
         }
-        XCTAssertEqual(earned(maxInOneRun: 1), [.firstRunInterval])
-        XCTAssertEqual(earned(maxInOneRun: 2), [.firstRunInterval, .twoRunIntervalsInOneRun])
-        XCTAssertEqual(earned(maxInOneRun: 5),
-                       [.firstRunInterval, .twoRunIntervalsInOneRun, .fiveRunIntervalsInOneRun])
-        XCTAssertTrue(earned(maxInOneRun: 8).contains(.eightRunIntervalsInOneRun))
-    }
-
-    func testTotalRunIntervalMilestones() {
-        func earned(total: Int) -> Set<Badge> {
-            Set(BadgeEvaluator.newlyEarned(
-                context: BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0,
-                                      totalRunIntervals: total),
-                alreadyEarned: []
-            ))
-        }
-        XCTAssertEqual(earned(total: 10), [.tenRunIntervalsTotal])
-        XCTAssertTrue(earned(total: 50).isSuperset(of: [
-            .tenRunIntervalsTotal, .twentyFiveRunIntervalsTotal, .fiftyRunIntervalsTotal
-        ]))
-        XCTAssertFalse(earned(total: 9).contains(.tenRunIntervalsTotal))
-    }
-
-    func testTwoGoodRunsBadge() {
-        let one = BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0,
-                               runsWithFourPlusIntervals: 1)
-        XCTAssertFalse(Set(BadgeEvaluator.newlyEarned(context: one, alreadyEarned: []))
-            .contains(.twoRunsWithFourIntervals))
-        let two = BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0,
-                               runsWithFourPlusIntervals: 2)
-        XCTAssertTrue(Set(BadgeEvaluator.newlyEarned(context: two, alreadyEarned: []))
-            .contains(.twoRunsWithFourIntervals))
-    }
-
-    func testAlreadyEarnedBadgesAreNotRepeated() {
-        let context = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 0,
-                                   maxRunIntervalsInOneRun: 1, totalRunIntervals: 1)
-        XCTAssertTrue(BadgeEvaluator.newlyEarned(
-            context: context, alreadyEarned: [.firstRunInterval, .firstWorkout]
-        ).isEmpty)
-    }
-
-    func testWorkoutCountMilestones() {
-        func earned(after count: Int) -> Set<Badge> {
-            Set(BadgeEvaluator.newlyEarned(
-                context: BadgeContext(totalCompletedWorkouts: count, currentStreakWeeks: 0),
-                alreadyEarned: []
-            ))
-        }
-        XCTAssertEqual(earned(after: 5), [.firstWorkout, .fiveWorkouts])
-        XCTAssertTrue(earned(after: 25).isSuperset(of: [.fiveWorkouts, .tenWorkouts, .twentyFiveWorkouts]))
-        XCTAssertFalse(earned(after: 4).contains(.fiveWorkouts))
+        XCTAssertEqual(earned(sessions: 2), [.twoInOneWeek])
+        XCTAssertEqual(earned(sessions: 3), [.twoInOneWeek, .threeInOneWeek])
+        XCTAssertFalse(earned(sessions: 1).contains(.twoInOneWeek))
     }
 
     func testStreakMilestones() {
@@ -136,57 +92,98 @@ final class GamificationTests: XCTestCase {
                 alreadyEarned: []
             ))
         }
-        XCTAssertTrue(earned(weeks: 5).isSuperset(of: [.threeWeekStreak, .fiveWeekStreak]))
+        XCTAssertEqual(earned(weeks: 1), [.oneWeekStreak])
+        XCTAssertTrue(earned(weeks: 3).isSuperset(of: [.oneWeekStreak, .threeWeekStreak]))
+        XCTAssertTrue(earned(weeks: 8).contains(.unbreakable))
         XCTAssertFalse(earned(weeks: 2).contains(.threeWeekStreak))
     }
 
-    func testSeasonalBadgesAreMutuallyExclusive() {
+    func testMonthHeroNeedsManyRunsInAMonth() {
+        let few = BadgeContext(totalCompletedWorkouts: 7, currentStreakWeeks: 0, workoutsThisMonth: 7)
+        XCTAssertFalse(Set(BadgeEvaluator.newlyEarned(context: few, alreadyEarned: [])).contains(.monthHero))
+        let many = BadgeContext(totalCompletedWorkouts: 8, currentStreakWeeks: 0, workoutsThisMonth: 8)
+        XCTAssertTrue(Set(BadgeEvaluator.newlyEarned(context: many, alreadyEarned: [])).contains(.monthHero))
+    }
+
+    func testSeasonBadgesAreMutuallyExclusive() {
         func season(month: Int) -> Set<Badge> {
             Set(BadgeEvaluator.newlyEarned(
                 context: BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0, month: month),
                 alreadyEarned: []
             ))
         }
-        XCTAssertEqual(season(month: 1), [.winterRunner])
-        XCTAssertEqual(season(month: 7), [.summerRunner])
-        XCTAssertTrue(season(month: 4).isDisjoint(with: [.winterRunner, .summerRunner]))  // forår
+        XCTAssertEqual(season(month: 1), [.iceInBelly])
+        XCTAssertEqual(season(month: 4), [.springAir])
+        XCTAssertEqual(season(month: 7), [.sunshineRunner])
+        XCTAssertEqual(season(month: 10), [.autumnRunner])
     }
 
-    func testContextualBadges() {
+    func testSpecialDayBadges() {
+        func earned(month: Int, day: Int) -> Set<Badge> {
+            Set(BadgeEvaluator.newlyEarned(
+                context: BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0, month: month, day: day),
+                alreadyEarned: []
+            ))
+        }
+        XCTAssertTrue(earned(month: 12, day: 24).contains(.christmasRunner))
+        XCTAssertTrue(earned(month: 1, day: 1).contains(.newYearStart))
+        XCTAssertTrue(earned(month: 12, day: 31).contains(.newYearStart))
+        XCTAssertFalse(earned(month: 1, day: 15).contains(.newYearStart))
+    }
+
+    func testTimeAndExperienceBadges() {
         let context = BadgeContext(
             totalCompletedWorkouts: 0, currentStreakWeeks: 0,
-            startedInMorning: true, startedInEvening: false, isWeekendWorkout: true,
-            wasRaining: true, tookPhoto: true, isComeback: true
+            hasCompletedHardRun: true, startedInMorning: true, startedInEvening: false,
+            tookPhoto: true, isComeback: true
         )
         let earned = Set(BadgeEvaluator.newlyEarned(context: context, alreadyEarned: []))
-        XCTAssertEqual(earned, [.earlyBird, .weekendWarrior, .rainHero, .photographer, .comeback])
+        XCTAssertEqual(earned, [.neverGiveUp, .earlyBird, .momentPhoto, .backAgain])
     }
 
-    func testEveryBadgeIsReachable() {
-        // En maksimal vinter-kontekst skal låse alt op undtagen sommer-mærket
-        // (årstiderne udelukker hinanden) — ingen badge er umulig at få.
+    func testManualBadgesAreNeverAutoAwarded() {
+        // Selv en "alt opfyldt"-kontekst tildeler aldrig de manuelle mærker.
         let context = BadgeContext(
-            totalCompletedWorkouts: 25,
-            currentStreakWeeks: 5,
-            maxRunIntervalsInOneRun: 8,
-            totalRunIntervals: 50,
-            runsWithFourPlusIntervals: 2,
-            startedInMorning: true,
-            startedInEvening: true,
-            isWeekendWorkout: true,
-            wasRaining: true,
-            tookPhoto: true,
-            isComeback: true,
-            month: 1,
-            finishedBaseProgram: true
+            totalCompletedWorkouts: 100, currentStreakWeeks: 52, sessionsThisWeek: 7,
+            workoutsThisMonth: 30, hasCompletedFullRun: true, hasCompletedHardRun: true,
+            startedInMorning: true, startedInEvening: true, tookPhoto: true,
+            isComeback: true, month: 1, day: 1
         )
         let earned = Set(BadgeEvaluator.newlyEarned(context: context, alreadyEarned: []))
-        XCTAssertEqual(earned, Set(Badge.allCases).subtracting([.summerRunner]))
+        XCTAssertTrue(earned.isDisjoint(with: Badge.allCases.filter(\.isManual)))
+        // Alle ikke-manuelle mærker, der ikke afhænger af en anden årstid, er låst op.
+        XCTAssertTrue(earned.contains(.firstStep))
+        XCTAssertTrue(earned.contains(.unbreakable))
+    }
+
+    func testEveryAutomaticBadgeIsReachable() {
+        // Hvert automatisk mærke skal kunne opfyldes af mindst én kontekst.
+        let auto = Badge.allCases.filter { !$0.isManual }
+        var reachable = Set<Badge>()
+        // Saml på tværs af repræsentative kontekster (inkl. hver årstid/mærkedag).
+        let contexts = [
+            BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 8, sessionsThisWeek: 3,
+                         workoutsThisMonth: 8, hasCompletedFullRun: true, hasCompletedHardRun: true,
+                         startedInMorning: true, startedInEvening: true, tookPhoto: true,
+                         isComeback: true, month: 4, day: 15),
+            BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 7, day: 1),
+            BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 10, day: 1),
+            BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 12, day: 24),
+            BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 1, day: 1)
+        ]
+        for context in contexts {
+            reachable.formUnion(BadgeEvaluator.newlyEarned(context: context, alreadyEarned: []))
+        }
+        XCTAssertEqual(reachable, Set(auto), "Alle automatiske mærker skal kunne nås")
+    }
+
+    func testAlreadyEarnedBadgesAreNotRepeated() {
+        let context = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 0)
+        XCTAssertTrue(BadgeEvaluator.newlyEarned(context: context, alreadyEarned: [.firstStep]).isEmpty)
     }
 
     func testStableOrdering() {
-        let context = BadgeContext(totalCompletedWorkouts: 10, currentStreakWeeks: 3,
-                                   maxRunIntervalsInOneRun: 5, totalRunIntervals: 25)
+        let context = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 3, sessionsThisWeek: 3)
         let earned = BadgeEvaluator.newlyEarned(context: context, alreadyEarned: [])
         XCTAssertEqual(earned, earned.sorted { Badge.allCases.firstIndex(of: $0)! < Badge.allCases.firstIndex(of: $1)! })
     }

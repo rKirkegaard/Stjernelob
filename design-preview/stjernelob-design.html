@@ -82,6 +82,17 @@
   .row .val { color:var(--muted); font-variant-numeric: tabular-nums; }
   .ico { width:26px; text-align:center; font-size:18px; }
 
+  /* signal-lyd-vælger (klikbar i browseren) */
+  .row.stack { display:block; }
+  .row.stack .grow { display:block; margin-bottom:8px; font-weight:600; }
+  .sounds { display:flex; flex-wrap:wrap; gap:6px; }
+  .snd { border:1px solid var(--line); background:#fff; border-radius:999px;
+    padding:6px 11px; font-size:12px; color:var(--ink); cursor:pointer;
+    font-family:inherit; line-height:1; transition:transform .06s ease; }
+  .snd:hover { border-color:var(--brand); }
+  .snd:active { transform:scale(0.94); }
+  .snd.on { background:var(--brand); color:#fff; border-color:var(--brand); font-weight:700; }
+
   .chips { display:flex; gap:10px; margin-bottom:14px; }
   .chip { flex:1; background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
     padding:12px 8px; text-align:center; }
@@ -119,11 +130,11 @@
 
   /* badges grid */
   .grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
-  .badge { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 6px;
-    text-align:center; }
+  .badge { text-align:center; }
+  .badge .b-svg { width:100%; height:auto; display:block; }
   .badge .b-ico { font-size:26px; }
   .badge .b-lab { font-size:10px; margin-top:4px; }
-  .badge.locked { opacity:0.45; }
+  .badge.locked { opacity:0.4; filter:grayscale(0.5); }
 
   /* calendar */
   .cal { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
@@ -300,33 +311,49 @@
         </div>
         <div class="section-h">Optjente mærker (6)</div>
         <div class="grid" style="margin-bottom:14px">
-          <div class="badge"><div class="b-ico">🏃</div><div class="b-lab">Første løbestykke</div></div>
-          <div class="badge"><div class="b-ico">2️⃣</div><div class="b-lab">To på en tur</div></div>
-          <div class="badge"><div class="b-ico">5️⃣</div><div class="b-lab">Fem på en tur</div></div>
-          <div class="badge"><div class="b-ico">🏁</div><div class="b-lab">Første tur</div></div>
-          <div class="badge"><div class="b-ico">🌅</div><div class="b-lab">Morgenfugl</div></div>
-          <div class="badge"><div class="b-ico">🔥</div><div class="b-lab">Tre ugers stime</div></div>
+          <div class="badge"><img class="b-svg" src="badges/første-skridt.svg" alt="Første skridt"></div>
+          <div class="badge"><img class="b-svg" src="badges/modig-starter.svg" alt="Modig starter"></div>
+          <div class="badge"><img class="b-svg" src="badges/en-uge-i-traek.svg" alt="En uge i træk"></div>
+          <div class="badge"><img class="b-svg" src="badges/2-i-en-uge.svg" alt="2 i én uge"></div>
+          <div class="badge"><img class="b-svg" src="badges/tidlig-fugl.svg" alt="Tidlig fugl"></div>
+          <div class="badge"><img class="b-svg" src="badges/tilbage-igen.svg" alt="Tilbage igen"></div>
         </div>
-        <div class="section-h">Endnu ikke låst op (17)</div>
+        <div class="section-h">Endnu ikke låst op (32)</div>
         <div class="grid">
-          <div class="badge locked"><div class="b-ico">8️⃣</div><div class="b-lab">Otte på en tur</div></div>
-          <div class="badge locked"><div class="b-ico">🔟</div><div class="b-lab">Ti løbestykker</div></div>
-          <div class="badge locked"><div class="b-ico">🎖</div><div class="b-lab">25 løbestykker</div></div>
-          <div class="badge locked"><div class="b-ico">🏅</div><div class="b-lab">50 løbestykker</div></div>
-          <div class="badge locked"><div class="b-ico">✅</div><div class="b-lab">To gode ture</div></div>
-          <div class="badge locked"><div class="b-ico">⭐️</div><div class="b-lab">Fem ture</div></div>
-          <div class="badge locked"><div class="b-ico">🌟</div><div class="b-lab">Ti ture</div></div>
-          <div class="badge locked"><div class="b-ico">🏆</div><div class="b-lab">Femogtyve ture</div></div>
-          <div class="badge locked"><div class="b-ico">🔥</div><div class="b-lab">Fem ugers stime</div></div>
-          <div class="badge locked"><div class="b-ico">🌙</div><div class="b-lab">Aftenstjerne</div></div>
-          <div class="badge locked"><div class="b-ico">📅</div><div class="b-lab">Weekendløber</div></div>
-          <div class="badge locked"><div class="b-ico">❄️</div><div class="b-lab">Vinterløber</div></div>
-          <div class="badge locked"><div class="b-ico">☀️</div><div class="b-lab">Sommerløber</div></div>
-          <div class="badge locked"><div class="b-ico">🌧</div><div class="b-lab">Regnvejrshelt</div></div>
-          <div class="badge locked"><div class="b-ico">📷</div><div class="b-lab">Fotograf</div></div>
-          <div class="badge locked"><div class="b-ico">👋</div><div class="b-lab">Velkommen tilbage</div></div>
-          <div class="badge locked"><div class="b-ico">🏵</div><div class="b-lab">Grundforløb</div></div>
+          <div class="badge locked"><img class="b-svg" src="badges/3-i-en-uge.svg" alt="3 i én uge"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/3-ugers-streak.svg" alt="3-ugers streak"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/ubrydelig.svg" alt="Ubrydelig"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/maanedshelt.svg" alt="Månedshelt"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/aftenstjerne.svg" alt="Aftenstjerne"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/foraarsluft.svg" alt="Forårsluft"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/efteraarsloeber.svg" alt="Efterårsløber"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/is-i-maven.svg" alt="Is i maven"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/solskinsloeber.svg" alt="Solskinsløber"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/regnvejrsloeber.svg" alt="Regnvejrsløber"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/taagelober.svg" alt="Tågeløber"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/regnbue-runner.svg" alt="Regnbue-runner"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/juleloeber.svg" alt="Juleløber"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/nytaarsstart.svg" alt="Nytårsstart"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/foedselsdag.svg" alt="Fødselsdagstur"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/byloeber.svg" alt="Byløber"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/naturpige.svg" alt="Naturpige"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/ny-rute.svg" alt="Ny rute"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/tur-foto.svg" alt="Tur-foto"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/ny-playlist.svg" alt="Ny playlist"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/musik-i-oererne.svg" alt="Musik i ørerne"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/podcast-runner.svg" alt="Podcast-runner"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/aldrig-give-op.svg" alt="Aldrig give op"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/fejer-dig-selv.svg" alt="Fejr dig selv"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/hepperen.svg" alt="Hepperen"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/loebemakker.svg" alt="Løbemakker"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/klar-til-start.svg" alt="Klar til start"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/loebedagbog.svg" alt="Løbedagbog"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/pakket-og-klar.svg" alt="Pakket og klar"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/straek-stjerne.svg" alt="Stræk-stjerne"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/soevn-samler.svg" alt="Søvn-samler"></div>
+          <div class="badge locked"><img class="b-svg" src="badges/vand-dronning.svg" alt="Vand-dronning"></div>
         </div>
+        <div class="small muted" style="margin-top:10px">Nogle mærker giver du dig selv, når du har gjort tingen (fx løbet med en makker).</div>
       </div></div>
     </div>
 
@@ -343,10 +370,30 @@
           <div class="row"><span class="grow">Lyde</span><span class="toggle"></span></div>
           <div class="row"><span class="grow">Vibration</span><span class="toggle"></span></div>
         </div>
-        <div class="section-h">Signallyde</div>
+        <div class="section-h">Signallyde — tryk for at høre</div>
         <div class="card">
-          <div class="row"><span class="grow">🏃 Når du skal løbe</span><span class="val">Energisk ›</span></div>
-          <div class="row"><span class="grow">🚶 Når du skal gå</span><span class="val">Blød ›</span></div>
+          <div class="row stack">
+            <span class="grow">🏃 Når du skal løbe</span>
+            <div class="sounds">
+              <button class="snd on" data-sound="energetic">Energisk</button>
+              <button class="snd" data-sound="soft">Blød</button>
+              <button class="snd" data-sound="bell">Klokke</button>
+              <button class="snd" data-sound="chime">Klang</button>
+              <button class="snd" data-sound="whistle">Fløjt</button>
+              <button class="snd" data-sound="marimba">Marimba</button>
+            </div>
+          </div>
+          <div class="row stack">
+            <span class="grow">🚶 Når du skal gå</span>
+            <div class="sounds">
+              <button class="snd" data-sound="energetic">Energisk</button>
+              <button class="snd on" data-sound="soft">Blød</button>
+              <button class="snd" data-sound="bell">Klokke</button>
+              <button class="snd" data-sound="chime">Klang</button>
+              <button class="snd" data-sound="whistle">Fløjt</button>
+              <button class="snd" data-sound="marimba">Marimba</button>
+            </div>
+          </div>
         </div>
         <div class="section-h">Forælder-deling</div>
         <div class="card">
@@ -363,5 +410,63 @@
     </div>
 
   </div>
+
+  <script>
+  // Afspiller en tydeligt forskellig signallyd for hver mulighed, så designet
+  // kan afprøves i browseren. Lydene er syntetiserede stand-ins for de
+  // designede app-assets — de matcher rækkefølgen/navnene i SignalSound.
+  (function () {
+    let ctx;
+    function audio() {
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      return ctx;
+    }
+    function tone(freq, start, dur, type, gain) {
+      const c = audio(), t0 = c.currentTime + start;
+      const osc = c.createOscillator(), g = c.createGain();
+      osc.type = type || "sine";
+      osc.frequency.setValueAtTime(freq, t0);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(gain || 0.25, t0 + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      osc.connect(g).connect(c.destination);
+      osc.start(t0);
+      osc.stop(t0 + dur + 0.03);
+    }
+    function sweep(f1, f2, start, dur, type, gain) {
+      const c = audio(), t0 = c.currentTime + start;
+      const osc = c.createOscillator(), g = c.createGain();
+      osc.type = type || "sine";
+      osc.frequency.setValueAtTime(f1, t0);
+      osc.frequency.exponentialRampToValueAtTime(f2, t0 + dur);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(gain || 0.2, t0 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      osc.connect(g).connect(c.destination);
+      osc.start(t0);
+      osc.stop(t0 + dur + 0.03);
+    }
+    // Gentag et motiv et par gange, så signalet er nemt at høre — også når
+    // telefonen ligger i en løbetaske eller et armbånd.
+    function repeated(times, gap, fn) { for (let i = 0; i < times; i++) fn(i * gap); }
+    const recipes = {
+      energetic() { repeated(3, 0.26, s => { tone(880, s, 0.1, "square", 0.2); tone(1180, s + 0.09, 0.11, "square", 0.18); }); },
+      soft()      { repeated(3, 0.34, s => tone(523, s, 0.24, "sine", 0.26)); },
+      bell()      { repeated(3, 0.36, s => { tone(1318, s, 0.42, "sine", 0.26); tone(2637, s, 0.3, "sine", 0.06); }); },
+      chime()     { repeated(3, 0.32, s => { tone(1047, s, 0.18, "sine", 0.22); tone(1568, s + 0.08, 0.2, "sine", 0.18); }); },
+      whistle()   { repeated(3, 0.32, s => sweep(1500, 2200, s, 0.18, "sine", 0.16)); },
+      marimba()   { repeated(4, 0.24, s => { tone(587, s, 0.18, "triangle", 0.28); tone(1174, s, 0.09, "triangle", 0.09); }); }
+    };
+    document.addEventListener("click", function (e) {
+      const btn = e.target.closest(".snd");
+      if (!btn) return;
+      const c = audio();
+      if (c.state === "suspended") c.resume();
+      btn.parentElement.querySelectorAll(".snd").forEach(b => b.classList.remove("on"));
+      btn.classList.add("on");
+      (recipes[btn.dataset.sound] || recipes.energetic)();
+    });
+  })();
+  </script>
 </body>
 </html>

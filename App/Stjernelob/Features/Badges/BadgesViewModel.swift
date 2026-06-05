@@ -25,4 +25,12 @@ final class BadgesViewModel {
 
     var earnedBadges: [Badge] { Badge.allCases.filter { earned.contains($0) } }
     var lockedBadges: [Badge] { Badge.allCases.filter { !earned.contains($0) } }
+
+    /// Barnet låser selv et manuelt mærke op, når hun har gjort tingen
+    /// (fx løbet med en makker). Selvbestemt og legende — aldrig et krav.
+    func claim(_ badge: Badge) {
+        guard badge.isManual else { return }
+        try? environment.badgeRepository.award(badge)
+        load()
+    }
 }

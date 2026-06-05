@@ -206,15 +206,13 @@ final class ActiveRunViewModel {
     private func awardBadges(for summary: WorkoutSummary) {
         // Turen er allerede gemt, så `all()` indeholder den netop afsluttede tur.
         let workouts = (try? environment.workoutRepository.all()) ?? []
-        let streakWeeks = streakWeeksNow()
-        let finishedBase = programPhase == .base && programWeekId == 8 && summary.isComplete
 
         let date = now()
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
-        // Løbestykker (gennemførte løbeintervaller) — også fra afbrudte ture,
-        // så delvist arbejde stadig tæller med og motiverer.
-        let runIntervals = workouts.map(\.runIntervalsCompleted)
+        let thisWeek = WeekIdentifier(date: date)
+        let monthComponents = calendar.dateComponents([.year, .month], from: date)
+
         let datesNewestFirst = workouts.map(\.date).sorted(by: >)
         let daysSincePrevious = datesNewestFirst.count >= 2
             ? (calendar.dateComponents([.day], from: datesNewestFirst[1], to: datesNewestFirst[0]).day ?? 0)
@@ -222,17 +220,19 @@ final class ActiveRunViewModel {
 
         let context = BadgeContext(
             totalCompletedWorkouts: workouts.count,
-            currentStreakWeeks: streakWeeks,
-            maxRunIntervalsInOneRun: runIntervals.max() ?? 0,
-            totalRunIntervals: runIntervals.reduce(0, +),
-            runsWithFourPlusIntervals: runIntervals.filter { $0 >= 4 }.count,
+            currentStreakWeeks: streakWeeksNow(),
+            sessionsThisWeek: workouts.filter { WeekIdentifier(date: $0.date) == thisWeek }.count,
+            workoutsThisMonth: workouts.filter {
+                calendar.dateComponents([.year, .month], from: $0.date) == monthComponents
+            }.count,
+            hasCompletedFullRun: workouts.contains { $0.isComplete },
+            hasCompletedHardRun: workouts.contains { $0.isComplete && ($0.perceivedEffort ?? 0) >= 8 },
             startedInMorning: hour < 12,
             startedInEvening: hour >= 18,
-            isWeekendWorkout: calendar.isDateInWeekend(date),
             tookPhoto: workouts.contains { !$0.photos.isEmpty },
             isComeback: datesNewestFirst.count >= 2 && daysSincePrevious >= 14,
             month: calendar.component(.month, from: date),
-            finishedBaseProgram: finishedBase
+            day: calendar.component(.day, from: date)
         )
         let already = (try? environment.badgeRepository.earned()) ?? []
         for badge in BadgeEvaluator.newlyEarned(context: context, alreadyEarned: already) {

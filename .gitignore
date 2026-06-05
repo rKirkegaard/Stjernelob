@@ -22,3 +22,6 @@ xcuserdata/
 
 # Windows / værktøjer
 Thumbs.db
+
+# Leverede asset-pakker (pakkes ud i repoet; selve zip'en committes ikke)
+*.zip

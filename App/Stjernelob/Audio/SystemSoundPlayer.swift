@@ -22,7 +22,27 @@ final class SystemSoundPlayer: SoundPlayer {
     }
 
     func play(_ cue: SoundCue) {
-        AudioServicesPlaySystemSound(systemSoundID(for: cue))
+        let soundID = systemSoundID(for: cue)
+        switch cue {
+        case .intervalSignal:
+            // Interval-skiftet er det vigtigste signal: gentag det et par gange,
+            // så det kan høres, selv når telefonen ligger i en løbetaske eller
+            // et armbånd. Øvrige signaler (stjerne, halvvejs, mål) spilles én gang.
+            playRepeated(soundID, times: 3, interval: .milliseconds(450))
+        case .countdownTick, .star, .halfway, .fanfare:
+            AudioServicesPlaySystemSound(soundID)
+        }
+    }
+
+    /// Afspil samme systemlyd nogle gange med et lille mellemrum, så et signal
+    /// bliver til et hørbart, gentaget mønster frem for ét let-overhørligt bip.
+    private func playRepeated(_ soundID: SystemSoundID, times: Int, interval: Duration) {
+        Task { @MainActor in
+            for index in 0..<times {
+                AudioServicesPlaySystemSound(soundID)
+                if index < times - 1 { try? await Task.sleep(for: interval) }
+            }
+        }
     }
 
     /// Pladsholder-tildeling af systemlyde til hvert signal.

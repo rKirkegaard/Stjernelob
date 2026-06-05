@@ -2,8 +2,10 @@ import SwiftUI
 import StjernelobCore
 
 /// Samling: niveau-fremgang og badges (optjente fremhævet, resten dæmpede).
+/// Nogle mærker kan appen ikke måle — dem låser barnet selv op ved at trykke.
 struct BadgesView: View {
     @State var viewModel: BadgesViewModel
+    @State private var badgeToClaim: Badge?
 
     private let columns = [GridItem(.adaptive(minimum: 100), spacing: Theme.Spacing.medium)]
 
@@ -16,11 +18,26 @@ struct BadgesView: View {
                     section(Text(Strings.Badges.earnedSection), badges: viewModel.earnedBadges, earned: true)
                 }
                 section(Text(Strings.Badges.lockedSection), badges: viewModel.lockedBadges, earned: false)
+
+                Text(Strings.Badges.manualNote)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
             .padding(Theme.Spacing.medium)
         }
         .navigationTitle(Text(Strings.Badges.title))
         .onAppear { viewModel.load() }
+        .confirmationDialog(
+            badgeToClaim.map { Text(Strings.Badges.claimTitle(String(localized: $0.displayTitle))) } ?? Text(""),
+            isPresented: Binding(get: { badgeToClaim != nil }, set: { if !$0 { badgeToClaim = nil } }),
+            titleVisibility: .visible,
+            presenting: badgeToClaim
+        ) { badge in
+            Button { viewModel.claim(badge) } label: { Text(Strings.Badges.unlock) }
+            Button(role: .cancel) { } label: { Text(Strings.Badges.cancel) }
+        } message: { badge in
+            Text(badge.displayDetail)
+        }
     }
 
     private var levelCard: some View {
@@ -47,7 +64,12 @@ struct BadgesView: View {
             title.font(.headline)
             LazyVGrid(columns: columns, spacing: Theme.Spacing.medium) {
                 ForEach(badges) { badge in
-                    badgeCell(badge, earned: earned)
+                    if !earned, badge.isManual {
+                        Button { badgeToClaim = badge } label: { badgeCell(badge, earned: false) }
+                            .buttonStyle(.plain)
+                    } else {
+                        badgeCell(badge, earned: earned)
+                    }
                 }
             }
         }
@@ -55,12 +77,23 @@ struct BadgesView: View {
 
     private func badgeCell(_ badge: Badge, earned: Bool) -> some View {
         VStack(spacing: Theme.Spacing.small) {
-            Image(systemName: badge.symbolName)
-                .font(.system(size: 34))
-                .foregroundStyle(earned ? Theme.Colors.star : Color.secondary)
+            ZStack {
+                Circle().fill(badge.paletteBackground)
+                Text(badge.emoji).font(.system(size: 30))
+            }
+            .frame(width: 64, height: 64)
+
             Text(badge.displayTitle)
                 .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundStyle(earned ? badge.paletteInk : Color.secondary)
                 .multilineTextAlignment(.center)
+
+            if !earned, badge.isManual {
+                Text(Strings.Badges.tapToUnlock)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, Theme.Spacing.medium)
