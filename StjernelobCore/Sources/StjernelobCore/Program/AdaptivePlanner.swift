@@ -29,9 +29,10 @@ public enum AdaptivePlanner {
         completed >= completionThreshold(required: required)
     }
 
-    /// Mindste antal ture for at ugen er gennemført.
+    /// Mindste antal ture for at ugen er gennemført — to tredjedele af ugens
+    /// ture, rundet op (jf. doc'ens "min. 2 ud af 3"). Fx 3 → 2, 2 → 2, 1 → 1.
     public static func completionThreshold(required: Int) -> Int {
-        max(1, required - 1)
+        max(1, Int((Double(max(1, required)) * 2.0 / 3.0).rounded(.up)))
     }
 
     /// Beslut næste skridt ud fra ugens missede ture og hvor mange uger i træk,

@@ -52,12 +52,15 @@ final class AdaptivePlannerTests: XCTestCase {
     // MARK: - Uge-gennemførsel (min. 2 af 3)
 
     func testWeekCompletionThreshold() {
+        // 2 ud af 3 (oprundet): 3→2, 2→2, 1→1.
         XCTAssertTrue(AdaptivePlanner.isWeekComplete(required: 3, completed: 3))
         XCTAssertTrue(AdaptivePlanner.isWeekComplete(required: 3, completed: 2))
         XCTAssertFalse(AdaptivePlanner.isWeekComplete(required: 3, completed: 1))
-        // En 2-turs-uge må misse højst én.
-        XCTAssertTrue(AdaptivePlanner.isWeekComplete(required: 2, completed: 1))
-        XCTAssertFalse(AdaptivePlanner.isWeekComplete(required: 2, completed: 0))
+        XCTAssertTrue(AdaptivePlanner.isWeekComplete(required: 2, completed: 2))
+        XCTAssertFalse(AdaptivePlanner.isWeekComplete(required: 2, completed: 1))
+        XCTAssertEqual(AdaptivePlanner.completionThreshold(required: 3), 2)
+        XCTAssertEqual(AdaptivePlanner.completionThreshold(required: 2), 2)
+        XCTAssertEqual(AdaptivePlanner.completionThreshold(required: 1), 1)
     }
 
     // MARK: - Streak-nulstilling (>10 dage)

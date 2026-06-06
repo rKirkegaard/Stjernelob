@@ -26,38 +26,43 @@ final class ProgressionCoordinatorTests: XCTestCase {
         ))
     }
 
-    func testAdvancesAfterEasyWeek() throws {
+    func testAdvancesWhenWeekIsComplete() throws {
+        // Uge 1 kræver 2 ture (2-turs-uge); når de er gennemført i denne
+        // kalenderuge, rykker forløbet til uge 2.
         let env = AppEnvironment.preview
         try env.profileRepository.save(makeProfile(sessions: 3))
         let coordinator = ProgressionCoordinator(environment: env)
         let weekId = ProgressionEngine().currentWeek.id
 
         for _ in 0..<3 {
-            try addWorkout(env, weekId: weekId, effort: 4) // let
+            try addWorkout(env, weekId: weekId, effort: 4)
             coordinator.registerCompletedWorkout(programWeekId: weekId)
         }
 
         let updated = try XCTUnwrap(env.profileRepository.load())
         XCTAssertEqual(updated.currentWeekIndex, 1)
-        XCTAssertEqual(updated.completedSessionsThisProgramWeek, 0)
+        XCTAssertEqual(updated.completedSessionsThisProgramWeek, 3)
     }
 
-    func testRepeatsHardWeek() throws {
+    func testEffortDoesNotBlockProgression() throws {
+        // Progressionen er fremmøde-baseret: en hård uge (høj anstrengelse)
+        // bremser ikke fremgangen — kun missede ture gør (docs/loebeplan.md).
         let env = AppEnvironment.preview
         try env.profileRepository.save(makeProfile(sessions: 3))
         let coordinator = ProgressionCoordinator(environment: env)
         let weekId = ProgressionEngine().currentWeek.id
 
         for _ in 0..<3 {
-            try addWorkout(env, weekId: weekId, effort: 8) // hårdt
+            try addWorkout(env, weekId: weekId, effort: 9) // meget hårdt
             coordinator.registerCompletedWorkout(programWeekId: weekId)
         }
 
         let updated = try XCTUnwrap(env.profileRepository.load())
-        XCTAssertEqual(updated.currentWeekIndex, 0, "En hård uge skal gentages, ikke rykke frem")
+        XCTAssertEqual(updated.currentWeekIndex, 1)
     }
 
-    func testDoesNotAdvanceBeforeGoal() throws {
+    func testDoesNotAdvanceBeforeWeekComplete() throws {
+        // Én tur i en 2-turs-uge er under tærsklen (2 ud af … ≈ 2) → ingen fremgang.
         let env = AppEnvironment.preview
         try env.profileRepository.save(makeProfile(sessions: 3))
         let coordinator = ProgressionCoordinator(environment: env)

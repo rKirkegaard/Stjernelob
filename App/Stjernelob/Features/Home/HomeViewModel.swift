@@ -24,6 +24,10 @@ final class HomeViewModel {
     }
 
     func load(now: Date = Date()) {
+        // Genberegn placeringen i forløbet ud fra historikken — så missede uger
+        // (blidt et trin tilbage) fanges, også uden en ny tur.
+        ProgressionCoordinator(environment: environment).reconcile(now: now)
+
         let profile = try? environment.profileRepository.load()
         sessionsPerWeek = profile?.defaultWeeklySessions ?? 3
 
