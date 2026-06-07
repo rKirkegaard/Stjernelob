@@ -227,12 +227,12 @@ final class GamificationTests: XCTestCase {
 
     func testSecretMilestonesAreFlagged() {
         XCTAssertTrue(Badge.activeWeeks52.isSecret)
-        XCTAssertTrue(Badge.stars500.isSecret)
         XCTAssertTrue(Badge.stars1000.isSecret)
         XCTAssertTrue(Badge.interval1000.isSecret)
         XCTAssertTrue(Badge.runs100.isSecret)
         XCTAssertFalse(Badge.firstStep.isSecret)
         XCTAssertFalse(Badge.runs50.isSecret)
+        XCTAssertFalse(Badge.interval15.isSecret)
     }
 
     func testMilestonesAreAutomatic() {

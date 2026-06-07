@@ -64,14 +64,22 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
     case waterQueen = "vand-dronning"
 
     // Milepæle (importeret) — tildeles automatisk ud fra historikken.
-    // Løbeintervaller i alt.
+    // Løbeintervaller i alt — tæt stige, så der altid er et nært næste mål.
     case interval5 = "interval-5"
     case interval10 = "interval-10"
+    case interval15 = "interval-15"
+    case interval20 = "interval-20"
     case interval25 = "interval-25"
+    case interval30 = "interval-30"
+    case interval40 = "interval-40"
     case interval50 = "interval-50"
+    case interval75 = "interval-75"
     case interval100 = "interval-100"
+    case interval150 = "interval-150"
     case interval200 = "interval-200"
+    case interval300 = "interval-300"
     case interval500 = "interval-500"
+    case interval750 = "interval-750"
     case interval1000 = "interval-1000"
     // Løbeintervaller i én tur.
     case sessionFourIntervals = "session-4-intervaller"
@@ -88,7 +96,9 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
     case runs30 = "tur-30"
     case runs40 = "tur-40"
     case runs50 = "tur-50"
+    case runs60 = "tur-60"
     case runs75 = "tur-75"
+    case runs80 = "tur-80"
     case runs100 = "tur-100"
     // Aktive uger (uger med mindst én tur).
     case activeWeeks1 = "aktiv-uge-1"
@@ -135,8 +145,9 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
     /// overraskelse ved de største milepæle.
     public var isSecret: Bool {
         switch self {
-        case .interval500, .interval1000, .runs75, .runs100,
-             .activeWeeks52, .stars500, .stars1000:
+        // Kun de allerstørste mål er en skjult overraskelse — resten vises som
+        // nære, opnåelige trin (samlingen viser kun det næste trin pr. gruppe).
+        case .interval1000, .runs100, .activeWeeks52, .stars1000:
             return true
         default: return false
         }
@@ -243,11 +254,19 @@ public enum BadgeEvaluator {
         // Milepæle (importeret) — tildeles automatisk ud fra historikken.
         case .interval5: return context.totalRunIntervals >= 5
         case .interval10: return context.totalRunIntervals >= 10
+        case .interval15: return context.totalRunIntervals >= 15
+        case .interval20: return context.totalRunIntervals >= 20
         case .interval25: return context.totalRunIntervals >= 25
+        case .interval30: return context.totalRunIntervals >= 30
+        case .interval40: return context.totalRunIntervals >= 40
         case .interval50: return context.totalRunIntervals >= 50
+        case .interval75: return context.totalRunIntervals >= 75
         case .interval100: return context.totalRunIntervals >= 100
+        case .interval150: return context.totalRunIntervals >= 150
         case .interval200: return context.totalRunIntervals >= 200
+        case .interval300: return context.totalRunIntervals >= 300
         case .interval500: return context.totalRunIntervals >= 500
+        case .interval750: return context.totalRunIntervals >= 750
         case .interval1000: return context.totalRunIntervals >= 1000
         case .sessionFourIntervals: return context.maxRunIntervalsInOneRun >= 4
         case .sessionSixIntervals: return context.maxRunIntervalsInOneRun >= 6
@@ -262,7 +281,9 @@ public enum BadgeEvaluator {
         case .runs30: return context.totalCompletedWorkouts >= 30
         case .runs40: return context.totalCompletedWorkouts >= 40
         case .runs50: return context.totalCompletedWorkouts >= 50
+        case .runs60: return context.totalCompletedWorkouts >= 60
         case .runs75: return context.totalCompletedWorkouts >= 75
+        case .runs80: return context.totalCompletedWorkouts >= 80
         case .runs100: return context.totalCompletedWorkouts >= 100
         case .activeWeeks1: return context.totalActiveWeeks >= 1
         case .activeWeeks2: return context.totalActiveWeeks >= 2

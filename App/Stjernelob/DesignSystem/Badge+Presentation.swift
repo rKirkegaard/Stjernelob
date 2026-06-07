@@ -52,7 +52,15 @@ extension Badge {
         case .interval50: return "👟"
         case .interval100: return "🏅"
         case .interval200: return "🏅"
+        case .interval15: return "👟"
+        case .interval20: return "👟"
+        case .interval30: return "👟"
+        case .interval40: return "👟"
+        case .interval75: return "👟"
+        case .interval150: return "🏅"
+        case .interval300: return "🏅"
         case .interval500: return "🏅"
+        case .interval750: return "🏅"
         case .interval1000: return "🏅"
         case .sessionFourIntervals: return "⚡"
         case .sessionSixIntervals: return "⚡"
@@ -67,7 +75,9 @@ extension Badge {
         case .runs30: return "🏃"
         case .runs40: return "🏃"
         case .runs50: return "🏃"
+        case .runs60: return "🏃"
         case .runs75: return "🏃"
+        case .runs80: return "🏃"
         case .runs100: return "🏆"
         case .activeWeeks1: return "📆"
         case .activeWeeks2: return "📆"
@@ -136,7 +146,15 @@ extension Badge {
         case .interval50: return .init("badge.interval-50.title", defaultValue: "50 intervaller")
         case .interval100: return .init("badge.interval-100.title", defaultValue: "100 intervaller")
         case .interval200: return .init("badge.interval-200.title", defaultValue: "200 intervaller")
+        case .interval15: return .init("badge.interval-15.title", defaultValue: "15 intervaller")
+        case .interval20: return .init("badge.interval-20.title", defaultValue: "20 intervaller")
+        case .interval30: return .init("badge.interval-30.title", defaultValue: "30 intervaller")
+        case .interval40: return .init("badge.interval-40.title", defaultValue: "40 intervaller")
+        case .interval75: return .init("badge.interval-75.title", defaultValue: "75 intervaller")
+        case .interval150: return .init("badge.interval-150.title", defaultValue: "150 intervaller")
+        case .interval300: return .init("badge.interval-300.title", defaultValue: "300 intervaller")
         case .interval500: return .init("badge.interval-500.title", defaultValue: "500 intervaller")
+        case .interval750: return .init("badge.interval-750.title", defaultValue: "750 intervaller")
         case .interval1000: return .init("badge.interval-1000.title", defaultValue: "1000 intervaller")
         case .sessionFourIntervals: return .init("badge.session-4-intervaller.title", defaultValue: "4 i træk")
         case .sessionSixIntervals: return .init("badge.session-6-intervaller.title", defaultValue: "6 i træk")
@@ -151,7 +169,9 @@ extension Badge {
         case .runs30: return .init("badge.tur-30.title", defaultValue: "30 ture")
         case .runs40: return .init("badge.tur-40.title", defaultValue: "40 ture")
         case .runs50: return .init("badge.tur-50.title", defaultValue: "50 ture")
+        case .runs60: return .init("badge.tur-60.title", defaultValue: "60 ture")
         case .runs75: return .init("badge.tur-75.title", defaultValue: "75 ture")
+        case .runs80: return .init("badge.tur-80.title", defaultValue: "80 ture")
         case .runs100: return .init("badge.tur-100.title", defaultValue: "100 ture")
         case .activeWeeks1: return .init("badge.aktiv-uge-1.title", defaultValue: "Første aktive uge")
         case .activeWeeks2: return .init("badge.aktiv-uge-2.title", defaultValue: "2 aktive uger")
@@ -220,7 +240,15 @@ extension Badge {
         case .interval50: return .init("badge.interval-50.detail", defaultValue: "Halvtredseren — 50 løbeintervaller gennemført!")
         case .interval100: return .init("badge.interval-100.detail", defaultValue: "Tre cifre! 100 løbeintervaller i alt 🎉")
         case .interval200: return .init("badge.interval-200.detail", defaultValue: "200 gange har du sagt ja til at løbe")
+        case .interval15: return .init("badge.interval-15.detail", defaultValue: "15 løbeintervaller i alt — flot fremgang")
+        case .interval20: return .init("badge.interval-20.detail", defaultValue: "20 løbeintervaller gennemført")
+        case .interval30: return .init("badge.interval-30.detail", defaultValue: "30 løbeintervaller i alt — det vokser støt")
+        case .interval40: return .init("badge.interval-40.detail", defaultValue: "40 løbeintervaller gennemført")
+        case .interval75: return .init("badge.interval-75.detail", defaultValue: "75 løbeintervaller i alt")
+        case .interval150: return .init("badge.interval-150.detail", defaultValue: "150 løbeintervaller gennemført")
+        case .interval300: return .init("badge.interval-300.detail", defaultValue: "300 løbeintervaller i alt — sejt!")
         case .interval500: return .init("badge.interval-500.detail", defaultValue: "500 intervaller. Det er ikke tilfældigt — det er dig.")
+        case .interval750: return .init("badge.interval-750.detail", defaultValue: "750 løbeintervaller i alt")
         case .interval1000: return .init("badge.interval-1000.detail", defaultValue: "Et helt tusinde! Du er officielt en interval-legende")
         case .sessionFourIntervals: return .init("badge.session-4-intervaller.detail", defaultValue: "Gennemfør 4 løbeintervaller i samme tur")
         case .sessionSixIntervals: return .init("badge.session-6-intervaller.detail", defaultValue: "Gennemfør 6 løbeintervaller i samme tur")
@@ -235,7 +263,9 @@ extension Badge {
         case .runs30: return .init("badge.tur-30.detail", defaultValue: "30 ture gennemført. Det er noget at fejre.")
         case .runs40: return .init("badge.tur-40.detail", defaultValue: "40 ture! Dine ben husker det her i søvne.")
         case .runs50: return .init("badge.tur-50.detail", defaultValue: "50 løbeture. Det er virkelig mange — og alle gennemført af dig.")
+        case .runs60: return .init("badge.tur-60.detail", defaultValue: "60 løbeture gennemført")
         case .runs75: return .init("badge.tur-75.detail", defaultValue: "75 ture — det er ikke en hobby, det er en del af dig")
+        case .runs80: return .init("badge.tur-80.detail", defaultValue: "80 løbeture — næsten ved hundrede")
         case .runs100: return .init("badge.tur-100.detail", defaultValue: "100 løbeture. Tre cifre. Helt vildt.")
         case .activeWeeks1: return .init("badge.aktiv-uge-1.detail", defaultValue: "Gennemfør mindst 1 tur i din første uge")
         case .activeWeeks2: return .init("badge.aktiv-uge-2.detail", defaultValue: "To uger i træk med mindst én tur")
@@ -289,12 +319,13 @@ extension Badge {
              .sleepCollector, .waterQueen:
             return ("FAEEDA", "412402")
         // Milepæle (importeret).
-        case .interval5, .interval10, .interval25, .interval50, .interval100,
-             .interval200, .interval500, .interval1000,
+        case .interval5, .interval10, .interval15, .interval20, .interval25,
+             .interval30, .interval40, .interval50, .interval75, .interval100,
+             .interval150, .interval200, .interval300, .interval500, .interval750, .interval1000,
              .sessionFourIntervals, .sessionSixIntervals, .sessionEightIntervals:
             return ("E1F5EE", "085041")
         case .runs1, .runs3, .runs5, .runs10, .runs15, .runs20, .runs25,
-             .runs30, .runs40, .runs50, .runs75, .runs100:
+             .runs30, .runs40, .runs50, .runs60, .runs75, .runs80, .runs100:
             return ("EEEDFE", "26215C")
         case .activeWeeks1, .activeWeeks2, .activeWeeks4, .activeWeeks6, .activeWeeks8,
              .activeWeeks10, .activeWeeks12, .activeWeeks16, .activeWeeks20,
