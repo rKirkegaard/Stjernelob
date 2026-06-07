@@ -232,7 +232,11 @@ final class ActiveRunViewModel {
             tookPhoto: workouts.contains { !$0.photos.isEmpty },
             isComeback: datesNewestFirst.count >= 2 && daysSincePrevious >= 14,
             month: calendar.component(.month, from: date),
-            day: calendar.component(.day, from: date)
+            day: calendar.component(.day, from: date),
+            totalRunIntervals: workouts.reduce(0) { $0 + $1.runIntervalsCompleted },
+            maxRunIntervalsInOneRun: workouts.map(\.runIntervalsCompleted).max() ?? 0,
+            totalActiveWeeks: Set(workouts.map { WeekIdentifier(date: $0.date) }).count,
+            totalStars: workouts.reduce(0) { $0 + $1.starsEarned }
         )
         let already = (try? environment.badgeRepository.earned()) ?? []
         for badge in BadgeEvaluator.newlyEarned(context: context, alreadyEarned: already) {

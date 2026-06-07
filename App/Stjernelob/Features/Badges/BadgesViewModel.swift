@@ -24,7 +24,31 @@ final class BadgesViewModel {
     }
 
     var earnedBadges: [Badge] { Badge.allCases.filter { earned.contains($0) } }
-    var lockedBadges: [Badge] { Badge.allCases.filter { !earned.contains($0) } }
+
+    /// Milepæls-mærker grupperet i stigende trin (intervaller, ture, aktive uger,
+    /// stjerner). Bruges til kun at vise det *næste* trin pr. gruppe, så samlingen
+    /// ikke bliver en lang væg af fjerne mål.
+    private static let milestoneGroups: [[Badge]] = [
+        [.interval5, .interval10, .interval25, .interval50, .interval100, .interval200, .interval500, .interval1000],
+        [.sessionFourIntervals, .sessionSixIntervals, .sessionEightIntervals],
+        [.runs1, .runs3, .runs5, .runs10, .runs15, .runs20, .runs25, .runs30, .runs40, .runs50, .runs75, .runs100],
+        [.activeWeeks1, .activeWeeks2, .activeWeeks4, .activeWeeks6, .activeWeeks8, .activeWeeks10, .activeWeeks12, .activeWeeks16, .activeWeeks20, .activeWeeks26, .activeWeeks52],
+        [.stars10, .stars25, .stars50, .stars100, .stars250, .stars500, .stars1000],
+    ]
+    private static let milestoneSet: Set<Badge> = Set(milestoneGroups.flatMap { $0 })
+
+    /// Endnu ikke optjente mærker. Hemmelige mærker skjules indtil de er låst op,
+    /// og af milepælene vises kun det næste trin i hver gruppe — så det føles som
+    /// et nært, opnåeligt mål frem for en uendelig liste.
+    var lockedBadges: [Badge] {
+        let base = Badge.allCases.filter {
+            !earned.contains($0) && !$0.isSecret && !Self.milestoneSet.contains($0)
+        }
+        let nextMilestones = Self.milestoneGroups.compactMap { group in
+            group.first { !earned.contains($0) && !$0.isSecret }
+        }
+        return base + nextMilestones
+    }
 
     /// Barnet låser selv et manuelt mærke op, når hun har gjort tingen
     /// (fx løbet med en makker). Selvbestemt og legende — aldrig et krav.

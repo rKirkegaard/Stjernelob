@@ -63,6 +63,54 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
     case sleepCollector = "soevn-samler"
     case waterQueen = "vand-dronning"
 
+    // Milepæle (importeret) — tildeles automatisk ud fra historikken.
+    // Løbeintervaller i alt.
+    case interval5 = "interval-5"
+    case interval10 = "interval-10"
+    case interval25 = "interval-25"
+    case interval50 = "interval-50"
+    case interval100 = "interval-100"
+    case interval200 = "interval-200"
+    case interval500 = "interval-500"
+    case interval1000 = "interval-1000"
+    // Løbeintervaller i én tur.
+    case sessionFourIntervals = "session-4-intervaller"
+    case sessionSixIntervals = "session-6-intervaller"
+    case sessionEightIntervals = "session-8-intervaller"
+    // Antal ture i alt.
+    case runs1 = "tur-1"
+    case runs3 = "tur-3"
+    case runs5 = "tur-5"
+    case runs10 = "tur-10"
+    case runs15 = "tur-15"
+    case runs20 = "tur-20"
+    case runs25 = "tur-25"
+    case runs30 = "tur-30"
+    case runs40 = "tur-40"
+    case runs50 = "tur-50"
+    case runs75 = "tur-75"
+    case runs100 = "tur-100"
+    // Aktive uger (uger med mindst én tur).
+    case activeWeeks1 = "aktiv-uge-1"
+    case activeWeeks2 = "aktiv-uge-2"
+    case activeWeeks4 = "aktiv-uge-4"
+    case activeWeeks6 = "aktiv-uge-6"
+    case activeWeeks8 = "aktiv-uge-8"
+    case activeWeeks10 = "aktiv-uge-10"
+    case activeWeeks12 = "aktiv-uge-12"
+    case activeWeeks16 = "aktiv-uge-16"
+    case activeWeeks20 = "aktiv-uge-20"
+    case activeWeeks26 = "aktiv-uge-26"
+    case activeWeeks52 = "aktiv-uge-52"
+    // Samlet antal stjerner.
+    case stars10 = "stjerner-10"
+    case stars25 = "stjerner-25"
+    case stars50 = "stjerner-50"
+    case stars100 = "stjerner-100"
+    case stars250 = "stjerner-250"
+    case stars500 = "stjerner-500"
+    case stars1000 = "stjerner-1000"
+
     public var id: String { rawValue }
 
     /// Lokaliseringsnøgler — den viste tekst ligger i app-lagets strengkatalog.
@@ -80,6 +128,17 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
             return true
         default:
             return false
+        }
+    }
+
+    /// Hemmelige mærker er skjult i samlingen, indtil de er låst op — en lille
+    /// overraskelse ved de største milepæle.
+    public var isSecret: Bool {
+        switch self {
+        case .interval500, .interval1000, .runs75, .runs100,
+             .activeWeeks52, .stars500, .stars1000:
+            return true
+        default: return false
         }
     }
 }
@@ -108,6 +167,15 @@ public struct BadgeContext: Sendable, Equatable {
     /// Dato for turen, brugt til årstids- og mærkedags-mærker. 0 = ukendt.
     public let month: Int
     public let day: Int
+    // Samlede tal til milepæls-mærker (importeret).
+    /// Gennemførte løbeintervaller i alt på tværs af alle ture.
+    public let totalRunIntervals: Int
+    /// Flest løbeintervaller i én enkelt tur til dato.
+    public let maxRunIntervalsInOneRun: Int
+    /// Antal kalenderuger med mindst én tur.
+    public let totalActiveWeeks: Int
+    /// Samlet antal optjente stjerner.
+    public let totalStars: Int
 
     public init(
         totalCompletedWorkouts: Int,
@@ -121,7 +189,11 @@ public struct BadgeContext: Sendable, Equatable {
         tookPhoto: Bool = false,
         isComeback: Bool = false,
         month: Int = 0,
-        day: Int = 0
+        day: Int = 0,
+        totalRunIntervals: Int = 0,
+        maxRunIntervalsInOneRun: Int = 0,
+        totalActiveWeeks: Int = 0,
+        totalStars: Int = 0
     ) {
         self.totalCompletedWorkouts = totalCompletedWorkouts
         self.currentStreakWeeks = currentStreakWeeks
@@ -135,6 +207,10 @@ public struct BadgeContext: Sendable, Equatable {
         self.isComeback = isComeback
         self.month = month
         self.day = day
+        self.totalRunIntervals = totalRunIntervals
+        self.maxRunIntervalsInOneRun = maxRunIntervalsInOneRun
+        self.totalActiveWeeks = totalActiveWeeks
+        self.totalStars = totalStars
     }
 }
 
@@ -163,6 +239,49 @@ public enum BadgeEvaluator {
                                     || (context.month == 1 && (1...7).contains(context.day))
         case .neverGiveUp:      return context.hasCompletedHardRun
         case .momentPhoto:      return context.tookPhoto
+
+        // Milepæle (importeret) — tildeles automatisk ud fra historikken.
+        case .interval5: return context.totalRunIntervals >= 5
+        case .interval10: return context.totalRunIntervals >= 10
+        case .interval25: return context.totalRunIntervals >= 25
+        case .interval50: return context.totalRunIntervals >= 50
+        case .interval100: return context.totalRunIntervals >= 100
+        case .interval200: return context.totalRunIntervals >= 200
+        case .interval500: return context.totalRunIntervals >= 500
+        case .interval1000: return context.totalRunIntervals >= 1000
+        case .sessionFourIntervals: return context.maxRunIntervalsInOneRun >= 4
+        case .sessionSixIntervals: return context.maxRunIntervalsInOneRun >= 6
+        case .sessionEightIntervals: return context.maxRunIntervalsInOneRun >= 8
+        case .runs1: return context.totalCompletedWorkouts >= 1
+        case .runs3: return context.totalCompletedWorkouts >= 3
+        case .runs5: return context.totalCompletedWorkouts >= 5
+        case .runs10: return context.totalCompletedWorkouts >= 10
+        case .runs15: return context.totalCompletedWorkouts >= 15
+        case .runs20: return context.totalCompletedWorkouts >= 20
+        case .runs25: return context.totalCompletedWorkouts >= 25
+        case .runs30: return context.totalCompletedWorkouts >= 30
+        case .runs40: return context.totalCompletedWorkouts >= 40
+        case .runs50: return context.totalCompletedWorkouts >= 50
+        case .runs75: return context.totalCompletedWorkouts >= 75
+        case .runs100: return context.totalCompletedWorkouts >= 100
+        case .activeWeeks1: return context.totalActiveWeeks >= 1
+        case .activeWeeks2: return context.totalActiveWeeks >= 2
+        case .activeWeeks4: return context.totalActiveWeeks >= 4
+        case .activeWeeks6: return context.totalActiveWeeks >= 6
+        case .activeWeeks8: return context.totalActiveWeeks >= 8
+        case .activeWeeks10: return context.totalActiveWeeks >= 10
+        case .activeWeeks12: return context.totalActiveWeeks >= 12
+        case .activeWeeks16: return context.totalActiveWeeks >= 16
+        case .activeWeeks20: return context.totalActiveWeeks >= 20
+        case .activeWeeks26: return context.totalActiveWeeks >= 26
+        case .activeWeeks52: return context.totalActiveWeeks >= 52
+        case .stars10: return context.totalStars >= 10
+        case .stars25: return context.totalStars >= 25
+        case .stars50: return context.totalStars >= 50
+        case .stars100: return context.totalStars >= 100
+        case .stars250: return context.totalStars >= 250
+        case .stars500: return context.totalStars >= 500
+        case .stars1000: return context.totalStars >= 1000
 
         // Manuelle mærker — låses op af barnet selv i appen.
         case .readyToStart, .rainRunner, .fogRunner, .rainbowRunner, .birthdayRun,
