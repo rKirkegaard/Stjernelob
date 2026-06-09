@@ -80,14 +80,18 @@ struct ActiveRunView: View {
             .font(.subheadline)
             .foregroundStyle(.secondary)
 
-            Label {
-                Text(Strings.ActiveRun.talkTestHint)
-            } icon: {
-                Image(systemName: "bubble.left.and.bubble.right.fill")
+            if let title = MovementGuide.title(for: snapshot.interval.kind) {
+                movementGuide(title: title, moves: MovementGuide.moves(for: snapshot.interval.kind))
+            } else {
+                Label {
+                    Text(Strings.ActiveRun.talkTestHint)
+                } icon: {
+                    Image(systemName: "bubble.left.and.bubble.right.fill")
+                }
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding(.top, Theme.Spacing.small)
             }
-            .font(.footnote)
-            .foregroundStyle(.secondary)
-            .padding(.top, Theme.Spacing.small)
 
             Spacer()
             controls
@@ -97,6 +101,27 @@ struct ActiveRunView: View {
         .onAppear { viewModel.start() }
         .onReceive(ticker) { _ in viewModel.tick() }
         .onChange(of: viewModel.starPops) { _, _ in popStar() }
+    }
+
+    private func movementGuide(title: LocalizedStringResource, moves: [GuideMove]) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.small) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+            ForEach(moves) { move in
+                Label {
+                    Text(move.text)
+                } icon: {
+                    Image(systemName: move.symbol).foregroundStyle(Theme.Colors.accent)
+                }
+                .font(.footnote)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(Theme.Spacing.medium)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
+        .padding(.horizontal, Theme.Spacing.medium)
+        .padding(.top, Theme.Spacing.small)
     }
 
     private func metric(icon: String, value: String) -> some View {

@@ -131,6 +131,28 @@ enum Strings {
         static let body = LocalizedStringResource(
             "restDay.body",
             defaultValue: "Hviledag i dag — din krop bliver stærkere imens. Vi ses i morgen!")
+        static let activeRecoveryTitle = LocalizedStringResource(
+            "restDay.activeRecoveryTitle", defaultValue: "Har du lyst til lidt let bevægelse?")
+        static let activeRecoveryNote = LocalizedStringResource(
+            "restDay.activeRecoveryNote", defaultValue: "Helt frivilligt — at slappe helt af er også perfekt.")
+        static let recoveryWalk = LocalizedStringResource("restDay.recovery.walk", defaultValue: "En rolig gåtur")
+        static let recoveryStretch = LocalizedStringResource("restDay.recovery.stretch", defaultValue: "Lidt blid udstrækning")
+        static let recoverySwim = LocalizedStringResource("restDay.recovery.swim", defaultValue: "En tur i svømmehallen")
+        static let recoveryDance = LocalizedStringResource("restDay.recovery.dance", defaultValue: "Dans til din yndlingsmusik")
+        static let recoveryBike = LocalizedStringResource("restDay.recovery.bike", defaultValue: "En afslappet cykeltur")
+        static let recoveryPlay = LocalizedStringResource("restDay.recovery.play", defaultValue: "Leg eller boldspil med en ven")
+    }
+
+    /// Opvarmnings- og nedkølingsguide under turen (skadesforebyggelse).
+    enum Guide {
+        static let warmUpTitle = LocalizedStringResource("guide.warmUpTitle", defaultValue: "Varm op imens")
+        static let coolDownTitle = LocalizedStringResource("guide.coolDownTitle", defaultValue: "Køl af imens")
+        static let warmUpBrisk = LocalizedStringResource("guide.warmUp.brisk", defaultValue: "Gå rask til")
+        static let warmUpKnees = LocalizedStringResource("guide.warmUp.knees", defaultValue: "Løft knæene lidt højt nogle gange")
+        static let warmUpAnkles = LocalizedStringResource("guide.warmUp.ankles", defaultValue: "Rul med anklerne og svaj med armene")
+        static let coolDownWalk = LocalizedStringResource("guide.coolDown.walk", defaultValue: "Gå roligt og træk vejret dybt")
+        static let coolDownThighs = LocalizedStringResource("guide.coolDown.thighs", defaultValue: "Stræk forsigtigt lår og læg")
+        static let coolDownShake = LocalizedStringResource("guide.coolDown.shake", defaultValue: "Ryst benene løse og slap af i skuldrene")
     }
 
     enum Planner {
@@ -327,9 +349,9 @@ enum Strings {
             LocalizedStringResource("coaching.walkStart", defaultValue: "Godt klaret — gå roligt i \(duration)")
         }
         static let warmUpStart = LocalizedStringResource(
-            "coaching.warmUpStart", defaultValue: "Vi varmer op med en rask gåtur")
+            "coaching.warmUpStart", defaultValue: "Vi varmer op med rask gang og nogle bløde bevægelser")
         static let coolDownStart = LocalizedStringResource(
-            "coaching.coolDownStart", defaultValue: "Flot — så køler vi af med rolig gang")
+            "coaching.coolDownStart", defaultValue: "Flot — vi køler af med rolig gang og lidt udstrækning")
         static let halfway = LocalizedStringResource(
             "coaching.halfway", defaultValue: "Du er halvvejs — flot!")
         static let finished = LocalizedStringResource(
