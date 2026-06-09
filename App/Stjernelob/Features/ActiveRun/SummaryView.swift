@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 import StjernelobCore
 
@@ -18,7 +19,7 @@ struct SummaryView: View {
 
     @State private var effort: Double = 5
     @State private var didRate = false
-    @State private var bodySignal: BodySignal?
+    @State private var bodySignal: BodySignal? = nil
     @State private var reflection: String = ""
 
     private var stars: Int { Stars.earned(for: summary) }
@@ -130,7 +131,6 @@ struct SummaryView: View {
                     )
                 }
                 .buttonStyle(.plain)
-                .accessibilityAddTraits(bodySignal == signal ? .isSelected : [])
             }
         }
         .padding(Theme.Spacing.medium)

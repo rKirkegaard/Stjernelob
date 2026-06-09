@@ -1,3 +1,6 @@
+import Foundation
+import SwiftUI
+
 /// Et blidt forslag til let bevægelse på en hviledag (aktiv restitution).
 private struct RecoveryIdea: Identifiable {
     let id = UUID()
