@@ -85,6 +85,31 @@ final class AdaptiveProgressTests: XCTestCase {
         XCTAssertLessThan(result.weekIndex, 10)
     }
 
+    func testHardWeekStaysInsteadOfAdvancing() {
+        // Uge 1 gennemført, men markeret som for hård → bliv på ugen (idx 0).
+        let completed = [week(2026, 1): 3]
+        let hard: (WeekIdentifier) -> Bool = { $0 == self.week(2026, 1) }
+        let result = AdaptiveProgress.evaluate(
+            program: program, completedByWeek: completed,
+            currentWeek: week(2026, 1), requiredSessions: required(3),
+            weekFeltTooHard: hard
+        )
+        XCTAssertEqual(result.weekIndex, 0)
+        XCTAssertEqual(result.completedThisWeek, 3)
+    }
+
+    func testHardClosedWeekDoesNotAdvance() {
+        // Uge 1 gennemført men hård → ingen fremgang; uge 2 gennemført og fin → +1.
+        let completed = [week(2026, 1): 3, week(2026, 2): 3]
+        let hard: (WeekIdentifier) -> Bool = { $0 == self.week(2026, 1) }
+        let result = AdaptiveProgress.evaluate(
+            program: program, completedByWeek: completed,
+            currentWeek: week(2026, 3), requiredSessions: required(3),
+            weekFeltTooHard: hard
+        )
+        XCTAssertEqual(result.weekIndex, 1)
+    }
+
     func testIdempotentRecomputation() {
         // Samme historik → samme resultat, uanset hvor mange gange den køres.
         let completed = [week(2026, 1): 3, week(2026, 2): 2, week(2026, 3): 3]

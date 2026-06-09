@@ -29,11 +29,16 @@ public enum AdaptiveProgress {
     ///   - completedByWeek: antal gennemførte ture pr. kalenderuge.
     ///   - currentWeek: den igangværende kalenderuge (er ikke "lukket" endnu).
     ///   - requiredSessions: ugens krævede antal ture (typisk 2–3 fra planen).
+    /// - Parameter weekFeltTooHard: om en uge (selvom den blev gennemført) føltes
+    ///   for hård — fx ≥2 ture markeret som meget hårde. Så bliver forløbet blidt
+    ///   stående på ugen i stedet for at rykke frem (oplevelsen som indgang, ikke
+    ///   fart). Aldrig et nederlag — bare at det passer hende.
     public static func evaluate(
         program: TrainingProgram,
         completedByWeek: [WeekIdentifier: Int],
         currentWeek: WeekIdentifier,
         requiredSessions: (ProgramWeek) -> Int,
+        weekFeltTooHard: (WeekIdentifier) -> Bool = { _ in false },
         calendar: Calendar = .iso8601Monday,
         maxLookback: Int = 520
     ) -> AdaptiveProgressResult {
@@ -58,10 +63,11 @@ public enum AdaptiveProgress {
                 index = indexAfterMissedWeek(index: index, consecutiveMissed: consecutiveMissed, program: program)
             } else {
                 consecutiveMissed = 0
-                if AdaptivePlanner.isWeekComplete(required: required, completed: completed) {
+                if AdaptivePlanner.isWeekComplete(required: required, completed: completed),
+                   !weekFeltTooHard(week) {
                     index = min(index + 1, program.lastWeekIndex)
                 }
-                // Ellers: nogle ture, men under tærsklen → bliv på ugen (gentag).
+                // Ellers: under tærsklen, eller ugen føltes for hård → bliv på ugen.
             }
             week = week.advanced(byWeeks: 1, calendar: calendar)
             steps += 1
@@ -71,7 +77,8 @@ public enum AdaptiveProgress {
         // nu (man venter ikke til ugen er forbi for at føle fremgang).
         let completedThisWeek = completedByWeek[currentWeek] ?? 0
         let requiredNow = requiredSessions(program.week(at: index))
-        if AdaptivePlanner.isWeekComplete(required: requiredNow, completed: completedThisWeek) {
+        if AdaptivePlanner.isWeekComplete(required: requiredNow, completed: completedThisWeek),
+           !weekFeltTooHard(currentWeek) {
             index = min(index + 1, program.lastWeekIndex)
         }
 
