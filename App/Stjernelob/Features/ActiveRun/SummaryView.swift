@@ -160,12 +160,10 @@ struct SummaryView: View {
             Text(Strings.Summary.reflectionPrompt)
                 .font(.headline)
             TextField(
+                String(localized: Strings.Summary.reflectionPlaceholder),
                 text: $reflection,
-                prompt: Text(Strings.Summary.reflectionPlaceholder),
                 axis: .vertical
-            ) {
-                Text(Strings.Summary.reflectionPrompt)
-            }
+            )
             .textFieldStyle(.roundedBorder)
             .lineLimit(2...4)
         }
