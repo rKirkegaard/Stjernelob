@@ -44,9 +44,10 @@ final class ProgressionCoordinatorTests: XCTestCase {
         XCTAssertEqual(updated.completedSessionsThisProgramWeek, 3)
     }
 
-    func testEffortDoesNotBlockProgression() throws {
-        // Progressionen er fremmøde-baseret: en hård uge (høj anstrengelse)
-        // bremser ikke fremgangen — kun missede ture gør (docs/loebeplan.md).
+    func testVeryHardWeekGentlyRepeats() throws {
+        // Hvis en uge blev gennemført, men mindst to ture føltes meget hårde
+        // (oplevet anstrengelse ≥ 8), bliver forløbet blidt stående på ugen i
+        // stedet for at rykke frem — oplevelsen som indgang, ikke fart.
         let env = AppEnvironment.preview
         try env.profileRepository.save(makeProfile(sessions: 3))
         let coordinator = ProgressionCoordinator(environment: env)
@@ -58,7 +59,7 @@ final class ProgressionCoordinatorTests: XCTestCase {
         }
 
         let updated = try XCTUnwrap(env.profileRepository.load())
-        XCTAssertEqual(updated.currentWeekIndex, 1)
+        XCTAssertEqual(updated.currentWeekIndex, 0, "En meget hård uge skal gentages, ikke rykke frem")
     }
 
     func testDoesNotAdvanceBeforeWeekComplete() throws {
