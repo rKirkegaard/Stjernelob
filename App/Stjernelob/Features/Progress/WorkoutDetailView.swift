@@ -25,8 +25,26 @@ struct WorkoutDetailView: View {
                 if let effort = workout.perceivedEffort {
                     row(Strings.Progress.effortLabel, value: "\(effort) / 10")
                 }
+                if let bodySignal = workout.bodySignal {
+                    HStack {
+                        Text(Strings.Progress.bodyLabel)
+                        Spacer()
+                        Label { Text(bodySignal.displayLabel) } icon: {
+                            Image(systemName: bodySignal.symbolName).foregroundStyle(bodySignal.tint)
+                        }
+                        .foregroundStyle(.secondary)
+                    }
+                }
             } header: {
                 Text(Strings.Progress.weekLabel(workout.programWeekId))
+            }
+
+            if let reflection = workout.reflection, !reflection.isEmpty {
+                Section {
+                    Text(reflection)
+                } header: {
+                    Text(Strings.Progress.reflectionLabel)
+                }
             }
 
             Section {

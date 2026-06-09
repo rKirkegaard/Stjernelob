@@ -25,6 +25,14 @@ struct ProgressionCoordinator {
             by: { WeekIdentifier(date: $0.date, calendar: calendar) }
         ).mapValues(\.count)
 
+        // En uge føltes "for hård", hvis mindst to gennemførte ture blev markeret
+        // som meget hårde (oplevet anstrengelse ≥ 8). Så bliver forløbet blidt
+        // stående på ugen (oplevelsen som indgang, ikke fart).
+        let hardByWeek = Dictionary(
+            grouping: workouts.filter { $0.isComplete && ($0.perceivedEffort ?? 0) >= 8 },
+            by: { WeekIdentifier(date: $0.date, calendar: calendar) }
+        ).mapValues(\.count)
+
         let result = AdaptiveProgress.evaluate(
             program: StandardProgram.journey,
             completedByWeek: completedByWeek,
@@ -33,6 +41,7 @@ struct ProgressionCoordinator {
                 CouchToRunnerPlan.week(id: week.id)?.requiredSessionCount
                     ?? max(1, profile.defaultWeeklySessions)
             },
+            weekFeltTooHard: { (hardByWeek[$0] ?? 0) >= 2 },
             calendar: calendar
         )
 

@@ -17,8 +17,12 @@ struct ActiveRunView: View {
     var body: some View {
         switch viewModel.phase {
         case let .finished(summary):
-            SummaryView(summary: summary) { effort in
-                viewModel.saveResult(perceivedEffort: effort)
+            SummaryView(summary: summary) { result in
+                viewModel.saveResult(
+                    perceivedEffort: result.effort,
+                    bodySignal: result.bodySignal,
+                    reflection: result.reflection
+                )
                 onClose()
             }
         default:

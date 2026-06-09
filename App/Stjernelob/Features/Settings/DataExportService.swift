@@ -34,6 +34,8 @@ struct DataExportService {
             var isComplete: Bool
             var starsEarned: Int
             var perceivedEffort: Int?
+            var bodySignal: String?
+            var reflection: String?
             var photoFileNames: [String]
         }
         struct Goal: Codable {
@@ -72,6 +74,8 @@ struct DataExportService {
                 isComplete: workout.isComplete,
                 starsEarned: workout.starsEarned,
                 perceivedEffort: workout.perceivedEffort,
+                bodySignal: workout.bodySignal?.rawValue,
+                reflection: workout.reflection,
                 photoFileNames: workout.photos.map(\.fileName)
             )
         }

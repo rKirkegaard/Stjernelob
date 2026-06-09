@@ -42,6 +42,10 @@ struct CompletedWorkoutDTO: Sendable, Equatable, Identifiable {
     var starsEarned: Int
     var perceivedEffort: Int?
     var distanceMeters: Double? = nil
+    /// Hvordan kroppen føltes bagefter (skadesforebyggelse). Valgfrit.
+    var bodySignal: BodySignal? = nil
+    /// Brugerens egen lille note efter turen ("hvad gik bedre end sidst?"). Valgfri.
+    var reflection: String? = nil
     var photos: [WorkoutPhotoDTO]
 }
 
@@ -105,6 +109,8 @@ extension CompletedWorkoutDTO {
             starsEarned: entity.starsEarned,
             perceivedEffort: entity.perceivedEffort,
             distanceMeters: entity.distanceMeters,
+            bodySignal: entity.bodySignalRawValue.flatMap(BodySignal.init(rawValue:)),
+            reflection: entity.reflection,
             photos: entity.photos
                 .sorted { $0.createdAt < $1.createdAt }
                 .map(WorkoutPhotoDTO.init(entity:))

@@ -172,10 +172,11 @@ final class ActiveRunViewModel {
 
     /// Gem resultatet — kaldes når brugeren lukker resuméet (med valgfri
     /// "hvordan føltes det?"). Belønning gives for gennemførsel, ikke fart.
-    func saveResult(perceivedEffort: Int?) {
+    func saveResult(perceivedEffort: Int?, bodySignal: BodySignal? = nil, reflection: String? = nil) {
         guard case let .finished(summary) = phase, !didSave else { return }
         didSave = true
 
+        let trimmedReflection = reflection?.trimmingCharacters(in: .whitespacesAndNewlines)
         let workout = CompletedWorkoutDTO(
             id: UUID(),
             date: now(),
@@ -189,6 +190,8 @@ final class ActiveRunViewModel {
             starsEarned: Stars.earned(for: summary),
             perceivedEffort: perceivedEffort,
             distanceMeters: distanceMeters > 0 ? distanceMeters : nil,
+            bodySignal: bodySignal,
+            reflection: (trimmedReflection?.isEmpty == false) ? trimmedReflection : nil,
             photos: []
         )
         try? environment.workoutRepository.add(workout)

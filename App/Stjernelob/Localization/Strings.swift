@@ -103,6 +103,27 @@ enum Strings {
         static let close = LocalizedStringResource("summary.close", defaultValue: "Luk")
         static let effortEasy = LocalizedStringResource("summary.effort.easy", defaultValue: "Let")
         static let effortHard = LocalizedStringResource("summary.effort.hard", defaultValue: "Hårdt")
+
+        // Kropssignal efter turen (skadesforebyggelse).
+        static let bodyQuestion = LocalizedStringResource(
+            "summary.bodyQuestion", defaultValue: "Mærker du noget særligt i kroppen?")
+        static let bodyAllGood = LocalizedStringResource(
+            "summary.body.allGood", defaultValue: "Alt føles godt")
+        static let bodyGoodSore = LocalizedStringResource(
+            "summary.body.goodSore", defaultValue: "Lidt øm — på den gode måde")
+        static let bodySpecificPain = LocalizedStringResource(
+            "summary.body.specificPain", defaultValue: "En specifik smerte et sted")
+        static let careTitle = LocalizedStringResource(
+            "summary.careTitle", defaultValue: "Pas godt på dig selv")
+        static let careBody = LocalizedStringResource(
+            "summary.careBody",
+            defaultValue: "Hold øje med smerten, og tag gerne en ekstra hviledag. Hvis den bliver ved eller gør ondt, mens du løber, så tal med en voksen eller din læge — det er aldrig dumt at spørge.")
+
+        // Lille refleksion efter turen (valgfri, motiverende).
+        static let reflectionPrompt = LocalizedStringResource(
+            "summary.reflectionPrompt", defaultValue: "Hvad gik bedre end sidst? (valgfrit)")
+        static let reflectionPlaceholder = LocalizedStringResource(
+            "summary.reflectionPlaceholder", defaultValue: "En lille ting, du er glad for …")
     }
 
     enum RestDay {
@@ -144,6 +165,8 @@ enum Strings {
         static let intervalsLabel = LocalizedStringResource("progress.intervals", defaultValue: "Gennemførte intervaller")
         static let starsLabel = LocalizedStringResource("progress.stars", defaultValue: "Stjerner")
         static let effortLabel = LocalizedStringResource("progress.effort", defaultValue: "Sådan føltes det")
+        static let bodyLabel = LocalizedStringResource("progress.body", defaultValue: "Kroppen bagefter")
+        static let reflectionLabel = LocalizedStringResource("progress.reflection", defaultValue: "Min note")
         static let photosLabel = LocalizedStringResource("progress.photos", defaultValue: "Billeder fra turen")
         static let noPhotos = LocalizedStringResource("progress.noPhotos", defaultValue: "Ingen billeder fra denne tur endnu.")
         static let addPhoto = LocalizedStringResource("progress.addPhoto", defaultValue: "Tilføj et billede")

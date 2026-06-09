@@ -65,6 +65,10 @@ final class CompletedWorkoutEntity {
     var perceivedEffort: Int?
     /// Målt distance i meter (valgfrit; vist neutralt, aldrig grundlag for belønning).
     var distanceMeters: Double?
+    /// Kropssignal efter turen (rå værdi af `BodySignal`). Valgfrit.
+    var bodySignalRawValue: String?
+    /// Brugerens egen lille note efter turen. Valgfri.
+    var reflection: String?
 
     @Relationship(deleteRule: .cascade, inverse: \WorkoutPhotoEntity.workout)
     var photos: [WorkoutPhotoEntity]
@@ -82,6 +86,8 @@ final class CompletedWorkoutEntity {
         starsEarned: Int,
         perceivedEffort: Int? = nil,
         distanceMeters: Double? = nil,
+        bodySignalRawValue: String? = nil,
+        reflection: String? = nil,
         photos: [WorkoutPhotoEntity] = []
     ) {
         self.id = id
@@ -96,6 +102,8 @@ final class CompletedWorkoutEntity {
         self.starsEarned = starsEarned
         self.perceivedEffort = perceivedEffort
         self.distanceMeters = distanceMeters
+        self.bodySignalRawValue = bodySignalRawValue
+        self.reflection = reflection
         self.photos = photos
     }
 }
