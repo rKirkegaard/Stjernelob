@@ -306,6 +306,15 @@ final class GamificationTests: XCTestCase {
         XCTAssertFalse(at100.contains(.stars250))
     }
 
+    func testEveryCategoryHasBadges() {
+        for category in BadgeCategory.allCases {
+            XCTAssertFalse(
+                Badge.allCases.filter { $0.category == category }.isEmpty,
+                "Kategorien \(category) mangler badges"
+            )
+        }
+    }
+
     func testSecretMilestonesAreFlagged() {
         XCTAssertTrue(Badge.activeWeeks52.isSecret)
         XCTAssertTrue(Badge.stars1000.isSecret)

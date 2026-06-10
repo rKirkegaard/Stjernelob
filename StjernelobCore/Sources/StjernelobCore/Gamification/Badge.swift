@@ -152,6 +152,52 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
         default: false
         }
     }
+
+    /// Hvilken gruppe mærket hører til — bruges til at inddele samlingen i
+    /// overskuelige temaer (jf. Import/Badges-designet).
+    public var category: BadgeCategory {
+        switch self {
+        case .firstStep, .braveStarter, .readyToStart, .earlyBird, .eveningStar, .runs1:
+            .firstSteps
+        case .oneWeekStreak, .twoInOneWeek, .threeInOneWeek, .threeWeekStreak, .unbreakable,
+             .monthHero, .backAgain,
+             .interval5, .interval10, .interval15, .interval20, .interval25, .interval30,
+             .interval40, .interval50, .interval75, .interval100, .interval150, .interval200,
+             .interval300, .interval500, .interval750, .interval1000,
+             .sessionFourIntervals, .sessionSixIntervals, .sessionEightIntervals,
+             .runs3, .runs5, .runs10, .runs15, .runs20, .runs25, .runs30, .runs40, .runs50,
+             .runs60, .runs75, .runs80, .runs100,
+             .activeWeeks1, .activeWeeks2, .activeWeeks4, .activeWeeks6, .activeWeeks8,
+             .activeWeeks10, .activeWeeks12, .activeWeeks16, .activeWeeks20,
+             .stars10, .stars25, .stars50, .stars100, .stars250, .stars500:
+            .consistency
+        case .springAir, .autumnRunner, .iceInBelly, .sunshineRunner, .rainRunner,
+             .fogRunner, .rainbowRunner:
+            .weather
+        case .runningDiary, .musicInEars, .stretchStar, .waterQueen, .sleepCollector,
+             .packedAndReady:
+            .habits
+        case .neverGiveUp, .celebrateYourself, .cheerleader, .runningBuddy, .momentPhoto,
+             .podcastRunner:
+            .social
+        case .christmasRunner, .newYearStart, .birthdayRun, .cityRunner, .natureGirl,
+             .newRoute, .newPlaylist, .activeWeeks26, .activeWeeks52, .stars1000:
+            .special
+        }
+    }
+}
+
+/// Tema-grupper for samlingen (jf. Import/Badges-designet). Rækkefølgen er den,
+/// grupperne vises i.
+public enum BadgeCategory: String, Codable, Sendable, CaseIterable, Identifiable {
+    case firstSteps
+    case consistency
+    case weather
+    case habits
+    case social
+    case special
+
+    public var id: String { rawValue }
 }
 
 /// Fakta om en netop afsluttet tur og brugerens samlede stilling, som badges

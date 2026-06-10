@@ -94,6 +94,25 @@ final class BadgesViewModel {
         return base + nextMilestones
     }
 
+    /// En tema-gruppe i samlingen med de mærker, der skal vises.
+    struct CategorySection: Identifiable {
+        let category: BadgeCategory
+        let badges: [Badge]
+        var id: String { category.rawValue }
+    }
+
+    /// Samlingen inddelt i tema-grupper (optjente + synlige låste), i stabil
+    /// rækkefølge. Tomme grupper udelades.
+    var sections: [CategorySection] {
+        let visible = Set(earnedBadges).union(lockedBadges)
+        return BadgeCategory.allCases.compactMap { category in
+            let badges = Badge.allCases.filter { visible.contains($0) && $0.category == category }
+            return badges.isEmpty ? nil : CategorySection(category: category, badges: badges)
+        }
+    }
+
+    func isEarned(_ badge: Badge) -> Bool { earned.contains(badge) }
+
     /// Barnet låser selv et manuelt mærke op, når hun har gjort tingen
     /// (fx løbet med en makker). Selvbestemt og legende — aldrig et krav.
     func claim(_ badge: Badge) {

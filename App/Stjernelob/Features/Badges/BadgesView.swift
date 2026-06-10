@@ -14,18 +14,9 @@ struct BadgesView: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.large) {
                 levelCard
 
-                if !viewModel.earnedBadges.isEmpty {
-                    section(
-                        Text(Strings.Badges.earnedSection),
-                        badges: viewModel.earnedBadges,
-                        earned: true
-                    )
+                ForEach(viewModel.sections) { section in
+                    categorySection(section)
                 }
-                section(
-                    Text(Strings.Badges.lockedSection),
-                    badges: viewModel.lockedBadges,
-                    earned: false
-                )
 
                 Text(Strings.Badges.manualNote)
                     .font(.footnote)
@@ -72,11 +63,12 @@ struct BadgesView: View {
         .background(.thinMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
     }
 
-    private func section(_ title: Text, badges: [Badge], earned: Bool) -> some View {
+    private func categorySection(_ section: BadgesViewModel.CategorySection) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.medium) {
-            title.font(.headline)
+            Text(section.category.displayName).font(.headline)
             LazyVGrid(columns: columns, spacing: Theme.Spacing.medium) {
-                ForEach(badges) { badge in
+                ForEach(section.badges) { badge in
+                    let earned = viewModel.isEarned(badge)
                     if !earned, badge.isManual {
                         Button { badgeToClaim = badge } label: { badgeCell(badge, earned: false) }
                             .buttonStyle(.plain)

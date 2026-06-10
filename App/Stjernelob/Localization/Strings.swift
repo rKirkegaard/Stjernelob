@@ -378,6 +378,26 @@ enum Strings {
             "badges.manualNote",
             defaultValue: "Nogle mærker giver du dig selv, når du har gjort tingen."
         )
+
+        /// Tema-grupper i samlingen.
+        static let categoryFirstSteps = LocalizedStringResource(
+            "badges.category.firstSteps", defaultValue: "Første skridt"
+        )
+        static let categoryConsistency = LocalizedStringResource(
+            "badges.category.consistency", defaultValue: "Vedholdenhed"
+        )
+        static let categoryWeather = LocalizedStringResource(
+            "badges.category.weather", defaultValue: "Vejr & omgivelser"
+        )
+        static let categoryHabits = LocalizedStringResource(
+            "badges.category.habits", defaultValue: "Vaner & rutiner"
+        )
+        static let categorySocial = LocalizedStringResource(
+            "badges.category.social", defaultValue: "Socialt & sjov"
+        )
+        static let categorySpecial = LocalizedStringResource(
+            "badges.category.special", defaultValue: "Særlige øjeblikke"
+        )
     }
 
     /// Venlige, ikke-pressende påmindelser (spec afsnit 8). Aldrig skyld eller
