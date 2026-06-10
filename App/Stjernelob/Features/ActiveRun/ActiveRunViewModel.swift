@@ -235,6 +235,10 @@ final class ActiveRunViewModel {
             (calendar.dateComponents([.day], from: datesNewestFirst[1], to: datesNewestFirst[0])
                 .day ?? 0)
             : 0
+        // Trukket ud i lokale variabler, så formateringen ikke forveksler `<`/`>`
+        // med generiske vinkelparenteser.
+        let startedInMorning = hour < 12
+        let startedInEvening = hour >= 18
 
         let context = BadgeContext(
             totalCompletedWorkouts: workouts.count,
@@ -246,10 +250,8 @@ final class ActiveRunViewModel {
             hasCompletedFullRun: workouts.contains { $0.isComplete },
             hasCompletedHardRun: workouts
                 .contains { $0.isComplete && ($0.perceivedEffort ?? 0) >= 8 },
-            startedInMorning: hour<
-                12,
-                startedInEvening: hour
-            > = 18,
+            startedInMorning: startedInMorning,
+            startedInEvening: startedInEvening,
             tookPhoto: workouts.contains { !$0.photos.isEmpty },
             isComeback: datesNewestFirst.count >= 2 && daysSincePrevious >= 14,
             month: calendar.component(.month, from: date),
