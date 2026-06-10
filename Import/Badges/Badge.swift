@@ -1,5 +1,4 @@
 import Foundation
-import SwiftUI
 
 // MARK: - Badge Category
 
@@ -71,6 +70,13 @@ enum BadgeTrigger: Codable {
 
     /// Programme milestones
     case firstContinuousRun(minutes: Int) // First session with no walk break ≥ N min
+
+    // Milestone triggers (jf. BadgeMilestones.swift)
+    case totalIntervals(count: Int) // Samlet antal løbeintervaller på tværs af alle ture
+    case totalSessions(count: Int) // Samlet antal ture (sessions) gennemført
+    case totalActiveWeeks(count: Int) // Antal uger med mindst 1 gennemført tur
+    case totalStars(count: Int) // Samlet antal stjerner optjent
+    case intervalsInOneSession(count: Int) // Løbeintervaller gennemført i én og samme tur
 }
 
 // MARK: - Badge

@@ -45,6 +45,9 @@ struct CompletedSession: Codable, Identifiable {
     var startedAt: Date
     var completedAt: Date
     var starsEarned: Int
+    /// Antal løbeintervaller der faktisk blev gennemført i denne tur
+    /// (kan være færre end planlagt, hvis turen blev afbrudt).
+    var intervalsCompleted: Int = 0
 }
 
 // MARK: - UserProgress
@@ -60,6 +63,27 @@ struct UserProgress: Codable {
     var birthdayComponents: DateComponents? = nil // Month + day only
 
     var totalSessionsCompleted: Int { completedSessions.count }
+
+    /// Samlet antal løbeintervaller på tværs af alle ture.
+    var totalIntervalsCompleted: Int {
+        completedSessions.reduce(0) { $0 + $1.intervalsCompleted }
+    }
+
+    /// Antal uger med mindst én gennemført tur.
+    var totalActiveWeeks: Int {
+        let calendar = Calendar(identifier: .iso8601)
+        let weeks = Set(completedSessions.map { session -> String in
+            let week = calendar.component(.weekOfYear, from: session.startedAt)
+            let year = calendar.component(.yearForWeekOfYear, from: session.startedAt)
+            return "\(year)-W\(week)"
+        })
+        return weeks.count
+    }
+
+    /// Samlet antal optjente stjerner.
+    var totalStarsEarned: Int {
+        completedSessions.reduce(0) { $0 + $1.starsEarned }
+    }
 
     func hasEarnedBadge(slug: String) -> Bool {
         earnedBadges.contains { $0.badgeSlug == slug }
@@ -273,7 +297,25 @@ final class BadgeEngine {
             // IntervalEngine marks a session as "continuous" if no walk break occurred
             // CompletedSession should carry a longestContinuousRunSeconds field
             // Placeholder: always false until IntervalEngine integration
+            _ = minutes
             return false
+
+        // MARK: Milestones
+
+        case let .totalIntervals(count):
+            return progress.totalIntervalsCompleted >= count
+
+        case let .totalSessions(count):
+            return progress.totalSessionsCompleted >= count
+
+        case let .totalActiveWeeks(count):
+            return progress.totalActiveWeeks >= count
+
+        case let .totalStars(count):
+            return progress.totalStarsEarned >= count
+
+        case let .intervalsInOneSession(count):
+            return session.intervalsCompleted >= count
         }
     }
 
