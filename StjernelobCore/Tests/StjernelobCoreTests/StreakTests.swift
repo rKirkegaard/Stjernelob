@@ -4,7 +4,6 @@ import XCTest
 /// Tests for den tilgivende ugentlige streak og ugemålet (jf. spec afsnit 5.3,
 /// 6.2 og uge-/tidszonegrænser i afsnit 16).
 final class StreakTests: XCTestCase {
-
     private let calendar = Calendar.iso8601Monday
 
     private func week(_ year: Int, _ weekOfYear: Int) -> WeekIdentifier {
@@ -18,14 +17,17 @@ final class StreakTests: XCTestCase {
     // MARK: - Ugegrænser
 
     func testPreviousWeekViaDateMath() throws {
-        let date = try XCTUnwrap(DateComponents(calendar: calendar, year: 2026, month: 6, day: 3).date)
+        let date = try XCTUnwrap(DateComponents(calendar: calendar, year: 2026, month: 6, day: 3)
+            .date)
         let current = WeekIdentifier(date: date, calendar: calendar)
         let earlier = try XCTUnwrap(calendar.date(byAdding: .day, value: -7, to: date))
-        XCTAssertEqual(current.previous(calendar: calendar),
-                       WeekIdentifier(date: earlier, calendar: calendar))
+        XCTAssertEqual(
+            current.previous(calendar: calendar),
+            WeekIdentifier(date: earlier, calendar: calendar)
+        )
     }
 
-    func testWeekRollsOverYearBoundary() throws {
+    func testWeekRollsOverYearBoundary() {
         // Uge 1 i et år: den foregående uge ligger i året før.
         let firstWeek = week(2026, 1)
         let previous = firstWeek.previous(calendar: calendar)
@@ -79,7 +81,7 @@ final class StreakTests: XCTestCase {
         var tracker = WeeklyTracker(calendar: calendar)
         tracker.record(goalMet(current))
         tracker.record(WeekProgress(week: last, targetSessions: 3, completedSessions: 0))
-        tracker.freeze(last)               // reddet af en streak-fryser
+        tracker.freeze(last) // reddet af en streak-fryser
         tracker.record(goalMet(earlier))
         XCTAssertEqual(tracker.currentStreak(asOf: current), 3)
     }
@@ -90,7 +92,7 @@ final class StreakTests: XCTestCase {
         let earlier = last.previous(calendar: calendar)
         var tracker = WeeklyTracker(calendar: calendar)
         tracker.record(goalMet(current))
-        tracker.pause(last)                // bevidst pause — bryder ikke
+        tracker.pause(last) // bevidst pause — bryder ikke
         tracker.record(goalMet(earlier))
         // Pausen tæller ikke med, men streaken fortsætter henover den.
         XCTAssertEqual(tracker.currentStreak(asOf: current), 2)

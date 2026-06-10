@@ -59,8 +59,8 @@ final class ActiveRunViewModel {
         self.feedback = feedback
         self.resumeElapsed = resumeElapsed
         self.now = now
-        self.engine = IntervalEngine(plan: plan, clock: environment.clock)
-        self.snapshot = IntervalEngine(plan: plan, clock: environment.clock).snapshot()
+        engine = IntervalEngine(plan: plan, clock: environment.clock)
+        snapshot = IntervalEngine(plan: plan, clock: environment.clock).snapshot()
     }
 
     func start() {
@@ -95,10 +95,15 @@ final class ActiveRunViewModel {
         dispatch(engine.update())
         snapshot = engine.snapshot()
         distanceMeters = distanceTracker.distanceMeters
-        liveActivity.update(snapshot: snapshot, intervalLabel: String(localized: snapshot.interval.kind.label))
+        liveActivity.update(
+            snapshot: snapshot,
+            intervalLabel: String(localized: snapshot.interval.kind.label)
+        )
 
         // Blid talk-test-påmindelse hvert 5. minut undervejs.
-        if snapshot.totalElapsed.wholeSeconds >= nextTalkTestSeconds, snapshot.totalRemaining > .seconds(60) {
+        if snapshot.totalElapsed.wholeSeconds >= nextTalkTestSeconds,
+           snapshot.totalRemaining > .seconds(60)
+        {
             feedback.talkTestReminder()
             nextTalkTestSeconds += 300
         }
@@ -172,7 +177,11 @@ final class ActiveRunViewModel {
 
     /// Gem resultatet — kaldes når brugeren lukker resuméet (med valgfri
     /// "hvordan føltes det?"). Belønning gives for gennemførsel, ikke fart.
-    func saveResult(perceivedEffort: Int?, bodySignal: BodySignal? = nil, reflection: String? = nil) {
+    func saveResult(
+        perceivedEffort: Int?,
+        bodySignal: BodySignal? = nil,
+        reflection: String? = nil
+    ) {
         guard case let .finished(summary) = phase, !didSave else { return }
         didSave = true
 
@@ -201,12 +210,16 @@ final class ActiveRunViewModel {
 
         if environment.settings.healthKitEnabled {
             let end = now()
-            let start = end.addingTimeInterval(-TimeInterval(summary.activeDuration.components.seconds))
-            Task { await environment.healthKit.saveRun(start: start, duration: summary.activeDuration) }
+            let start = end
+                .addingTimeInterval(-TimeInterval(summary.activeDuration.components.seconds))
+            Task { await environment.healthKit.saveRun(
+                start: start,
+                duration: summary.activeDuration
+            ) }
         }
     }
 
-    private func awardBadges(for summary: WorkoutSummary) {
+    private func awardBadges(for _: WorkoutSummary) {
         // Turen er allerede gemt, så `all()` indeholder den netop afsluttede tur.
         let workouts = (try? environment.workoutRepository.all()) ?? []
 
@@ -218,7 +231,9 @@ final class ActiveRunViewModel {
 
         let datesNewestFirst = workouts.map(\.date).sorted(by: >)
         let daysSincePrevious = datesNewestFirst.count >= 2
-            ? (calendar.dateComponents([.day], from: datesNewestFirst[1], to: datesNewestFirst[0]).day ?? 0)
+            ?
+            (calendar.dateComponents([.day], from: datesNewestFirst[1], to: datesNewestFirst[0])
+                .day ?? 0)
             : 0
 
         let context = BadgeContext(
@@ -229,9 +244,12 @@ final class ActiveRunViewModel {
                 calendar.dateComponents([.year, .month], from: $0.date) == monthComponents
             }.count,
             hasCompletedFullRun: workouts.contains { $0.isComplete },
-            hasCompletedHardRun: workouts.contains { $0.isComplete && ($0.perceivedEffort ?? 0) >= 8 },
-            startedInMorning: hour < 12,
-            startedInEvening: hour >= 18,
+            hasCompletedHardRun: workouts
+                .contains { $0.isComplete && ($0.perceivedEffort ?? 0) >= 8 },
+            startedInMorning: hour<
+                12,
+                startedInEvening: hour
+            > = 18,
             tookPhoto: workouts.contains { !$0.photos.isEmpty },
             isComeback: datesNewestFirst.count >= 2 && daysSincePrevious >= 14,
             month: calendar.component(.month, from: date),

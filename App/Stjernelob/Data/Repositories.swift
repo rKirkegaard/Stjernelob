@@ -2,13 +2,13 @@ import Foundation
 import StjernelobCore
 
 /// Ugemål for en bestemt uge.
-struct WeeklyGoalDTO: Sendable, Equatable {
+struct WeeklyGoalDTO: Equatable {
     var week: WeekIdentifier
     var targetSessions: Int
 }
 
 /// Frys/pause-status for en uge.
-struct WeekStatusDTO: Sendable, Equatable {
+struct WeekStatusDTO: Equatable {
     var week: WeekIdentifier
     var isFrozen: Bool
     var isPaused: Bool

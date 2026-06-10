@@ -1,5 +1,5 @@
-import XCTest
 import StjernelobCore
+import XCTest
 @testable import Stjernelob
 
 /// Tests for at den adaptive progression faktisk rykker forløbet, når ugemålet
@@ -59,7 +59,11 @@ final class ProgressionCoordinatorTests: XCTestCase {
         }
 
         let updated = try XCTUnwrap(env.profileRepository.load())
-        XCTAssertEqual(updated.currentWeekIndex, 0, "En meget hård uge skal gentages, ikke rykke frem")
+        XCTAssertEqual(
+            updated.currentWeekIndex,
+            0,
+            "En meget hård uge skal gentages, ikke rykke frem"
+        )
     }
 
     func testDoesNotAdvanceBeforeWeekComplete() throws {

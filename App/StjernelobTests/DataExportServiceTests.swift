@@ -1,5 +1,5 @@
-import XCTest
 import StjernelobCore
+import XCTest
 @testable import Stjernelob
 
 /// Test for at GDPR-eksporten indeholder brugerens data (dataportabilitet).

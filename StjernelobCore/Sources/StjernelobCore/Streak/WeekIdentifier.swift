@@ -43,9 +43,13 @@ public struct WeekIdentifier: Hashable, Codable, Sendable, Comparable {
     }
 
     /// Ugen et antal uger før/efter denne (negativt = tidligere).
-    public func advanced(byWeeks offset: Int, calendar: Calendar = .iso8601Monday) -> WeekIdentifier {
+    public func advanced(
+        byWeeks offset: Int,
+        calendar: Calendar = .iso8601Monday
+    ) -> WeekIdentifier {
         guard let start = startOfWeek(calendar: calendar),
-              let shifted = calendar.date(byAdding: .weekOfYear, value: offset, to: start) else {
+              let shifted = calendar.date(byAdding: .weekOfYear, value: offset, to: start)
+        else {
             return self
         }
         return WeekIdentifier(date: shifted, calendar: calendar)

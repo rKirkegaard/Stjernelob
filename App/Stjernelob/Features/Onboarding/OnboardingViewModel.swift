@@ -22,7 +22,10 @@ final class OnboardingViewModel {
     }
 
     var health: HealthScreening {
-        HealthScreening(hasPainOrInjury: hasPainOrInjury, hasHeartOrLungCondition: hasHeartOrLungCondition)
+        HealthScreening(
+            hasPainOrInjury: hasPainOrInjury,
+            hasHeartOrLungCondition: hasHeartOrLungCondition
+        )
     }
 
     /// Ved tegn på helbredsproblemer anbefales en lægesnak først (afsnit 7.1/9).

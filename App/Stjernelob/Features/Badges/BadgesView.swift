@@ -1,5 +1,5 @@
-import SwiftUI
 import StjernelobCore
+import SwiftUI
 
 /// Samling: niveau-fremgang og badges (optjente fremhævet, resten dæmpede).
 /// Nogle mærker kan appen ikke måle — dem låser barnet selv op ved at trykke.
@@ -15,9 +15,17 @@ struct BadgesView: View {
                 levelCard
 
                 if !viewModel.earnedBadges.isEmpty {
-                    section(Text(Strings.Badges.earnedSection), badges: viewModel.earnedBadges, earned: true)
+                    section(
+                        Text(Strings.Badges.earnedSection),
+                        badges: viewModel.earnedBadges,
+                        earned: true
+                    )
                 }
-                section(Text(Strings.Badges.lockedSection), badges: viewModel.lockedBadges, earned: false)
+                section(
+                    Text(Strings.Badges.lockedSection),
+                    badges: viewModel.lockedBadges,
+                    earned: false
+                )
 
                 Text(Strings.Badges.manualNote)
                     .font(.footnote)
@@ -28,13 +36,18 @@ struct BadgesView: View {
         .navigationTitle(Text(Strings.Badges.title))
         .onAppear { viewModel.load() }
         .confirmationDialog(
-            badgeToClaim.map { Text(Strings.Badges.claimTitle(String(localized: $0.displayTitle))) } ?? Text(""),
-            isPresented: Binding(get: { badgeToClaim != nil }, set: { if !$0 { badgeToClaim = nil } }),
+            badgeToClaim
+                .map { Text(Strings.Badges.claimTitle(String(localized: $0.displayTitle))) } ??
+                Text(""),
+            isPresented: Binding(
+                get: { badgeToClaim != nil },
+                set: { if !$0 { badgeToClaim = nil } }
+            ),
             titleVisibility: .visible,
             presenting: badgeToClaim
         ) { badge in
             Button { viewModel.claim(badge) } label: { Text(Strings.Badges.unlock) }
-            Button(role: .cancel) { } label: { Text(Strings.Badges.cancel) }
+            Button(role: .cancel) {} label: { Text(Strings.Badges.cancel) }
         } message: { badge in
             Text(badge.displayDetail)
         }

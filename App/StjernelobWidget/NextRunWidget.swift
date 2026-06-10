@@ -1,5 +1,5 @@
-import WidgetKit
 import SwiftUI
+import WidgetKit
 
 /// Home Screen-widget med en blid, evig påmindelse (spec afsnit 10). Viser
 /// bevidst ingen pres-tal — bare en venlig opfordring. Rigtige data (næste tur,
@@ -9,13 +9,13 @@ struct NextRunEntry: TimelineEntry {
 }
 
 struct NextRunProvider: TimelineProvider {
-    func placeholder(in context: Context) -> NextRunEntry { NextRunEntry(date: .now) }
+    func placeholder(in _: Context) -> NextRunEntry { NextRunEntry(date: .now) }
 
-    func getSnapshot(in context: Context, completion: @escaping (NextRunEntry) -> Void) {
+    func getSnapshot(in _: Context, completion: @escaping (NextRunEntry) -> Void) {
         completion(NextRunEntry(date: .now))
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<NextRunEntry>) -> Void) {
+    func getTimeline(in _: Context, completion: @escaping (Timeline<NextRunEntry>) -> Void) {
         completion(Timeline(entries: [NextRunEntry(date: .now)], policy: .never))
     }
 }
@@ -41,8 +41,14 @@ struct NextRunWidget: Widget {
         StaticConfiguration(kind: "NextRunWidget", provider: NextRunProvider()) { entry in
             NextRunWidgetView(entry: entry)
         }
-        .configurationDisplayName(Text(LocalizedStringResource("widget.displayName", defaultValue: "Stjerneløb")))
-        .description(Text(LocalizedStringResource("widget.description", defaultValue: "En blid påmindelse om din næste tur.")))
+        .configurationDisplayName(Text(LocalizedStringResource(
+            "widget.displayName",
+            defaultValue: "Stjerneløb"
+        )))
+        .description(Text(LocalizedStringResource(
+            "widget.description",
+            defaultValue: "En blid påmindelse om din næste tur."
+        )))
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

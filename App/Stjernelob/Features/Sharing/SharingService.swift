@@ -4,7 +4,7 @@ import StjernelobCore
 /// Det kuraterede udsnit, en forælder kan se (spec afsnit 11.3) — bevidst kun
 /// indsats og fremmøde, aldrig tempo, vægt eller andet, der inviterer til pres.
 /// Felter er `nil`, når barnet ikke deler dem.
-struct ParentShareSnapshot: Sendable, Equatable {
+struct ParentShareSnapshot: Equatable {
     var streakWeeks: Int?
     var completedCount: Int?
     var milestones: [Badge]?

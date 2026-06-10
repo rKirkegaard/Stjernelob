@@ -1,6 +1,7 @@
 import Foundation
 
 // MARK: - Session Context
+
 // Passed to BadgeEngine after each session completes.
 // WeatherService, AudioService etc. populate the optional fields.
 
@@ -17,7 +18,7 @@ struct SessionContext {
     var stretchedAfter: Bool = false
     var loggedWaterBeforeAndAfter: Bool = false
     var preparedGearNightBefore: Bool = false
-    var sleptWellBefore: Bool = false        // HealthKit sleep > 7h
+    var sleptWellBefore: Bool = false // HealthKit sleep > 7h
     var isNewRoute: Bool = false
     var locationCategory: LocationCategory = .unknown
     var playlistIsNew: Bool = false
@@ -47,6 +48,7 @@ struct CompletedSession: Codable, Identifiable {
 }
 
 // MARK: - UserProgress
+
 // The full picture of what a user has done — BadgeEngine reads this to
 // evaluate triggers.
 
@@ -55,7 +57,7 @@ struct UserProgress: Codable {
     var earnedBadges: [EarnedBadge] = []
     var weekStreakCount: Int = 0
     var currentWeekSessionCount: Int = 0
-    var birthdayComponents: DateComponents? = nil  // Month + day only
+    var birthdayComponents: DateComponents? = nil // Month + day only
 
     var totalSessionsCompleted: Int { completedSessions.count }
 
@@ -81,18 +83,19 @@ struct UserProgress: Codable {
 
 // MARK: - BadgeEngine
 
-/// Evaluates all badge triggers after each session and returns newly earned badges.
-/// Stateless — depends entirely on SessionContext and BadgeCatalogue.
+// Evaluates all badge triggers after each session and returns newly earned badges.
+// Stateless — depends entirely on SessionContext and BadgeCatalogue.
 
 final class BadgeEngine {
-
     private let catalogue: BadgeCatalogue
     private let calendar: Calendar
 
-    init(catalogue: BadgeCatalogue = .default,
-         calendar: Calendar = Calendar(identifier: .iso8601)) {
+    init(
+        catalogue: BadgeCatalogue = .default,
+        calendar: Calendar = Calendar(identifier: .iso8601)
+    ) {
         self.catalogue = catalogue
-        self.calendar  = calendar
+        self.calendar = calendar
     }
 
     /// Call after every session completes. Returns badges earned for the first time.
@@ -107,31 +110,32 @@ final class BadgeEngine {
 
     private func isTriggerMet(_ trigger: BadgeTrigger, context: SessionContext) -> Bool {
         let progress = context.userProgress
-        let session  = context.session
-        let now      = session.completedAt
+        let session = context.session
+        let now = session.completedAt
 
         switch trigger {
-
         // MARK: Completion
+
         case .completeFirstSession:
             return progress.totalSessionsCompleted == 1
 
-        case .completeSessions(let count):
+        case let .completeSessions(count):
             return progress.totalSessionsCompleted >= count
 
-        case .completeWeek(let weekNumber):
+        case let .completeWeek(weekNumber):
             return session.planWeekNumber == weekNumber
 
-        case .completePhase(let phase):
+        case let .completePhase(phase):
             // Phase ends at the last week of that phase in the 20-week plan
             let phaseLastWeek = phaseLastWeekNumber(phase)
             return session.planWeekNumber == phaseLastWeek
 
         // MARK: Streaks
-        case .weekStreak(let weeks):
+
+        case let .weekStreak(weeks):
             return progress.weekStreakCount >= weeks
 
-        case .returnAfterBreak(let minDays), .returnedAfterPause(let minDays):
+        case let .returnAfterBreak(minDays), let .returnedAfterPause(minDays):
             guard let days = progress.daysSinceLastSession(from: now, calendar: calendar) else {
                 return false
             }
@@ -140,11 +144,13 @@ final class BadgeEngine {
             return days >= minDays
 
         // MARK: Weekly frequency
-        case .sessionsInOneWeek(let count):
+
+        case let .sessionsInOneWeek(count):
             let sessionsThisWeek = progress.sessions(inSameWeekAs: now, calendar: calendar)
             return sessionsThisWeek.count >= count
 
         // MARK: Time of day
+
         case .morningSession:
             let hour = calendar.component(.hour, from: session.startedAt)
             return hour < 9
@@ -158,15 +164,16 @@ final class BadgeEngine {
             return hour >= 21
 
         // MARK: Weather
+
         case .sessionInRain:
             return context.weatherCondition == .rain
 
-        case .sessionInCold(let threshold):
+        case let .sessionInCold(threshold):
             // WeatherService must provide actual temperature;
             // here we use .cold as a proxy when threshold == 5 (default)
             return context.weatherCondition == .cold && threshold <= 5
 
-        case .sessionInSunshine(let count):
+        case let .sessionInSunshine(count):
             guard context.weatherCondition == .sunshine else { return false }
             let sunshineCount = progress.completedSessions.filter { _ in
                 // In production: check stored weather on each session
@@ -191,19 +198,20 @@ final class BadgeEngine {
             return (3...5).contains(month)
 
         // MARK: Habits
+
         case .addedJournalNote:
             return context.journalNoteAdded
 
         case .sessionWithAudio:
             return context.audioWasPlaying
 
-        case .stretchedAfterSession(let count):
+        case let .stretchedAfterSession(count):
             // Count stored stretch events; use context for the current one
             let stretchCount = (context.stretchedAfter ? 1 : 0)
                 + progress.completedSessions.count // placeholder: real impl counts stored stretches
             return stretchCount >= count
 
-        case .drankWaterBeforeAndAfter(let count):
+        case let .drankWaterBeforeAndAfter(count):
             let waterCount = (context.loggedWaterBeforeAndAfter ? 1 : 0)
                 + 0 // placeholder: query persisted water logs
             return waterCount >= count
@@ -215,6 +223,7 @@ final class BadgeEngine {
             return context.sleptWellBefore
 
         // MARK: Social
+
         case .sessionWithPartner:
             return context.usedPartnerMode
 
@@ -231,18 +240,19 @@ final class BadgeEngine {
             return context.proudNoteAdded
 
         // MARK: Special
+
         case .sessionInDecember:
             return calendar.component(.month, from: now) == 12
 
         case .sessionFirstWeekOfJanuary:
             let month = calendar.component(.month, from: now)
-            let week  = calendar.component(.weekOfMonth, from: now)
+            let week = calendar.component(.weekOfMonth, from: now)
             return month == 1 && week == 1
 
         case .sessionOnBirthday:
             guard let bday = progress.birthdayComponents else { return false }
             let sessionMonth = calendar.component(.month, from: now)
-            let sessionDay   = calendar.component(.day,   from: now)
+            let sessionDay = calendar.component(.day, from: now)
             return sessionMonth == bday.month && sessionDay == bday.day
 
         case .sessionOnNewRoute:
@@ -258,7 +268,8 @@ final class BadgeEngine {
             return context.playlistIsNew
 
         // MARK: Programme milestones
-        case .firstContinuousRun(let minutes):
+
+        case let .firstContinuousRun(minutes):
             // IntervalEngine marks a session as "continuous" if no walk break occurred
             // CompletedSession should carry a longestContinuousRunSeconds field
             // Placeholder: always false until IntervalEngine integration
@@ -270,11 +281,11 @@ final class BadgeEngine {
 
     private func phaseLastWeekNumber(_ phase: Phase) -> Int {
         switch phase {
-        case .firstSteps:       return 4
-        case .buildingUp:       return 8
-        case .findingStrength:  return 12
-        case .confidentRunner:  return 16
-        case .continuousRunner: return 20
+        case .firstSteps: 4
+        case .buildingUp: 8
+        case .findingStrength: 12
+        case .confidentRunner: 16
+        case .continuousRunner: 20
         }
     }
 }

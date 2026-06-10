@@ -14,5 +14,9 @@
 --wrapparameters before-first
 --wrapcollections before-first
 
+# Bevar læsbare én-linjers bodies (jf. swift-style.md) — disse regler ville
+# ellers sprænge fx `var id: String { rawValue }` ud over flere linjer.
+--disable wrapPropertyBodies, wrapFunctionBodies, wrapLoopBodies
+
 # Undgå at røre genererede/eksterne mapper.
 --exclude .build,DerivedData,**/*.xcodeproj

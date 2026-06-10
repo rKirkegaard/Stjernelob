@@ -1,5 +1,5 @@
-import Foundation
 import ActivityKit
+import Foundation
 import StjernelobCore
 import StjernelobShared
 
@@ -9,7 +9,10 @@ import StjernelobShared
 final class LiveActivityController {
     private var activity: Activity<RunActivityAttributes>?
 
-    private func state(from snapshot: WorkoutSnapshot, intervalLabel: String) -> RunActivityAttributes.ContentState {
+    private func state(
+        from snapshot: WorkoutSnapshot,
+        intervalLabel: String
+    ) -> RunActivityAttributes.ContentState {
         RunActivityAttributes.ContentState(
             intervalLabel: intervalLabel,
             isRunning: snapshot.isRunning,
@@ -20,7 +23,10 @@ final class LiveActivityController {
 
     func start(planTitle: String, snapshot: WorkoutSnapshot, intervalLabel: String) {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
-        let content = ActivityContent(state: state(from: snapshot, intervalLabel: intervalLabel), staleDate: nil)
+        let content = ActivityContent(
+            state: state(from: snapshot, intervalLabel: intervalLabel),
+            staleDate: nil
+        )
         activity = try? Activity.request(
             attributes: RunActivityAttributes(planTitle: planTitle),
             content: content
@@ -29,7 +35,10 @@ final class LiveActivityController {
 
     func update(snapshot: WorkoutSnapshot, intervalLabel: String) {
         guard let activity else { return }
-        let content = ActivityContent(state: state(from: snapshot, intervalLabel: intervalLabel), staleDate: nil)
+        let content = ActivityContent(
+            state: state(from: snapshot, intervalLabel: intervalLabel),
+            staleDate: nil
+        )
         Task { await activity.update(content) }
     }
 

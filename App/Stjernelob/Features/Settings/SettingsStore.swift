@@ -10,17 +10,32 @@ final class SettingsStore {
     var feedback: FeedbackSettings { didSet { persistFeedback() } }
     var remindersEnabled: Bool { didSet { defaults.set(remindersEnabled, forKey: Keys.reminders) } }
     var reminderHour: Int { didSet { defaults.set(reminderHour, forKey: Keys.reminderHour) } }
-    var streakFreezeEnabled: Bool { didSet { defaults.set(streakFreezeEnabled, forKey: Keys.streakFreeze) } }
+    var streakFreezeEnabled: Bool { didSet { defaults.set(
+        streakFreezeEnabled,
+        forKey: Keys.streakFreeze
+    ) } }
     var healthKitEnabled: Bool { didSet { defaults.set(healthKitEnabled, forKey: Keys.healthKit) } }
     // Forælder-deling — alt opt-in (privacy by default, afsnit 11.2/14).
     var shareStreak: Bool { didSet { defaults.set(shareStreak, forKey: Keys.shareStreak) } }
     var shareWorkouts: Bool { didSet { defaults.set(shareWorkouts, forKey: Keys.shareWorkouts) } }
-    var shareMilestones: Bool { didSet { defaults.set(shareMilestones, forKey: Keys.shareMilestones) } }
-    // Personlig sikkerhed (afsnit 12) — alt opt-in og altid synligt for barnet.
-    var livePositionEnabled: Bool { didSet { defaults.set(livePositionEnabled, forKey: Keys.livePosition) } }
+    var shareMilestones: Bool {
+        didSet { defaults.set(shareMilestones, forKey: Keys.shareMilestones) }
+    }
+
+    /// Personlig sikkerhed (afsnit 12) — alt opt-in og altid synligt for barnet.
+    var livePositionEnabled: Bool { didSet { defaults.set(
+        livePositionEnabled,
+        forKey: Keys.livePosition
+    ) } }
     var awayHomeEnabled: Bool { didSet { defaults.set(awayHomeEnabled, forKey: Keys.awayHome) } }
-    var emergencyContactName: String { didSet { defaults.set(emergencyContactName, forKey: Keys.contactName) } }
-    var emergencyContactPhone: String { didSet { defaults.set(emergencyContactPhone, forKey: Keys.contactPhone) } }
+    var emergencyContactName: String { didSet { defaults.set(
+        emergencyContactName,
+        forKey: Keys.contactName
+    ) } }
+    var emergencyContactPhone: String { didSet { defaults.set(
+        emergencyContactPhone,
+        forKey: Keys.contactPhone
+    ) } }
 
     private let defaults: UserDefaults
 
@@ -42,7 +57,8 @@ final class SettingsStore {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         if let data = defaults.data(forKey: Keys.feedback),
-           let decoded = try? JSONDecoder().decode(FeedbackSettings.self, from: data) {
+           let decoded = try? JSONDecoder().decode(FeedbackSettings.self, from: data)
+        {
             feedback = decoded
         } else {
             feedback = FeedbackSettings()

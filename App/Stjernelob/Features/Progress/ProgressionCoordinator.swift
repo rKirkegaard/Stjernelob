@@ -57,7 +57,7 @@ struct ProgressionCoordinator {
 
     /// Kaldes efter en netop gemt tur. Progressionen afgøres nu af hele
     /// historikken, så dette blot genberegner placeringen.
-    func registerCompletedWorkout(programWeekId: Int, now: Date = Date()) {
+    func registerCompletedWorkout(programWeekId _: Int, now: Date = Date()) {
         reconcile(now: now)
     }
 }

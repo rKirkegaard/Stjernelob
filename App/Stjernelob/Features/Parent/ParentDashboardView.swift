@@ -1,5 +1,5 @@
-import SwiftUI
 import StjernelobCore
+import SwiftUI
 
 /// Forælder-dashboardet — vist her som "se præcis, hvad din forælder ser", så
 /// barnet altid kan kontrollere delingen (spec afsnit 11.2). Samme visning kan
@@ -17,10 +17,18 @@ struct ParentDashboardView: View {
                 }
             } else {
                 if let streak = snapshot.streakWeeks {
-                    stat(systemImage: "flame.fill", tint: Theme.Colors.running, text: Text(Strings.Parent.streak(streak)))
+                    stat(
+                        systemImage: "flame.fill",
+                        tint: Theme.Colors.running,
+                        text: Text(Strings.Parent.streak(streak))
+                    )
                 }
                 if let completed = snapshot.completedCount {
-                    stat(systemImage: "figure.run", tint: Theme.Colors.accent, text: Text(Strings.Parent.completed(completed)))
+                    stat(
+                        systemImage: "figure.run",
+                        tint: Theme.Colors.accent,
+                        text: Text(Strings.Parent.completed(completed))
+                    )
                 }
                 if let milestones = snapshot.milestones, !milestones.isEmpty {
                     Section(header: Text(Strings.Parent.milestonesTitle)) {

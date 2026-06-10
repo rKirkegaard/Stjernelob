@@ -1,5 +1,5 @@
-import SwiftUI
 import StjernelobCore
+import SwiftUI
 
 /// Hjem/dashboard (spec afsnit 7.2). Viser status og enten dagens tur eller en
 /// hyggelig hviledags-visning. Knapper fører videre til tur og ugeplanlægger.
@@ -48,9 +48,12 @@ struct HomeView: View {
                 ProgressView(value: viewModel.levelProgress.fraction)
                     .tint(Theme.Colors.brand)
                 if let span = viewModel.levelProgress.pointsForLevel {
-                    Text(Strings.Badges.levelProgress(into: viewModel.levelProgress.pointsIntoLevel, span: span))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(Strings.Badges.levelProgress(
+                        into: viewModel.levelProgress.pointsIntoLevel,
+                        span: span
+                    ))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
             }
             Spacer(minLength: 0)
@@ -60,8 +63,16 @@ struct HomeView: View {
 
     private var statsRow: some View {
         HStack(spacing: Theme.Spacing.medium) {
-            stat(systemImage: "star.fill", tint: Theme.Colors.star, text: Text(Strings.Home.starsTotal(viewModel.totalStars)))
-            stat(systemImage: "flame.fill", tint: Theme.Colors.running, text: Text(Strings.Home.streak(weeks: viewModel.streakWeeks)))
+            stat(
+                systemImage: "star.fill",
+                tint: Theme.Colors.star,
+                text: Text(Strings.Home.starsTotal(viewModel.totalStars))
+            )
+            stat(
+                systemImage: "flame.fill",
+                tint: Theme.Colors.running,
+                text: Text(Strings.Home.streak(weeks: viewModel.streakWeeks))
+            )
         }
     }
 

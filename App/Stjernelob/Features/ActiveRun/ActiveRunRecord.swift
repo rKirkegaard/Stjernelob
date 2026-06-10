@@ -4,7 +4,7 @@ import StjernelobCore
 /// Persisteret øjebliksbillede af en igangværende tur, så den kan genoptages
 /// efter app-luk/genstart (spec afsnit 16). Tiden regnes ud fra vægur, fordi et
 /// monotont ur nulstilles ved en ny proces.
-struct ActiveRunRecord: Codable, Sendable {
+struct ActiveRunRecord: Codable {
     var plan: WorkoutPlan
     var programWeekId: Int
     var programPhase: ProgramPhase

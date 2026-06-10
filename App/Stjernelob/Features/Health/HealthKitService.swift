@@ -35,7 +35,11 @@ final class HealthKitService {
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = .running
 
-        let builder = HKWorkoutBuilder(healthStore: store, configuration: configuration, device: .local())
+        let builder = HKWorkoutBuilder(
+            healthStore: store,
+            configuration: configuration,
+            device: .local()
+        )
         do {
             try await builder.beginCollection(at: start)
             try await builder.endCollection(at: end)

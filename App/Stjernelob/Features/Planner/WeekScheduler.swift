@@ -22,7 +22,11 @@ enum WeekScheduler {
     }
 
     /// Er en given dag en planlagt træningsdag for ugens antal ture?
-    static func isTrainingDay(_ date: Date, sessionsPerWeek: Int, calendar: Calendar = .iso8601Monday) -> Bool {
+    static func isTrainingDay(
+        _ date: Date,
+        sessionsPerWeek: Int,
+        calendar: Calendar = .iso8601Monday
+    ) -> Bool {
         trainingDays(sessionsPerWeek: sessionsPerWeek)
             .contains(weekdayMondayBased(date, calendar: calendar))
     }

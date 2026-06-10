@@ -4,7 +4,6 @@ import XCTest
 /// Tests for stjerner, point/niveauer og badges (jf. spec afsnit 5.1, 5.2, 5.4).
 /// Belønning gives for gennemførsel — aldrig fart eller distance.
 final class GamificationTests: XCTestCase {
-
     // MARK: - Stjerner
 
     func testStarsForCompletedWorkout() {
@@ -22,7 +21,10 @@ final class GamificationTests: XCTestCase {
             intervalsCompleted: 2, plannedIntervalCount: 5,
             runIntervalsCompleted: 1, isComplete: false
         )
-        XCTAssertEqual(Stars.earned(for: summary), 2)   // ingen bonus, men fulde stjerner for det gennemførte
+        XCTAssertEqual(
+            Stars.earned(for: summary),
+            2
+        ) // ingen bonus, men fulde stjerner for det gennemførte
     }
 
     // MARK: - Point og niveauer
@@ -38,15 +40,15 @@ final class GamificationTests: XCTestCase {
         XCTAssertEqual(system.level(forPoints: 25), 2)
         XCTAssertEqual(system.level(forPoints: 1299), 9)
         XCTAssertEqual(system.level(forPoints: 1300), 10)
-        XCTAssertEqual(system.level(forPoints: 99999), 10)   // klamper til max
+        XCTAssertEqual(system.level(forPoints: 99999), 10) // klamper til max
     }
 
     func testLevelProgressFraction() {
         let system = LevelSystem.standard
-        let progress = system.progress(forPoints: 42)   // niveau 2 (25..60)
+        let progress = system.progress(forPoints: 42) // niveau 2 (25..60)
         XCTAssertEqual(progress.level, 2)
-        XCTAssertEqual(progress.pointsIntoLevel, 17)     // 42 - 25
-        XCTAssertEqual(progress.pointsForLevel, 35)      // 60 - 25
+        XCTAssertEqual(progress.pointsIntoLevel, 17) // 42 - 25
+        XCTAssertEqual(progress.pointsForLevel, 35) // 60 - 25
         XCTAssertFalse(progress.isMaxLevel)
         XCTAssertEqual(progress.fraction, 17.0 / 35.0, accuracy: 0.0001)
     }
@@ -63,20 +65,37 @@ final class GamificationTests: XCTestCase {
     func testFirstStepIsAnEarlyWin() {
         // Den allerførste loggede tur giver "Første skridt" og milepælen "1 tur".
         let context = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 0)
-        XCTAssertEqual(BadgeEvaluator.newlyEarned(context: context, alreadyEarned: []), [.firstStep, .runs1])
+        XCTAssertEqual(
+            BadgeEvaluator.newlyEarned(context: context, alreadyEarned: []),
+            [.firstStep, .runs1]
+        )
     }
 
     func testBraveStarterNeedsAFullRun() {
-        let aborted = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 0, hasCompletedFullRun: false)
-        XCTAssertFalse(Set(BadgeEvaluator.newlyEarned(context: aborted, alreadyEarned: [])).contains(.braveStarter))
-        let full = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 0, hasCompletedFullRun: true)
-        XCTAssertTrue(Set(BadgeEvaluator.newlyEarned(context: full, alreadyEarned: [])).contains(.braveStarter))
+        let aborted = BadgeContext(
+            totalCompletedWorkouts: 1,
+            currentStreakWeeks: 0,
+            hasCompletedFullRun: false
+        )
+        XCTAssertFalse(Set(BadgeEvaluator.newlyEarned(context: aborted, alreadyEarned: []))
+            .contains(.braveStarter))
+        let full = BadgeContext(
+            totalCompletedWorkouts: 1,
+            currentStreakWeeks: 0,
+            hasCompletedFullRun: true
+        )
+        XCTAssertTrue(Set(BadgeEvaluator.newlyEarned(context: full, alreadyEarned: []))
+            .contains(.braveStarter))
     }
 
     func testSessionsPerWeekBadges() {
         func earned(sessions: Int) -> Set<Badge> {
             Set(BadgeEvaluator.newlyEarned(
-                context: BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0, sessionsThisWeek: sessions),
+                context: BadgeContext(
+                    totalCompletedWorkouts: 0,
+                    currentStreakWeeks: 0,
+                    sessionsThisWeek: sessions
+                ),
                 alreadyEarned: []
             ))
         }
@@ -99,16 +118,30 @@ final class GamificationTests: XCTestCase {
     }
 
     func testMonthHeroNeedsManyRunsInAMonth() {
-        let few = BadgeContext(totalCompletedWorkouts: 7, currentStreakWeeks: 0, workoutsThisMonth: 7)
-        XCTAssertFalse(Set(BadgeEvaluator.newlyEarned(context: few, alreadyEarned: [])).contains(.monthHero))
-        let many = BadgeContext(totalCompletedWorkouts: 8, currentStreakWeeks: 0, workoutsThisMonth: 8)
-        XCTAssertTrue(Set(BadgeEvaluator.newlyEarned(context: many, alreadyEarned: [])).contains(.monthHero))
+        let few = BadgeContext(
+            totalCompletedWorkouts: 7,
+            currentStreakWeeks: 0,
+            workoutsThisMonth: 7
+        )
+        XCTAssertFalse(Set(BadgeEvaluator.newlyEarned(context: few, alreadyEarned: []))
+            .contains(.monthHero))
+        let many = BadgeContext(
+            totalCompletedWorkouts: 8,
+            currentStreakWeeks: 0,
+            workoutsThisMonth: 8
+        )
+        XCTAssertTrue(Set(BadgeEvaluator.newlyEarned(context: many, alreadyEarned: []))
+            .contains(.monthHero))
     }
 
     func testSeasonBadgesAreMutuallyExclusive() {
         func season(month: Int) -> Set<Badge> {
             Set(BadgeEvaluator.newlyEarned(
-                context: BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0, month: month),
+                context: BadgeContext(
+                    totalCompletedWorkouts: 0,
+                    currentStreakWeeks: 0,
+                    month: month
+                ),
                 alreadyEarned: []
             ))
         }
@@ -121,7 +154,12 @@ final class GamificationTests: XCTestCase {
     func testSpecialDayBadges() {
         func earned(month: Int, day: Int) -> Set<Badge> {
             Set(BadgeEvaluator.newlyEarned(
-                context: BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0, month: month, day: day),
+                context: BadgeContext(
+                    totalCompletedWorkouts: 0,
+                    currentStreakWeeks: 0,
+                    month: month,
+                    day: day
+                ),
                 alreadyEarned: []
             ))
         }
@@ -162,16 +200,28 @@ final class GamificationTests: XCTestCase {
         var reachable = Set<Badge>()
         // Saml på tværs af repræsentative kontekster (inkl. hver årstid/mærkedag).
         let contexts = [
-            BadgeContext(totalCompletedWorkouts: 100, currentStreakWeeks: 8, sessionsThisWeek: 3,
-                         workoutsThisMonth: 8, hasCompletedFullRun: true, hasCompletedHardRun: true,
-                         startedInMorning: true, startedInEvening: true, tookPhoto: true,
-                         isComeback: true, month: 4, day: 15,
-                         totalRunIntervals: 1000, maxRunIntervalsInOneRun: 8,
-                         totalActiveWeeks: 52, totalStars: 1000),
+            BadgeContext(
+                totalCompletedWorkouts: 100,
+                currentStreakWeeks: 8,
+                sessionsThisWeek: 3,
+                workoutsThisMonth: 8,
+                hasCompletedFullRun: true,
+                hasCompletedHardRun: true,
+                startedInMorning: true,
+                startedInEvening: true,
+                tookPhoto: true,
+                isComeback: true,
+                month: 4,
+                day: 15,
+                totalRunIntervals: 1000,
+                maxRunIntervalsInOneRun: 8,
+                totalActiveWeeks: 52,
+                totalStars: 1000
+            ),
             BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 7, day: 1),
             BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 10, day: 1),
             BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 12, day: 24),
-            BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 1, day: 1)
+            BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 1, day: 1),
         ]
         for context in contexts {
             reachable.formUnion(BadgeEvaluator.newlyEarned(context: context, alreadyEarned: []))
@@ -181,13 +231,24 @@ final class GamificationTests: XCTestCase {
 
     func testAlreadyEarnedBadgesAreNotRepeated() {
         let context = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 0)
-        XCTAssertTrue(BadgeEvaluator.newlyEarned(context: context, alreadyEarned: [.firstStep, .runs1]).isEmpty)
+        XCTAssertTrue(BadgeEvaluator.newlyEarned(
+            context: context,
+            alreadyEarned: [.firstStep, .runs1]
+        ).isEmpty)
     }
 
     func testStableOrdering() {
-        let context = BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 3, sessionsThisWeek: 3)
+        let context = BadgeContext(
+            totalCompletedWorkouts: 1,
+            currentStreakWeeks: 3,
+            sessionsThisWeek: 3
+        )
         let earned = BadgeEvaluator.newlyEarned(context: context, alreadyEarned: [])
-        XCTAssertEqual(earned, earned.sorted { Badge.allCases.firstIndex(of: $0)! < Badge.allCases.firstIndex(of: $1)! })
+        XCTAssertEqual(
+            earned,
+            earned
+                .sorted { Badge.allCases.firstIndex(of: $0)! < Badge.allCases.firstIndex(of: $1)! }
+        )
     }
 
     // MARK: - Importerede milepæls-mærker
@@ -197,14 +258,26 @@ final class GamificationTests: XCTestCase {
     }
 
     func testTotalIntervalMilestones() {
-        let at25 = earnedMilestones(BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0, totalRunIntervals: 25))
+        let at25 = earnedMilestones(BadgeContext(
+            totalCompletedWorkouts: 0,
+            currentStreakWeeks: 0,
+            totalRunIntervals: 25
+        ))
         XCTAssertTrue(at25.isSuperset(of: [.interval5, .interval10, .interval25]))
         XCTAssertFalse(at25.contains(.interval50))
     }
 
     func testIntervalsInOneSessionMilestones() {
-        let at8 = earnedMilestones(BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0, maxRunIntervalsInOneRun: 8))
-        XCTAssertTrue(at8.isSuperset(of: [.sessionFourIntervals, .sessionSixIntervals, .sessionEightIntervals]))
+        let at8 = earnedMilestones(BadgeContext(
+            totalCompletedWorkouts: 0,
+            currentStreakWeeks: 0,
+            maxRunIntervalsInOneRun: 8
+        ))
+        XCTAssertTrue(at8.isSuperset(of: [
+            .sessionFourIntervals,
+            .sessionSixIntervals,
+            .sessionEightIntervals,
+        ]))
     }
 
     func testTotalRunMilestones() {
@@ -214,13 +287,21 @@ final class GamificationTests: XCTestCase {
     }
 
     func testActiveWeekMilestones() {
-        let at4 = earnedMilestones(BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0, totalActiveWeeks: 4))
+        let at4 = earnedMilestones(BadgeContext(
+            totalCompletedWorkouts: 0,
+            currentStreakWeeks: 0,
+            totalActiveWeeks: 4
+        ))
         XCTAssertTrue(at4.isSuperset(of: [.activeWeeks1, .activeWeeks2, .activeWeeks4]))
         XCTAssertFalse(at4.contains(.activeWeeks6))
     }
 
     func testStarMilestones() {
-        let at100 = earnedMilestones(BadgeContext(totalCompletedWorkouts: 0, currentStreakWeeks: 0, totalStars: 100))
+        let at100 = earnedMilestones(BadgeContext(
+            totalCompletedWorkouts: 0,
+            currentStreakWeeks: 0,
+            totalStars: 100
+        ))
         XCTAssertTrue(at100.isSuperset(of: [.stars10, .stars25, .stars50, .stars100]))
         XCTAssertFalse(at100.contains(.stars250))
     }
@@ -237,7 +318,13 @@ final class GamificationTests: XCTestCase {
 
     func testMilestonesAreAutomatic() {
         // Ingen milepæl er manuel — de tildeles ud fra historikken.
-        let milestones: [Badge] = [.interval5, .runs1, .activeWeeks1, .stars10, .sessionFourIntervals]
+        let milestones: [Badge] = [
+            .interval5,
+            .runs1,
+            .activeWeeks1,
+            .stars10,
+            .sessionFourIntervals,
+        ]
         XCTAssertTrue(milestones.allSatisfy { !$0.isManual })
     }
 }

@@ -1,7 +1,7 @@
-import SwiftUI
 import PhotosUI
-import UIKit
 import StjernelobCore
+import SwiftUI
+import UIKit
 
 /// Detaljer for én gennemført tur (spec afsnit 6.4 + 4.5): dato, trin i forløbet,
 /// hvad hun lavede, hvordan det føltes, stjerner — og billedarkivet for turen.
@@ -18,9 +18,15 @@ struct WorkoutDetailView: View {
             Section {
                 row(Strings.Progress.durationLabel, value: workout.activeDuration.shortText)
                 if let distance = workout.distanceMeters {
-                    row(Strings.Progress.distanceLabel, value: RunFormatting.distance(meters: distance))
+                    row(
+                        Strings.Progress.distanceLabel,
+                        value: RunFormatting.distance(meters: distance)
+                    )
                 }
-                row(Strings.Progress.intervalsLabel, value: "\(workout.intervalsCompleted) / \(workout.plannedIntervalCount)")
+                row(
+                    Strings.Progress.intervalsLabel,
+                    value: "\(workout.intervalsCompleted) / \(workout.plannedIntervalCount)"
+                )
                 row(Strings.Progress.starsLabel, value: "\(workout.starsEarned)")
                 if let effort = workout.perceivedEffort {
                     row(Strings.Progress.effortLabel, value: "\(effort) / 10")
@@ -30,7 +36,8 @@ struct WorkoutDetailView: View {
                         Text(Strings.Progress.bodyLabel)
                         Spacer()
                         Label { Text(bodySignal.displayLabel) } icon: {
-                            Image(systemName: bodySignal.symbolName).foregroundStyle(bodySignal.tint)
+                            Image(systemName: bodySignal.symbolName)
+                                .foregroundStyle(bodySignal.tint)
                         }
                         .foregroundStyle(.secondary)
                     }
@@ -91,7 +98,9 @@ struct WorkoutDetailView: View {
                 .contextMenu {
                     if let url = PhotoSharing.temporaryStrippedFile(from: data) {
                         ShareLink(item: url) {
-                            Label { Text(Strings.Progress.sharePhoto) } icon: { Image(systemName: "square.and.arrow.up") }
+                            Label { Text(Strings.Progress.sharePhoto) } icon: {
+                                Image(systemName: "square.and.arrow.up")
+                            }
                         }
                     }
                 }

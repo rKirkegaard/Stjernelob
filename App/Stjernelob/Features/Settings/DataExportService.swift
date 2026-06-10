@@ -22,6 +22,7 @@ struct DataExportService {
             var role: String
             var onboardingComplete: Bool
         }
+
         struct Workout: Codable {
             var id: UUID
             var date: Date
@@ -38,11 +39,13 @@ struct DataExportService {
             var reflection: String?
             var photoFileNames: [String]
         }
+
         struct Goal: Codable {
             var yearForWeekOfYear: Int
             var weekOfYear: Int
             var targetSessions: Int
         }
+
         var exportedAt: Date
         var profile: Profile?
         var workouts: [Workout]
@@ -88,7 +91,13 @@ struct DataExportService {
         }
         let badges = ((try? environment.badgeRepository.earned()) ?? []).map(\.rawValue).sorted()
 
-        return Export(exportedAt: exportedAt(), profile: profile, workouts: workouts, goals: goals, badges: badges)
+        return Export(
+            exportedAt: exportedAt(),
+            profile: profile,
+            workouts: workouts,
+            goals: goals,
+            badges: badges
+        )
     }
 
     /// Skriv eksporten til en midlertidig .json-fil og returnér URL'en (til deling).
@@ -97,7 +106,8 @@ struct DataExportService {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         encoder.dateEncodingStrategy = .iso8601
         guard let data = try? encoder.encode(makeExport()) else { return nil }
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("stjernelob-data.json")
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("stjernelob-data.json")
         do {
             try data.write(to: url, options: .atomic)
             return url

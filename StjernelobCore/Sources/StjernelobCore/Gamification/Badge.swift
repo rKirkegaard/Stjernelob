@@ -135,9 +135,9 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
              .cityRunner, .natureGirl, .newRoute, .newPlaylist, .musicInEars,
              .podcastRunner, .celebrateYourself, .cheerleader, .runningBuddy,
              .runningDiary, .packedAndReady, .stretchStar, .sleepCollector, .waterQueen:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 
@@ -148,8 +148,8 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
         // Kun de allerstørste mål er en skjult overraskelse — resten vises som
         // nære, opnåelige trin (samlingen viser kun det næste trin pr. gruppe).
         case .interval1000, .runs100, .activeWeeks52, .stars1000:
-            return true
-        default: return false
+            true
+        default: false
         }
     }
 }
@@ -178,7 +178,7 @@ public struct BadgeContext: Sendable, Equatable {
     /// Dato for turen, brugt til årstids- og mærkedags-mærker. 0 = ukendt.
     public let month: Int
     public let day: Int
-    // Samlede tal til milepæls-mærker (importeret).
+    /// Samlede tal til milepæls-mærker (importeret).
     /// Gennemførte løbeintervaller i alt på tværs af alle ture.
     public let totalRunIntervals: Int
     /// Flest løbeintervaller i én enkelt tur til dato.
@@ -230,86 +230,84 @@ public struct BadgeContext: Sendable, Equatable {
 public enum BadgeEvaluator {
     private static func isEarned(_ badge: Badge, in context: BadgeContext) -> Bool {
         switch badge {
-        case .firstStep:        return context.totalCompletedWorkouts >= 1
-        case .braveStarter:     return context.hasCompletedFullRun
-        case .oneWeekStreak:    return context.currentStreakWeeks >= 1
-        case .twoInOneWeek:     return context.sessionsThisWeek >= 2
-        case .threeInOneWeek:   return context.sessionsThisWeek >= 3
-        case .threeWeekStreak:  return context.currentStreakWeeks >= 3
-        case .unbreakable:      return context.currentStreakWeeks >= 8
-        case .monthHero:        return context.workoutsThisMonth >= 8
-        case .backAgain:        return context.isComeback
-        case .earlyBird:        return context.startedInMorning
-        case .eveningStar:      return context.startedInEvening
-        case .springAir:        return [3, 4, 5].contains(context.month)
-        case .autumnRunner:     return [9, 10, 11].contains(context.month)
-        case .iceInBelly:       return [12, 1, 2].contains(context.month)
-        case .sunshineRunner:   return [6, 7, 8].contains(context.month)
-        case .christmasRunner:  return context.month == 12 && (20...26).contains(context.day)
-        case .newYearStart:     return (context.month == 12 && context.day == 31)
-                                    || (context.month == 1 && (1...7).contains(context.day))
-        case .neverGiveUp:      return context.hasCompletedHardRun
-        case .momentPhoto:      return context.tookPhoto
-
+        case .firstStep: context.totalCompletedWorkouts >= 1
+        case .braveStarter: context.hasCompletedFullRun
+        case .oneWeekStreak: context.currentStreakWeeks >= 1
+        case .twoInOneWeek: context.sessionsThisWeek >= 2
+        case .threeInOneWeek: context.sessionsThisWeek >= 3
+        case .threeWeekStreak: context.currentStreakWeeks >= 3
+        case .unbreakable: context.currentStreakWeeks >= 8
+        case .monthHero: context.workoutsThisMonth >= 8
+        case .backAgain: context.isComeback
+        case .earlyBird: context.startedInMorning
+        case .eveningStar: context.startedInEvening
+        case .springAir: [3, 4, 5].contains(context.month)
+        case .autumnRunner: [9, 10, 11].contains(context.month)
+        case .iceInBelly: [12, 1, 2].contains(context.month)
+        case .sunshineRunner: [6, 7, 8].contains(context.month)
+        case .christmasRunner: context.month == 12 && (20...26).contains(context.day)
+        case .newYearStart: (context.month == 12 && context.day == 31)
+            || (context.month == 1 && (1...7).contains(context.day))
+        case .neverGiveUp: context.hasCompletedHardRun
+        case .momentPhoto: context.tookPhoto
         // Milepæle (importeret) — tildeles automatisk ud fra historikken.
-        case .interval5: return context.totalRunIntervals >= 5
-        case .interval10: return context.totalRunIntervals >= 10
-        case .interval15: return context.totalRunIntervals >= 15
-        case .interval20: return context.totalRunIntervals >= 20
-        case .interval25: return context.totalRunIntervals >= 25
-        case .interval30: return context.totalRunIntervals >= 30
-        case .interval40: return context.totalRunIntervals >= 40
-        case .interval50: return context.totalRunIntervals >= 50
-        case .interval75: return context.totalRunIntervals >= 75
-        case .interval100: return context.totalRunIntervals >= 100
-        case .interval150: return context.totalRunIntervals >= 150
-        case .interval200: return context.totalRunIntervals >= 200
-        case .interval300: return context.totalRunIntervals >= 300
-        case .interval500: return context.totalRunIntervals >= 500
-        case .interval750: return context.totalRunIntervals >= 750
-        case .interval1000: return context.totalRunIntervals >= 1000
-        case .sessionFourIntervals: return context.maxRunIntervalsInOneRun >= 4
-        case .sessionSixIntervals: return context.maxRunIntervalsInOneRun >= 6
-        case .sessionEightIntervals: return context.maxRunIntervalsInOneRun >= 8
-        case .runs1: return context.totalCompletedWorkouts >= 1
-        case .runs3: return context.totalCompletedWorkouts >= 3
-        case .runs5: return context.totalCompletedWorkouts >= 5
-        case .runs10: return context.totalCompletedWorkouts >= 10
-        case .runs15: return context.totalCompletedWorkouts >= 15
-        case .runs20: return context.totalCompletedWorkouts >= 20
-        case .runs25: return context.totalCompletedWorkouts >= 25
-        case .runs30: return context.totalCompletedWorkouts >= 30
-        case .runs40: return context.totalCompletedWorkouts >= 40
-        case .runs50: return context.totalCompletedWorkouts >= 50
-        case .runs60: return context.totalCompletedWorkouts >= 60
-        case .runs75: return context.totalCompletedWorkouts >= 75
-        case .runs80: return context.totalCompletedWorkouts >= 80
-        case .runs100: return context.totalCompletedWorkouts >= 100
-        case .activeWeeks1: return context.totalActiveWeeks >= 1
-        case .activeWeeks2: return context.totalActiveWeeks >= 2
-        case .activeWeeks4: return context.totalActiveWeeks >= 4
-        case .activeWeeks6: return context.totalActiveWeeks >= 6
-        case .activeWeeks8: return context.totalActiveWeeks >= 8
-        case .activeWeeks10: return context.totalActiveWeeks >= 10
-        case .activeWeeks12: return context.totalActiveWeeks >= 12
-        case .activeWeeks16: return context.totalActiveWeeks >= 16
-        case .activeWeeks20: return context.totalActiveWeeks >= 20
-        case .activeWeeks26: return context.totalActiveWeeks >= 26
-        case .activeWeeks52: return context.totalActiveWeeks >= 52
-        case .stars10: return context.totalStars >= 10
-        case .stars25: return context.totalStars >= 25
-        case .stars50: return context.totalStars >= 50
-        case .stars100: return context.totalStars >= 100
-        case .stars250: return context.totalStars >= 250
-        case .stars500: return context.totalStars >= 500
-        case .stars1000: return context.totalStars >= 1000
-
+        case .interval5: context.totalRunIntervals >= 5
+        case .interval10: context.totalRunIntervals >= 10
+        case .interval15: context.totalRunIntervals >= 15
+        case .interval20: context.totalRunIntervals >= 20
+        case .interval25: context.totalRunIntervals >= 25
+        case .interval30: context.totalRunIntervals >= 30
+        case .interval40: context.totalRunIntervals >= 40
+        case .interval50: context.totalRunIntervals >= 50
+        case .interval75: context.totalRunIntervals >= 75
+        case .interval100: context.totalRunIntervals >= 100
+        case .interval150: context.totalRunIntervals >= 150
+        case .interval200: context.totalRunIntervals >= 200
+        case .interval300: context.totalRunIntervals >= 300
+        case .interval500: context.totalRunIntervals >= 500
+        case .interval750: context.totalRunIntervals >= 750
+        case .interval1000: context.totalRunIntervals >= 1000
+        case .sessionFourIntervals: context.maxRunIntervalsInOneRun >= 4
+        case .sessionSixIntervals: context.maxRunIntervalsInOneRun >= 6
+        case .sessionEightIntervals: context.maxRunIntervalsInOneRun >= 8
+        case .runs1: context.totalCompletedWorkouts >= 1
+        case .runs3: context.totalCompletedWorkouts >= 3
+        case .runs5: context.totalCompletedWorkouts >= 5
+        case .runs10: context.totalCompletedWorkouts >= 10
+        case .runs15: context.totalCompletedWorkouts >= 15
+        case .runs20: context.totalCompletedWorkouts >= 20
+        case .runs25: context.totalCompletedWorkouts >= 25
+        case .runs30: context.totalCompletedWorkouts >= 30
+        case .runs40: context.totalCompletedWorkouts >= 40
+        case .runs50: context.totalCompletedWorkouts >= 50
+        case .runs60: context.totalCompletedWorkouts >= 60
+        case .runs75: context.totalCompletedWorkouts >= 75
+        case .runs80: context.totalCompletedWorkouts >= 80
+        case .runs100: context.totalCompletedWorkouts >= 100
+        case .activeWeeks1: context.totalActiveWeeks >= 1
+        case .activeWeeks2: context.totalActiveWeeks >= 2
+        case .activeWeeks4: context.totalActiveWeeks >= 4
+        case .activeWeeks6: context.totalActiveWeeks >= 6
+        case .activeWeeks8: context.totalActiveWeeks >= 8
+        case .activeWeeks10: context.totalActiveWeeks >= 10
+        case .activeWeeks12: context.totalActiveWeeks >= 12
+        case .activeWeeks16: context.totalActiveWeeks >= 16
+        case .activeWeeks20: context.totalActiveWeeks >= 20
+        case .activeWeeks26: context.totalActiveWeeks >= 26
+        case .activeWeeks52: context.totalActiveWeeks >= 52
+        case .stars10: context.totalStars >= 10
+        case .stars25: context.totalStars >= 25
+        case .stars50: context.totalStars >= 50
+        case .stars100: context.totalStars >= 100
+        case .stars250: context.totalStars >= 250
+        case .stars500: context.totalStars >= 500
+        case .stars1000: context.totalStars >= 1000
         // Manuelle mærker — låses op af barnet selv i appen.
         case .readyToStart, .rainRunner, .fogRunner, .rainbowRunner, .birthdayRun,
              .cityRunner, .natureGirl, .newRoute, .newPlaylist, .musicInEars,
              .podcastRunner, .celebrateYourself, .cheerleader, .runningBuddy,
              .runningDiary, .packedAndReady, .stretchStar, .sleepCollector, .waterQueen:
-            return false
+            false
         }
     }
 

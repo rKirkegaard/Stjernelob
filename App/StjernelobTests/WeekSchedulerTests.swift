@@ -17,10 +17,10 @@ final class WeekSchedulerTests: XCTestCase {
         }
     }
 
-    func testThreeSessionsHaveSpacing() {
+    func testThreeSessionsHaveSpacing() throws {
         // 3 ture spredes, så der er hviledage imellem (ingen to på rad i starten).
         let days = WeekScheduler.trainingDays(sessionsPerWeek: 3)
         XCTAssertEqual(days, days.sorted())
-        XCTAssertGreaterThan(days.last! - days.first!, 2)
+        XCTAssertGreaterThan(try XCTUnwrap(days.last) - days.first!, 2)
     }
 }

@@ -1,5 +1,5 @@
-import SwiftUI
 import StjernelobCore
+import SwiftUI
 
 /// Fremgang/historik (spec afsnit 6.4): liste og kalender over gennemførte ture.
 struct HistoryView: View {
@@ -38,8 +38,11 @@ struct HistoryView: View {
     private var content: some View {
         if showCalendar {
             ScrollView {
-                CalendarGridView(weeks: viewModel.recentWeeks(), trainingDays: viewModel.trainingDays)
-                    .padding(Theme.Spacing.medium)
+                CalendarGridView(
+                    weeks: viewModel.recentWeeks(),
+                    trainingDays: viewModel.trainingDays
+                )
+                .padding(Theme.Spacing.medium)
             }
         } else {
             List {
@@ -78,12 +81,14 @@ struct HistoryView: View {
                 Text(Strings.Progress.weekLabel(workout.programWeekId))
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Text(workout.isComplete ? Strings.Progress.completedTag : Strings.Progress.partialTag)
+                Text(workout.isComplete ? Strings.Progress.completedTag : Strings.Progress
+                    .partialTag)
                     .font(.caption2.weight(.semibold))
                     .padding(.horizontal, Theme.Spacing.small)
                     .padding(.vertical, 2)
                     .background(
-                        (workout.isComplete ? Theme.Colors.accent : Theme.Colors.walking).opacity(0.2),
+                        (workout.isComplete ? Theme.Colors.accent : Theme.Colors.walking)
+                            .opacity(0.2),
                         in: Capsule()
                     )
             }

@@ -23,8 +23,10 @@ public struct ProgressionEngine: Sendable, Equatable {
     /// progression ikke overskrides (spec afsnit 6.2).
     public var maxRunningSessionsPerWeek: Int = 4
 
-    public init(program: TrainingProgram = StandardProgram.journey,
-                state: ProgressionState = ProgressionState()) {
+    public init(
+        program: TrainingProgram = StandardProgram.journey,
+        state: ProgressionState = ProgressionState()
+    ) {
         self.program = program
         self.state = state
     }
@@ -71,7 +73,8 @@ public struct ProgressionEngine: Sendable, Equatable {
         }
         let extraWalks = total - runningSessions
         if extraWalks > 0 {
-            let walk = SessionTemplate.easyWalk(duration: .minutes(20)).plan(forSessionsPerWeek: total)
+            let walk = SessionTemplate.easyWalk(duration: .minutes(20))
+                .plan(forSessionsPerWeek: total)
             plans += Array(repeating: walk, count: extraWalks)
         }
         return plans

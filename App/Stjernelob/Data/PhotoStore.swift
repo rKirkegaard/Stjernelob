@@ -27,7 +27,10 @@ final class FilePhotoStore: PhotoStore {
 
     func save(_ data: Data) throws -> String {
         let fileName = UUID().uuidString + ".jpg"
-        try data.write(to: directory.appendingPathComponent(fileName), options: [.atomic, .completeFileProtection])
+        try data.write(
+            to: directory.appendingPathComponent(fileName),
+            options: [.atomic, .completeFileProtection]
+        )
         return fileName
     }
 

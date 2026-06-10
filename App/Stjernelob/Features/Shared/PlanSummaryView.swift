@@ -1,5 +1,5 @@
-import SwiftUI
 import StjernelobCore
+import SwiftUI
 
 /// Genbrugelig oversigt over en turs intervaller (opvarmning → gå/løb → nedkøling).
 /// Bruges på dashboard, ugeplanlægger og resumé. Hver række viser ikon + farve +

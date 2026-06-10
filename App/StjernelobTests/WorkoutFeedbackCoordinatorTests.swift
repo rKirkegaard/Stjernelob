@@ -1,5 +1,5 @@
-import XCTest
 import StjernelobCore
+import XCTest
 @testable import Stjernelob
 
 /// Tests for at intervalskift oversættes til den lyd, brugeren har valgt — så
@@ -7,12 +7,12 @@ import StjernelobCore
 @MainActor
 final class WorkoutFeedbackCoordinatorTests: XCTestCase {
     @MainActor private final class FakeVoiceCoach: VoiceCoach {
-        func say(_ text: String) {}
+        func say(_: String) {}
         func stopSpeaking() {}
     }
 
     @MainActor private final class FakeHapticPlayer: HapticPlayer {
-        func play(_ pattern: HapticPattern) {}
+        func play(_: HapticPattern) {}
         func prepare() {}
     }
 

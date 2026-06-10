@@ -45,14 +45,18 @@ struct SettingsView: View {
                         Text(sound.displayName).tag(sound)
                     }
                 } label: {
-                    Label { Text(Strings.Settings.runStartSound) } icon: { Image(systemName: "figure.run") }
+                    Label { Text(Strings.Settings.runStartSound) } icon: {
+                        Image(systemName: "figure.run")
+                    }
                 }
                 Picker(selection: $settings.feedback.walkStartSound) {
                     ForEach(SignalSound.allCases) { sound in
                         Text(sound.displayName).tag(sound)
                     }
                 } label: {
-                    Label { Text(Strings.Settings.walkStartSound) } icon: { Image(systemName: "figure.walk") }
+                    Label { Text(Strings.Settings.walkStartSound) } icon: {
+                        Image(systemName: "figure.walk")
+                    }
                 }
             } header: {
                 Text(Strings.Settings.signalSoundsSection)
@@ -67,7 +71,8 @@ struct SettingsView: View {
                     Stepper(value: $settings.reminderHour, in: 6...22) {
                         Text(Strings.Settings.reminderTime)
                         Spacer()
-                        Text("kl. \(settings.reminderHour)").monospacedDigit().foregroundStyle(.secondary)
+                        Text("kl. \(settings.reminderHour)").monospacedDigit()
+                            .foregroundStyle(.secondary)
                     }
                 }
             } header: {
@@ -91,7 +96,9 @@ struct SettingsView: View {
                 NavigationLink {
                     ParentDashboardView()
                 } label: {
-                    Label { Text(Strings.Sharing.seeWhatParentSees) } icon: { Image(systemName: "eye") }
+                    Label { Text(Strings.Sharing.seeWhatParentSees) } icon: {
+                        Image(systemName: "eye")
+                    }
                 }
             } header: {
                 Text(Strings.Sharing.section)
@@ -103,7 +110,9 @@ struct SettingsView: View {
                 NavigationLink {
                     SafetyView(settings: settings)
                 } label: {
-                    Label { Text(Strings.Safety.openInSettings) } icon: { Image(systemName: "shield.lefthalf.filled") }
+                    Label { Text(Strings.Safety.openInSettings) } icon: {
+                        Image(systemName: "shield.lefthalf.filled")
+                    }
                 }
             }
 
@@ -119,13 +128,17 @@ struct SettingsView: View {
             Section {
                 if let exportURL {
                     ShareLink(item: exportURL) {
-                        Label { Text(Strings.Settings.exportData) } icon: { Image(systemName: "square.and.arrow.up") }
+                        Label { Text(Strings.Settings.exportData) } icon: {
+                            Image(systemName: "square.and.arrow.up")
+                        }
                     }
                 } else {
                     Button {
                         exportURL = DataExportService(environment: environment).writeTemporaryFile()
                     } label: {
-                        Label { Text(Strings.Settings.exportData) } icon: { Image(systemName: "square.and.arrow.up") }
+                        Label { Text(Strings.Settings.exportData) } icon: {
+                            Image(systemName: "square.and.arrow.up")
+                        }
                     }
                 }
 
@@ -164,7 +177,7 @@ struct SettingsView: View {
             titleVisibility: .visible
         ) {
             Button(role: .destructive) { onErase() } label: { Text(Strings.Settings.deleteData) }
-            Button(role: .cancel) { } label: { Text(Strings.Settings.cancel) }
+            Button(role: .cancel) {} label: { Text(Strings.Settings.cancel) }
         } message: {
             Text(Strings.Settings.deleteConfirmBody)
         }

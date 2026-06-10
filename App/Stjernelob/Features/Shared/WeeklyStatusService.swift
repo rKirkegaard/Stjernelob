@@ -22,7 +22,10 @@ struct WeeklyStatusService {
             completedByWeek[week, default: 0] += 1
         }
 
-        let goalByWeek = Dictionary(goals.map { ($0.week, $0.targetSessions) }, uniquingKeysWith: { a, _ in a })
+        let goalByWeek = Dictionary(
+            goals.map { ($0.week, $0.targetSessions) },
+            uniquingKeysWith: { a, _ in a }
+        )
 
         var progress: [WeekIdentifier: WeekProgress] = [:]
         for week in Set(goalByWeek.keys).union(completedByWeek.keys) {
@@ -40,6 +43,11 @@ struct WeeklyStatusService {
             if status.isPaused { paused.insert(status.week) }
         }
 
-        return WeeklyTracker(progress: progress, frozenWeeks: frozen, pausedWeeks: paused, calendar: calendar)
+        return WeeklyTracker(
+            progress: progress,
+            frozenWeeks: frozen,
+            pausedWeeks: paused,
+            calendar: calendar
+        )
     }
 }

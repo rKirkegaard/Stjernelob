@@ -1,5 +1,5 @@
-import SwiftUI
 import StjernelobCore
+import SwiftUI
 
 extension Theme.Colors {
     /// Blød baggrunds-gradient til skærme — varm og rolig.
@@ -35,21 +35,21 @@ struct MascotView: View {
 
     private var symbolName: String {
         switch level {
-        case ...2: return "figure.walk"
-        case 3...4: return "figure.walk.motion"
-        case 5...6: return "figure.run"
-        case 7...8: return "hare.fill"
-        default: return "crown.fill"
+        case ...2: "figure.walk"
+        case 3...4: "figure.walk.motion"
+        case 5...6: "figure.run"
+        case 7...8: "hare.fill"
+        default: "crown.fill"
         }
     }
 
     private var tint: Color {
         switch level {
-        case ...2: return Theme.Colors.walking
-        case 3...4: return Theme.Colors.accent
-        case 5...6: return Theme.Colors.running
-        case 7...8: return Theme.Colors.brand
-        default: return Theme.Colors.star
+        case ...2: Theme.Colors.walking
+        case 3...4: Theme.Colors.accent
+        case 5...6: Theme.Colors.running
+        case 7...8: Theme.Colors.brand
+        default: Theme.Colors.star
         }
     }
 

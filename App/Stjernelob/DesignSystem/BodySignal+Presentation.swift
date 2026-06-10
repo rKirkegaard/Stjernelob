@@ -1,30 +1,30 @@
-import SwiftUI
 import StjernelobCore
+import SwiftUI
 
 /// Præsentation af kropssignalet efter en tur: label og symbol. Tonen er
 /// omsorgsfuld — aldrig dømmende (jf. velbefindende-reglerne).
 extension BodySignal {
     var displayLabel: LocalizedStringResource {
         switch self {
-        case .allGood: return Strings.Summary.bodyAllGood
-        case .goodSore: return Strings.Summary.bodyGoodSore
-        case .specificPain: return Strings.Summary.bodySpecificPain
+        case .allGood: Strings.Summary.bodyAllGood
+        case .goodSore: Strings.Summary.bodyGoodSore
+        case .specificPain: Strings.Summary.bodySpecificPain
         }
     }
 
     var symbolName: String {
         switch self {
-        case .allGood: return "checkmark.circle.fill"
-        case .goodSore: return "figure.cooldown"
-        case .specificPain: return "bandage.fill"
+        case .allGood: "checkmark.circle.fill"
+        case .goodSore: "figure.cooldown"
+        case .specificPain: "bandage.fill"
         }
     }
 
     var tint: Color {
         switch self {
-        case .allGood: return Theme.Colors.accent
-        case .goodSore: return Theme.Colors.restful
-        case .specificPain: return Theme.Colors.running
+        case .allGood: Theme.Colors.accent
+        case .goodSore: Theme.Colors.restful
+        case .specificPain: Theme.Colors.running
         }
     }
 }

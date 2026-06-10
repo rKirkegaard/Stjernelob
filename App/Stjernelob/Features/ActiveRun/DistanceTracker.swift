@@ -1,6 +1,6 @@
-import Foundation
 import CoreLocation
 import CoreMotion
+import Foundation
 
 /// Måler distance under en tur via GPS (Core Location), med skridt/bevægelse
 /// (Core Motion) som backup, fx på løbebånd eller hvis lokation er afslået
@@ -46,13 +46,18 @@ final class DistanceTracker: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    nonisolated func locationManager(
+        _: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
         let updates = locations
         Task { @MainActor in self.accumulate(updates) }
     }
 
     private func accumulate(_ locations: [CLLocation]) {
-        for location in locations where location.horizontalAccuracy >= 0 && location.horizontalAccuracy < 50 {
+        for location in locations
+            where location.horizontalAccuracy >= 0 && location.horizontalAccuracy < 50
+        {
             if let last = lastLocation {
                 let delta = location.distance(from: last)
                 if delta > 0 { distanceMeters += delta }
@@ -61,7 +66,7 @@ final class DistanceTracker: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    nonisolated func locationManager(_: CLLocationManager, didFailWithError _: Error) {
         // Distancefejl er ikke kritisk for turen — ignoreres.
     }
 }

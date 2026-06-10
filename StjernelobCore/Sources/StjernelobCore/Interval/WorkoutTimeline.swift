@@ -32,7 +32,7 @@ public struct WorkoutTimeline: Sendable, Equatable {
             running += interval.duration
             ends.append(running)
         }
-        self.cumulativeEnd = ends
+        cumulativeEnd = ends
     }
 
     public var totalDuration: Duration { cumulativeEnd.last ?? .zero }
@@ -133,24 +133,42 @@ public struct WorkoutTimeline: Sendable, Equatable {
             for secondsRemaining in [3, 2, 1] {
                 let tickTime = boundary - .seconds(secondsRemaining)
                 if tickTime > intervalStart {
-                    events.append(.init(time: tickTime, order: 0,
-                                        event: .countdown(secondsRemaining: secondsRemaining)))
+                    events.append(.init(
+                        time: tickTime,
+                        order: 0,
+                        event: .countdown(secondsRemaining: secondsRemaining)
+                    ))
                 }
             }
 
             // Interval gennemført.
-            events.append(.init(time: boundary, order: 1,
-                                event: .intervalCompleted(index: index, interval: plan.intervals[index])))
+            events.append(.init(
+                time: boundary,
+                order: 1,
+                event: .intervalCompleted(
+                    index: index,
+                    interval: plan.intervals[index]
+                )
+            ))
 
             if index < lastIndex {
                 // Næste interval starter.
                 let next = plan.intervals[index + 1]
-                events.append(.init(time: boundary, order: 2,
-                                    event: .intervalStarted(index: index + 1, interval: next)))
+                events.append(.init(
+                    time: boundary,
+                    order: 2,
+                    event: .intervalStarted(index: index + 1, interval: next)
+                ))
             } else {
                 // Sidste interval slut = målgang.
-                events.append(.init(time: boundary, order: 3,
-                                    event: .finished(summary: summary(at: total, isComplete: true))))
+                events.append(.init(
+                    time: boundary,
+                    order: 3,
+                    event: .finished(summary: summary(
+                        at: total,
+                        isComplete: true
+                    ))
+                ))
             }
         }
 

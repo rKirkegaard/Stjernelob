@@ -5,7 +5,6 @@ import XCTest
 /// forløbs-modellen. Planen er sikkerhedskritisk: forkerte interval-tal ville
 /// give en begynder en for hård tur.
 final class CouchToRunnerPlanTests: XCTestCase {
-
     func testHasTwentyWeeks() {
         XCTAssertEqual(CouchToRunnerPlan.totalWeeks, 20)
         XCTAssertEqual(CouchToRunnerPlan.weeks.count, 20)
@@ -14,20 +13,27 @@ final class CouchToRunnerPlanTests: XCTestCase {
 
     func testEveryWeekHasAtLeastTwoRequiredSessions() {
         for week in CouchToRunnerPlan.weeks {
-            XCTAssertGreaterThanOrEqual(week.requiredSessionCount, 2, "Uge \(week.id) skal have mindst 2 krævede ture")
+            XCTAssertGreaterThanOrEqual(
+                week.requiredSessionCount,
+                2,
+                "Uge \(week.id) skal have mindst 2 krævede ture"
+            )
         }
     }
 
-    func testWeekOneIsAGentleStart() {
-        let week = try! XCTUnwrap(CouchToRunnerPlan.week(id: 1))
+    func testWeekOneIsAGentleStart() throws {
+        let week = try XCTUnwrap(CouchToRunnerPlan.week(id: 1))
         let session = week.sessions[0]
         XCTAssertEqual(session.warmUp, .minutes(3))
-        XCTAssertEqual(session.blocks, [IntervalBlock(run: .seconds(20), walk: .seconds(90), reps: 4)])
+        XCTAssertEqual(
+            session.blocks,
+            [IntervalBlock(run: .seconds(20), walk: .seconds(90), reps: 4)]
+        )
         XCTAssertEqual(session.coolDown, .minutes(3))
     }
 
-    func testFinalWeekReachesThirtyMinutesContinuous() {
-        let week = try! XCTUnwrap(CouchToRunnerPlan.week(id: 20))
+    func testFinalWeekReachesThirtyMinutesContinuous() throws {
+        let week = try XCTUnwrap(CouchToRunnerPlan.week(id: 20))
         // En af de sidste ture er 30 min sammenhængende løb (1800 sek, ingen gang).
         let hasContinuousThirty = week.sessions.contains { session in
             session.blocks.contains { $0.run == .seconds(1800) && $0.walk == .zero && $0.reps == 1 }
@@ -53,8 +59,8 @@ final class CouchToRunnerPlanTests: XCTestCase {
         }
     }
 
-    func testSessionBuildsExpectedWorkoutPlan() {
-        let week = CouchToRunnerPlan.week(id: 1)!
+    func testSessionBuildsExpectedWorkoutPlan() throws {
+        let week = try XCTUnwrap(CouchToRunnerPlan.week(id: 1))
         let plan = week.sessions[0].workoutPlan()
         // opvarmning + 4 × (løb + gang) + nedkøling = 1 + 8 + 1 = 10 intervaller.
         XCTAssertEqual(plan.intervals.count, 10)

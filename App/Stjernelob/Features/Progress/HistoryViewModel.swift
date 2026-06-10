@@ -30,11 +30,17 @@ final class HistoryViewModel {
 
     /// De seneste 6 ugers dage (mandag-først), til en kompakt kalender.
     func recentWeeks(endingOn today: Date = Date(), weeks: Int = 6) -> [[Date]] {
-        guard let thisMonday = calendar.dateInterval(of: .weekOfYear, for: today)?.start else { return [] }
+        guard let thisMonday = calendar.dateInterval(of: .weekOfYear, for: today)?.start
+        else { return [] }
         var grid: [[Date]] = []
         for weekOffset in stride(from: weeks - 1, through: 0, by: -1) {
-            guard let weekStart = calendar.date(byAdding: .weekOfYear, value: -weekOffset, to: thisMonday) else { continue }
-            let days = (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: weekStart) }
+            guard let weekStart = calendar.date(
+                byAdding: .weekOfYear,
+                value: -weekOffset,
+                to: thisMonday
+            ) else { continue }
+            let days = (0..<7)
+                .compactMap { calendar.date(byAdding: .day, value: $0, to: weekStart) }
             grid.append(days)
         }
         return grid

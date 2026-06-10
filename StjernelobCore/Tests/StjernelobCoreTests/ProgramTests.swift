@@ -5,7 +5,6 @@ import XCTest
 /// træningsantal og den adaptive justering (jf. spec afsnit 6.1–6.2 og
 /// `.claude/rules/test.md`).
 final class ProgramTests: XCTestCase {
-
     // MARK: - Forløbets indhold
 
     func testBaseProgramHasEightWeeks() {
@@ -24,8 +23,10 @@ final class ProgramTests: XCTestCase {
 
     func testTitlesAreLocalizationKeysNotHardcodedText() {
         for week in StandardProgram.journey.weeks {
-            XCTAssertTrue(week.titleKey.hasPrefix("program.week."),
-                          "Titler skal være lokaliseringsnøgler, ikke brugertekst")
+            XCTAssertTrue(
+                week.titleKey.hasPrefix("program.week."),
+                "Titler skal være lokaliseringsnøgler, ikke brugertekst"
+            )
         }
     }
 
@@ -112,7 +113,7 @@ final class ProgramTests: XCTestCase {
         var engine = ProgressionEngine(program: StandardProgram.journey)
         XCTAssertEqual(engine.state.weekIndex, 0)
 
-        engine.apply(.stepBack)                       // kan ikke gå under første uge
+        engine.apply(.stepBack) // kan ikke gå under første uge
         XCTAssertEqual(engine.state.weekIndex, 0)
 
         engine.apply(.advance)
@@ -151,9 +152,9 @@ final class ProgramTests: XCTestCase {
 
     func testExtraSessionsBecomeEasyWalks() {
         let engine = ProgressionEngine(program: StandardProgram.journey)
-        let plans = engine.weeklyPlans(forSessionsPerWeek: 5)   // maks 4 løbeture
+        let plans = engine.weeklyPlans(forSessionsPerWeek: 5) // maks 4 løbeture
         XCTAssertEqual(plans.count, 5)
         let walkOnly = plans.filter { $0.runIntervalCount == 0 }
-        XCTAssertEqual(walkOnly.count, 1)   // én ekstra blid gå-tur
+        XCTAssertEqual(walkOnly.count, 1) // én ekstra blid gå-tur
     }
 }

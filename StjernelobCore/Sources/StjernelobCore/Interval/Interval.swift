@@ -31,8 +31,13 @@ public struct Interval: Codable, Sendable, Equatable {
 }
 
 public extension Interval {
-    static func warmUp(_ duration: Duration) -> Interval { .init(kind: .warmUp, duration: duration) }
+    static func warmUp(_ duration: Duration) -> Interval { .init(kind: .warmUp, duration: duration)
+    }
+
     static func run(_ duration: Duration) -> Interval { .init(kind: .run, duration: duration) }
     static func walk(_ duration: Duration) -> Interval { .init(kind: .walk, duration: duration) }
-    static func coolDown(_ duration: Duration) -> Interval { .init(kind: .coolDown, duration: duration) }
+    static func coolDown(_ duration: Duration) -> Interval { .init(
+        kind: .coolDown,
+        duration: duration
+    ) }
 }

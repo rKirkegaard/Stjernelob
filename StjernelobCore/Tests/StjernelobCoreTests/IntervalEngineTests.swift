@@ -6,7 +6,6 @@ import XCTest
 /// at motoren ikke "driver" tidsmæssigt selv ved grove, ujævne opdateringer
 /// (baggrund/låst skærm). Jf. `.claude/rules/test.md`.
 final class IntervalEngineTests: XCTestCase {
-
     /// Testplan: opvarmning 5s, løb 10s, gå 5s, løb 10s, nedkøling 5s = 35s.
     /// To løbeintervaller (indeks 1 og 3), så `runOrdinal` kan testes.
     private func makePlan() -> WorkoutPlan {
@@ -33,9 +32,9 @@ final class IntervalEngineTests: XCTestCase {
         let timeline = WorkoutTimeline(plan: makePlan())
         XCTAssertEqual(timeline.intervalIndex(at: .seconds(0)), 0)
         XCTAssertEqual(timeline.intervalIndex(at: .seconds(4.999)), 0)
-        XCTAssertEqual(timeline.intervalIndex(at: .seconds(5)), 1)   // grænse hører til næste
+        XCTAssertEqual(timeline.intervalIndex(at: .seconds(5)), 1) // grænse hører til næste
         XCTAssertEqual(timeline.intervalIndex(at: .seconds(14.5)), 1)
-        XCTAssertEqual(timeline.intervalIndex(at: .seconds(35)), 4)  // ved/efter slut: sidste
+        XCTAssertEqual(timeline.intervalIndex(at: .seconds(35)), 4) // ved/efter slut: sidste
         XCTAssertEqual(timeline.intervalIndex(at: .seconds(99)), 4)
     }
 
@@ -49,7 +48,7 @@ final class IntervalEngineTests: XCTestCase {
         XCTAssertEqual(snap.remainingInInterval, .seconds(7))
         XCTAssertEqual(snap.totalElapsed, .seconds(8))
         XCTAssertEqual(snap.totalRemaining, .seconds(27))
-        XCTAssertEqual(snap.runOrdinal, 1)   // første løbeinterval
+        XCTAssertEqual(snap.runOrdinal, 1) // første løbeinterval
         XCTAssertEqual(snap.runCount, 2)
     }
 
@@ -57,13 +56,13 @@ final class IntervalEngineTests: XCTestCase {
         let timeline = WorkoutTimeline(plan: makePlan())
         let snap = timeline.snapshot(at: .seconds(22), phase: .active)
         XCTAssertEqual(snap.intervalIndex, 3)
-        XCTAssertEqual(snap.runOrdinal, 2)   // andet løbeinterval
+        XCTAssertEqual(snap.runOrdinal, 2) // andet løbeinterval
     }
 
     // MARK: - Start
 
     func testStartEmitsStartedAndFirstInterval() {
-        let clock = ManualClock(.seconds(1000))   // vilkårligt nulpunkt
+        let clock = ManualClock(.seconds(1000)) // vilkårligt nulpunkt
         let engine = IntervalEngine(plan: makePlan(), clock: clock)
         let events = engine.start()
         XCTAssertEqual(events, [
@@ -87,16 +86,16 @@ final class IntervalEngineTests: XCTestCase {
         let engine = IntervalEngine(plan: makePlan(), clock: clock)
         engine.start()
 
-        clock.advance(seconds: 2)   // nedtælling 3 ligger på t=2
+        clock.advance(seconds: 2) // nedtælling 3 ligger på t=2
         XCTAssertEqual(engine.update(), [.countdown(secondsRemaining: 3)])
 
-        clock.advance(seconds: 1)   // t=3
+        clock.advance(seconds: 1) // t=3
         XCTAssertEqual(engine.update(), [.countdown(secondsRemaining: 2)])
 
-        clock.advance(seconds: 1)   // t=4
+        clock.advance(seconds: 1) // t=4
         XCTAssertEqual(engine.update(), [.countdown(secondsRemaining: 1)])
 
-        clock.advance(seconds: 1)   // t=5: skift
+        clock.advance(seconds: 1) // t=5: skift
         XCTAssertEqual(engine.update(), [
             .intervalCompleted(index: 0, interval: .warmUp(.seconds(5))),
             .intervalStarted(index: 1, interval: .run(.seconds(10))),
@@ -109,10 +108,10 @@ final class IntervalEngineTests: XCTestCase {
         engine.start()
         clock.advance(seconds: 17)
         XCTAssertFalse(engine.update().contains(.halfway))
-        clock.advance(seconds: 1)   // passerer 17.5
+        clock.advance(seconds: 1) // passerer 17.5
         XCTAssertTrue(engine.update().contains(.halfway))
         clock.advance(seconds: 10)
-        XCTAssertFalse(engine.update().contains(.halfway))   // kun én gang
+        XCTAssertFalse(engine.update().contains(.halfway)) // kun én gang
     }
 
     func testFinishedAtEnd() {
@@ -121,7 +120,7 @@ final class IntervalEngineTests: XCTestCase {
         engine.start()
         clock.advance(seconds: 35)
         let events = engine.update()
-        guard case .finished(let summary)? = events.last else {
+        guard case let .finished(summary)? = events.last else {
             return XCTFail("Forventede en finished-hændelse til sidst, fik \(events)")
         }
         XCTAssertTrue(summary.isComplete)
@@ -144,10 +143,10 @@ final class IntervalEngineTests: XCTestCase {
         let events = engine.update()
 
         let started = events.compactMap { event -> Int? in
-            if case .intervalStarted(let index, _) = event { return index }
+            if case let .intervalStarted(index, _) = event { return index }
             return nil
         }
-        XCTAssertEqual(started, [1, 2, 3, 4])   // alle skift, i rækkefølge
+        XCTAssertEqual(started, [1, 2, 3, 4]) // alle skift, i rækkefølge
 
         let completed = events.filter {
             if case .intervalCompleted = $0 { return true }
@@ -159,7 +158,7 @@ final class IntervalEngineTests: XCTestCase {
             if case .countdown = $0 { return true }
             return false
         }
-        XCTAssertEqual(countdowns.count, 15)   // 3 pr. interval × 5
+        XCTAssertEqual(countdowns.count, 15) // 3 pr. interval × 5
 
         XCTAssertEqual(events.filter { $0 == .halfway }.count, 1)
         XCTAssertEqual(engine.status, .finished)
@@ -202,13 +201,13 @@ final class IntervalEngineTests: XCTestCase {
         engine.pause()
         XCTAssertEqual(engine.status, .paused)
 
-        clock.advance(seconds: 100)         // 100s vægur går under pausen
+        clock.advance(seconds: 100) // 100s vægur går under pausen
         XCTAssertEqual(engine.snapshot().totalElapsed, .seconds(3))
 
         engine.resume()
         XCTAssertEqual(engine.status, .active)
 
-        clock.advance(seconds: 2)           // 2s aktiv tid mere → t=5 aktivt
+        clock.advance(seconds: 2) // 2s aktiv tid mere → t=5 aktivt
         let events = engine.update()
         XCTAssertTrue(events.contains(.intervalStarted(index: 1, interval: .run(.seconds(10)))))
         XCTAssertEqual(engine.snapshot().totalElapsed, .seconds(5))
@@ -218,11 +217,11 @@ final class IntervalEngineTests: XCTestCase {
         let clock = ManualClock()
         let engine = IntervalEngine(plan: makePlan(), clock: clock)
         engine.start()
-        clock.advance(seconds: 16)          // midt i andet løbeinterval (idx 1 slut v.15)
+        clock.advance(seconds: 16) // midt i andet løbeinterval (idx 1 slut v.15)
         _ = engine.update()
         let summary = engine.stop()
         XCTAssertFalse(summary.isComplete)
-        XCTAssertEqual(summary.intervalsCompleted, 2)   // opvarmning + første løb
+        XCTAssertEqual(summary.intervalsCompleted, 2) // opvarmning + første løb
         XCTAssertEqual(summary.runIntervalsCompleted, 1)
         XCTAssertEqual(summary.activeDuration, .seconds(16))
         XCTAssertEqual(engine.status, .finished)

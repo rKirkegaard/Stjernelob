@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import StjernelobCore
+import SwiftUI
 
 /// Én bevægelse i opvarmnings-/nedkølingsguiden.
 struct GuideMove: Identifiable {
@@ -27,17 +27,17 @@ enum MovementGuide {
     /// Guiden for et givet interval (kun opvarmning og nedkøling har en).
     static func moves(for kind: IntervalKind) -> [GuideMove] {
         switch kind {
-        case .warmUp: return warmUp
-        case .coolDown: return coolDown
-        case .run, .walk: return []
+        case .warmUp: warmUp
+        case .coolDown: coolDown
+        case .run, .walk: []
         }
     }
 
     static func title(for kind: IntervalKind) -> LocalizedStringResource? {
         switch kind {
-        case .warmUp: return Strings.Guide.warmUpTitle
-        case .coolDown: return Strings.Guide.coolDownTitle
-        case .run, .walk: return nil
+        case .warmUp: Strings.Guide.warmUpTitle
+        case .coolDown: Strings.Guide.coolDownTitle
+        case .run, .walk: nil
         }
     }
 }

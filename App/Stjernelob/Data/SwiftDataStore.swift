@@ -1,6 +1,6 @@
 import Foundation
-import SwiftData
 import StjernelobCore
+import SwiftData
 
 /// SwiftData-baseret implementering af alle repositories. Bruger
 /// hovedkonteksten og er derfor @MainActor. Den lokale database er kilden til
@@ -173,7 +173,10 @@ extension SwiftDataStore: WeeklyPlanRepository {
     func allGoals() throws -> [WeeklyGoalDTO] {
         try context.fetch(FetchDescriptor<WeeklyGoalEntity>()).map {
             WeeklyGoalDTO(
-                week: WeekIdentifier(yearForWeekOfYear: $0.yearForWeekOfYear, weekOfYear: $0.weekOfYear),
+                week: WeekIdentifier(
+                    yearForWeekOfYear: $0.yearForWeekOfYear,
+                    weekOfYear: $0.weekOfYear
+                ),
                 targetSessions: $0.targetSessions
             )
         }
@@ -211,7 +214,10 @@ extension SwiftDataStore: WeeklyPlanRepository {
     func allStatuses() throws -> [WeekStatusDTO] {
         try context.fetch(FetchDescriptor<WeekStatusEntity>()).map {
             WeekStatusDTO(
-                week: WeekIdentifier(yearForWeekOfYear: $0.yearForWeekOfYear, weekOfYear: $0.weekOfYear),
+                week: WeekIdentifier(
+                    yearForWeekOfYear: $0.yearForWeekOfYear,
+                    weekOfYear: $0.weekOfYear
+                ),
                 isFrozen: $0.isFrozen, isPaused: $0.isPaused
             )
         }

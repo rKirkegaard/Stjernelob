@@ -5,7 +5,7 @@ import Foundation
 public struct LevelProgress: Sendable, Equatable {
     public let level: Int
     public let pointsIntoLevel: Int
-    public let pointsForLevel: Int?   // nil på sidste niveau (intet loft)
+    public let pointsForLevel: Int? // nil på sidste niveau (intet loft)
     public let isMaxLevel: Bool
 
     public var fraction: Double {

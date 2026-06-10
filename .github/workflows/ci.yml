@@ -21,12 +21,11 @@ jobs:
         working-directory: StjernelobCore
         run: swift test --enable-code-coverage
 
-  # Rapporterer formaterings-afvigelser (ikke-blokerende, indtil koden er kørt
-  # gennem swiftformat på en Mac — den kan ikke køre på Windows-udviklingsmaskinen).
+  # Håndhæver kodeformatering efter .swiftformat (koden er kørt gennem
+  # swiftformat 0.61). Blokerende — formateringen skal holdes ved lige.
   format-lint:
-    name: SwiftFormat (rapport)
+    name: SwiftFormat
     runs-on: macos-15
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - name: Installer SwiftFormat

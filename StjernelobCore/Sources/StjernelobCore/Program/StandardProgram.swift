@@ -30,10 +30,10 @@ public enum StandardProgram {
     /// Afbild planens fem faser ind på forløbs-modellens fire faser.
     private static func programPhase(for phase: PlanPhase) -> ProgramPhase {
         switch phase {
-        case .firstSteps, .buildingUp: return .base
-        case .findingStrength: return .maintain
-        case .confidentRunner: return .towardFiveKilometre
-        case .continuousRunner: return .beyond
+        case .firstSteps, .buildingUp: .base
+        case .findingStrength: .maintain
+        case .confidentRunner: .towardFiveKilometre
+        case .continuousRunner: .beyond
         }
     }
 

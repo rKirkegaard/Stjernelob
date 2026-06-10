@@ -1,5 +1,5 @@
-import Foundation
 import AVFoundation
+import Foundation
 
 /// Pladsholder-stemmecoach baseret på syntetisk tale (`AVSpeechSynthesizer`).
 /// Erstattes/suppleres senere af indtalt voiceover (afsnit 15) bag samme

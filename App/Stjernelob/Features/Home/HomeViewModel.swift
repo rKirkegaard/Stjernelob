@@ -31,11 +31,16 @@ final class HomeViewModel {
         let profile = try? environment.profileRepository.load()
         sessionsPerWeek = profile?.defaultWeeklySessions ?? 3
 
-        let engine = ProgressionEngine(state: ProgressionState(weekIndex: profile?.currentWeekIndex ?? 0))
+        let engine =
+            ProgressionEngine(state: ProgressionState(weekIndex: profile?.currentWeekIndex ?? 0))
         let week = engine.currentWeek
         currentWeek = week
 
-        let training = WeekScheduler.isTrainingDay(now, sessionsPerWeek: sessionsPerWeek, calendar: calendar)
+        let training = WeekScheduler.isTrainingDay(
+            now,
+            sessionsPerWeek: sessionsPerWeek,
+            calendar: calendar
+        )
         isRestDay = !training
         todaysPlan = training ? week.plan(forSessionsPerWeek: sessionsPerWeek) : nil
 

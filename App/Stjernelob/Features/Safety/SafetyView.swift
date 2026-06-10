@@ -19,8 +19,10 @@ struct SafetyView: View {
 
             Section {
                 TextField(text: $settings.emergencyContactName) { Text(Strings.Safety.contactName) }
-                TextField(text: $settings.emergencyContactPhone) { Text(Strings.Safety.contactPhone) }
-                    .keyboardType(.phonePad)
+                TextField(text: $settings.emergencyContactPhone) {
+                    Text(Strings.Safety.contactPhone)
+                }
+                .keyboardType(.phonePad)
             }
 
             Section {

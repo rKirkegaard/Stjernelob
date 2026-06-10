@@ -12,8 +12,11 @@ public enum Stars {
     public static let completionBonus = 3
 
     /// Stjerner optjent på en tur ud fra dens opsummering.
-    public static func earned(for summary: WorkoutSummary, completionBonus: Int = completionBonus) -> Int {
-        let perInterval = summary.intervalsCompleted          // 1 stjerne pr. gennemført interval
+    public static func earned(
+        for summary: WorkoutSummary,
+        completionBonus: Int = completionBonus
+    ) -> Int {
+        let perInterval = summary.intervalsCompleted // 1 stjerne pr. gennemført interval
         let bonus = summary.isComplete ? completionBonus : 0
         return perInterval + bonus
     }

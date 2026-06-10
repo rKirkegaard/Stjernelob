@@ -37,9 +37,9 @@ public final class IntervalEngine {
     private var processedElapsed: Duration = .zero
 
     public init(plan: WorkoutPlan, clock: MonotonicClock) {
-        self.timeline = WorkoutTimeline(plan: plan)
+        timeline = WorkoutTimeline(plan: plan)
         self.clock = clock
-        self.schedule = timeline.scheduledEvents()
+        schedule = timeline.scheduledEvents()
     }
 
     public var plan: WorkoutPlan { timeline.plan }
@@ -127,12 +127,11 @@ public final class IntervalEngine {
 
     /// Øjebliksbillede til visning.
     public func snapshot() -> WorkoutSnapshot {
-        let phase: WorkoutSnapshot.Phase
-        switch status {
-        case .notStarted: phase = .notStarted
-        case .active: phase = .active
-        case .paused: phase = .paused
-        case .finished: phase = .finished
+        let phase: WorkoutSnapshot.Phase = switch status {
+        case .notStarted: .notStarted
+        case .active: .active
+        case .paused: .paused
+        case .finished: .finished
         }
         return timeline.snapshot(at: rawElapsed, phase: phase)
     }

@@ -1,5 +1,5 @@
-import SwiftUI
 import StjernelobCore
+import SwiftUI
 
 /// Hovednavigationen. Flere faner (fremgang, samling, indstillinger) kommer til,
 /// efterhånden som skærmene bygges.
@@ -30,7 +30,9 @@ struct MainTabView: View {
                 HistoryView(viewModel: HistoryViewModel(environment: environment))
             }
             .tabItem {
-                Label { Text(Strings.Progress.title) } icon: { Image(systemName: "chart.line.uptrend.xyaxis") }
+                Label { Text(Strings.Progress.title) } icon: {
+                    Image(systemName: "chart.line.uptrend.xyaxis")
+                }
             }
 
             NavigationStack {
@@ -59,7 +61,10 @@ struct MainTabView: View {
         }
         .confirmationDialog(
             Text(Strings.ActiveRun.resumeTitle),
-            isPresented: Binding(get: { resumableRecord != nil }, set: { if !$0 { resumableRecord = nil } }),
+            isPresented: Binding(
+                get: { resumableRecord != nil },
+                set: { if !$0 { resumableRecord = nil } }
+            ),
             titleVisibility: .visible
         ) {
             Button { resumeSavedRun() } label: { Text(Strings.ActiveRun.resumeYes) }

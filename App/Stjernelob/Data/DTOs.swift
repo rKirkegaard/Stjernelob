@@ -2,14 +2,14 @@ import Foundation
 import StjernelobCore
 
 /// Rolle ved login (afsnit 11.1). Forælder-rollen er støtte, ikke overvågning.
-enum UserRole: String, Sendable, Codable, CaseIterable {
+enum UserRole: String, Codable, CaseIterable {
     case runner
     case parent
 }
 
 /// Minimal helbredsscreening fra onboarding (afsnit 7.1). Bruges kun til at
 /// anbefale en lægesnak ved advarselstegn — aldrig til vurdering eller pres.
-struct HealthScreening: Sendable, Equatable, Codable {
+struct HealthScreening: Equatable, Codable {
     var hasPainOrInjury: Bool = false
     var hasHeartOrLungCondition: Bool = false
 
@@ -18,7 +18,7 @@ struct HealthScreening: Sendable, Equatable, Codable {
 }
 
 /// Sendable øjebliksbillede af profilen, som ViewModels og views bruger.
-struct ProfileDTO: Sendable, Equatable {
+struct ProfileDTO: Equatable {
     var hasRunBefore: Bool
     var defaultWeeklySessions: Int
     var currentWeekIndex: Int
@@ -29,7 +29,7 @@ struct ProfileDTO: Sendable, Equatable {
 }
 
 /// Sendable repræsentation af en gennemført tur.
-struct CompletedWorkoutDTO: Sendable, Equatable, Identifiable {
+struct CompletedWorkoutDTO: Equatable, Identifiable {
     var id: UUID
     var date: Date
     var programWeekId: Int
@@ -41,15 +41,15 @@ struct CompletedWorkoutDTO: Sendable, Equatable, Identifiable {
     var isComplete: Bool
     var starsEarned: Int
     var perceivedEffort: Int?
-    var distanceMeters: Double? = nil
+    var distanceMeters: Double?
     /// Hvordan kroppen føltes bagefter (skadesforebyggelse). Valgfrit.
-    var bodySignal: BodySignal? = nil
+    var bodySignal: BodySignal?
     /// Brugerens egen lille note efter turen ("hvad gik bedre end sidst?"). Valgfri.
-    var reflection: String? = nil
+    var reflection: String?
     var photos: [WorkoutPhotoDTO]
 }
 
-struct WorkoutPhotoDTO: Sendable, Equatable, Identifiable {
+struct WorkoutPhotoDTO: Equatable, Identifiable {
     var id: UUID
     var fileName: String
     var caption: String?
@@ -89,8 +89,12 @@ extension ProfileDTO {
 
 extension WorkoutPhotoDTO {
     init(entity: WorkoutPhotoEntity) {
-        self.init(id: entity.id, fileName: entity.fileName,
-                  caption: entity.caption, createdAt: entity.createdAt)
+        self.init(
+            id: entity.id,
+            fileName: entity.fileName,
+            caption: entity.caption,
+            createdAt: entity.createdAt
+        )
     }
 }
 

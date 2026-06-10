@@ -1,6 +1,6 @@
 import Foundation
-import WatchConnectivity
 import StjernelobCore
+import WatchConnectivity
 
 /// WatchConnectivity på ur-siden: modtager den aktuelle tur fra telefonen og
 /// sender turens resultat tilbage, så det havner i historikken. Uret fungerer
@@ -27,13 +27,21 @@ final class WatchSyncService: NSObject, WCSessionDelegate {
 
     private func decodeSession(from context: [String: Any]) {
         guard let data = context["session"] as? Data,
-              let payload = try? JSONDecoder().decode(WatchSessionPayload.self, from: data) else { return }
+              let payload = try? JSONDecoder().decode(WatchSessionPayload.self, from: data)
+        else { return }
         latestSession = payload
     }
 
-    nonisolated func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {}
+    nonisolated func session(
+        _: WCSession,
+        activationDidCompleteWith _: WCSessionActivationState,
+        error _: Error?
+    ) {}
 
-    nonisolated func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
+    nonisolated func session(
+        _: WCSession,
+        didReceiveApplicationContext applicationContext: [String: Any]
+    ) {
         Task { @MainActor in self.decodeSession(from: applicationContext) }
     }
 }

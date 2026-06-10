@@ -4,7 +4,7 @@ import StjernelobCore
 /// De tre uafhængige feedback-kanaler (spec afsnit 4.2): stemme, lyd og haptik.
 /// Hver kan slås til/fra hver for sig, så appen virker fuldt uden lyd (i skole,
 /// med musik skruet op) via haptik og visuelle signaler alene.
-struct FeedbackSettings: Sendable, Equatable, Codable {
+struct FeedbackSettings: Equatable, Codable {
     var voiceEnabled: Bool = true
     var soundEnabled: Bool = true
     var hapticsEnabled: Bool = true
@@ -41,8 +41,10 @@ struct FeedbackSettings: Sendable, Equatable, Codable {
         soundEnabled = try container.decodeIfPresent(Bool.self, forKey: .soundEnabled) ?? true
         hapticsEnabled = try container.decodeIfPresent(Bool.self, forKey: .hapticsEnabled) ?? true
         duckMusic = try container.decodeIfPresent(Bool.self, forKey: .duckMusic) ?? true
-        runStartSound = try container.decodeIfPresent(SignalSound.self, forKey: .runStartSound) ?? .energetic
-        walkStartSound = try container.decodeIfPresent(SignalSound.self, forKey: .walkStartSound) ?? .soft
+        runStartSound = try container
+            .decodeIfPresent(SignalSound.self, forKey: .runStartSound) ?? .energetic
+        walkStartSound = try container
+            .decodeIfPresent(SignalSound.self, forKey: .walkStartSound) ?? .soft
     }
 }
 
@@ -50,7 +52,7 @@ struct FeedbackSettings: Sendable, Equatable, Codable {
 /// vælge hver sin lyd til "begynd at løbe" og "begynd at gå", så de er nemme at
 /// kende fra hinanden uden at se på skærmen. Konkrete lyde er pladsholdere,
 /// indtil designede assets leveres (afsnit 15).
-enum SignalSound: String, Sendable, Equatable, Codable, CaseIterable, Identifiable {
+enum SignalSound: String, Equatable, Codable, CaseIterable, Identifiable {
     case energetic
     case soft
     case bell
@@ -62,30 +64,30 @@ enum SignalSound: String, Sendable, Equatable, Codable, CaseIterable, Identifiab
 
     var displayName: LocalizedStringResource {
         switch self {
-        case .energetic: return Strings.SignalSounds.energetic
-        case .soft: return Strings.SignalSounds.soft
-        case .bell: return Strings.SignalSounds.bell
-        case .chime: return Strings.SignalSounds.chime
-        case .whistle: return Strings.SignalSounds.whistle
-        case .marimba: return Strings.SignalSounds.marimba
+        case .energetic: Strings.SignalSounds.energetic
+        case .soft: Strings.SignalSounds.soft
+        case .bell: Strings.SignalSounds.bell
+        case .chime: Strings.SignalSounds.chime
+        case .whistle: Strings.SignalSounds.whistle
+        case .marimba: Strings.SignalSounds.marimba
         }
     }
 }
 
 /// Signallyde for skift og milepæle. Konkrete lyde er pladsholdere, indtil
 /// designede assets leveres (afsnit 15).
-enum SoundCue: Sendable, Equatable {
+enum SoundCue: Equatable {
     /// Et interval-skift med den valgte signallyd (løb eller gå).
     case intervalSignal(SignalSound)
     case countdownTick
-    case star          // stjernepop pr. interval (afsnit 4.3)
+    case star // stjernepop pr. interval (afsnit 4.3)
     case halfway
-    case fanfare       // målgang (afsnit 4.4)
+    case fanfare // målgang (afsnit 4.4)
 }
 
 /// Haptiske mønstre. Løb- og gå-skift har bevidst forskellig følelse, så de kan
 /// kendes fra hinanden uden lyd (afsnit 4.2).
-enum HapticPattern: Sendable, Equatable {
+enum HapticPattern: Equatable {
     case runStart
     case walkStart
     case countdownTick
@@ -110,7 +112,7 @@ protocol SoundPlayer: AnyObject {
 
 /// Standard-no-op, så fx test-attrapper kun behøver `play(_:)`.
 extension SoundPlayer {
-    func activateSession(duckMusic: Bool) {}
+    func activateSession(duckMusic _: Bool) {}
     func deactivateSession() {}
 }
 
@@ -126,10 +128,10 @@ protocol HapticPlayer: AnyObject {
 enum CoachScript {
     static func line(forStartOf interval: Interval) -> LocalizedStringResource {
         switch interval.kind {
-        case .warmUp: return Strings.Coaching.warmUpStart
-        case .run: return Strings.Coaching.runStart(duration: interval.duration.shortText)
-        case .walk: return Strings.Coaching.walkStart(duration: interval.duration.shortText)
-        case .coolDown: return Strings.Coaching.coolDownStart
+        case .warmUp: Strings.Coaching.warmUpStart
+        case .run: Strings.Coaching.runStart(duration: interval.duration.shortText)
+        case .walk: Strings.Coaching.walkStart(duration: interval.duration.shortText)
+        case .coolDown: Strings.Coaching.coolDownStart
         }
     }
 }

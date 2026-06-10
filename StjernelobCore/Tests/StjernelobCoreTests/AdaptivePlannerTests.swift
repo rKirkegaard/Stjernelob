@@ -4,7 +4,6 @@ import XCTest
 /// Tests for den adaptive planlægning (docs/loebeplan.md → adaptiveLogic).
 /// Reglerne er tilgivende: tvivl falder altid ud til den blødere vej.
 final class AdaptivePlannerTests: XCTestCase {
-
     // MARK: - Ugens beslutning
 
     func testFullWeekAdvances() {

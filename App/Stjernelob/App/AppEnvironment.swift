@@ -46,10 +46,12 @@ final class AppEnvironment {
         phoneSync?.sendCurrentSession()
     }
 
-    init(clock: any MonotonicClock = SystemMonotonicClock(),
-         store: SwiftDataStore? = nil,
-         photoStore: any PhotoStore = FilePhotoStore(),
-         settings: SettingsStore? = nil) {
+    init(
+        clock: any MonotonicClock = SystemMonotonicClock(),
+        store: SwiftDataStore? = nil,
+        photoStore: any PhotoStore = FilePhotoStore(),
+        settings: SettingsStore? = nil
+    ) {
         self.clock = clock
         // makeDefault() er @MainActor; kaldes her i init-kroppen (MainActor-
         // isoleret) frem for som default-argument (nonisolated kontekst).

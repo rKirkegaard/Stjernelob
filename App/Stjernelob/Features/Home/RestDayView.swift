@@ -29,7 +29,10 @@ struct RestDayView: View {
                 .font(.system(size: 72))
                 .foregroundStyle(Theme.Colors.restful)
                 .scaleEffect(breathe ? 1.08 : 0.96)
-                .animation(.easeInOut(duration: 2.4).repeatForever(autoreverses: true), value: breathe)
+                .animation(
+                    .easeInOut(duration: 2.4).repeatForever(autoreverses: true),
+                    value: breathe
+                )
                 .accessibilityHidden(true)
 
             Text(Strings.RestDay.title)

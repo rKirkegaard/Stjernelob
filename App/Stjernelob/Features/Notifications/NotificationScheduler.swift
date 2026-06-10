@@ -9,7 +9,7 @@ final class NotificationScheduler {
     private let center = UNUserNotificationCenter.current()
 
     func requestAuthorization() async -> Bool {
-        (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
+        await (try? center.requestAuthorization(options: [.alert, .sound])) ?? false
     }
 
     /// Genplanlæg alle påmindelser. Fjerner altid de gamle først.

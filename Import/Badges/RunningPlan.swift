@@ -3,18 +3,18 @@ import Foundation
 // MARK: - Programme Phase
 
 enum Phase: String, Codable, CaseIterable {
-    case firstSteps       = "Første skridt"      // Uge 1–4
-    case buildingUp       = "Bygger op"           // Uge 5–8
-    case findingStrength  = "Finder styrken"      // Uge 9–12
-    case confidentRunner  = "Løber med selvtillid" // Uge 13–16
-    case continuousRunner = "Kontinuerlig løber"  // Uge 17–20
+    case firstSteps = "Første skridt" // Uge 1–4
+    case buildingUp = "Bygger op" // Uge 5–8
+    case findingStrength = "Finder styrken" // Uge 9–12
+    case confidentRunner = "Løber med selvtillid" // Uge 13–16
+    case continuousRunner = "Kontinuerlig løber" // Uge 17–20
 }
 
 enum Difficulty: String, Codable {
-    case easy     = "nem"
-    case steady   = "rolig"
-    case medium   = "medium"
-    case strong   = "stærk"
+    case easy = "nem"
+    case steady = "rolig"
+    case medium
+    case strong = "stærk"
     case advanced = "avanceret"
 }
 
@@ -23,16 +23,18 @@ enum Difficulty: String, Codable {
 /// One run/walk block within a session
 struct Interval: Codable, Identifiable {
     let id: UUID
-    var runSeconds: Int      // 0 means walk-only block (e.g. warmup/cooldown)
-    var walkSeconds: Int     // 0 means run-only (used in late weeks)
+    var runSeconds: Int // 0 means walk-only block (e.g. warmup/cooldown)
+    var walkSeconds: Int // 0 means run-only (used in late weeks)
     var repetitions: Int
-    var displayNote: String  // Human-readable, e.g. "5 × 30 sek løb / 75 sek gang"
+    var displayNote: String // Human-readable, e.g. "5 × 30 sek løb / 75 sek gang"
 
-    init(id: UUID = UUID(),
-         runSeconds: Int,
-         walkSeconds: Int,
-         repetitions: Int,
-         displayNote: String) {
+    init(
+        id: UUID = UUID(),
+        runSeconds: Int,
+        walkSeconds: Int,
+        repetitions: Int,
+        displayNote: String
+    ) {
         self.id = id
         self.runSeconds = runSeconds
         self.walkSeconds = walkSeconds
@@ -51,18 +53,20 @@ struct Interval: Codable, Identifiable {
 /// One planned training session (a single "tur")
 struct Session: Codable, Identifiable {
     let id: UUID
-    var label: String           // "Tur 1", "Tur 2 (bonus)" etc.
-    var warmupMinutes: Int      // Always walking
+    var label: String // "Tur 1", "Tur 2 (bonus)" etc.
+    var warmupMinutes: Int // Always walking
     var intervals: [Interval]
-    var cooldownMinutes: Int    // Always walking
-    var isBonus: Bool           // Bonus sessions don't count toward weekly goal
+    var cooldownMinutes: Int // Always walking
+    var isBonus: Bool // Bonus sessions don't count toward weekly goal
 
-    init(id: UUID = UUID(),
-         label: String,
-         warmupMinutes: Int,
-         intervals: [Interval],
-         cooldownMinutes: Int,
-         isBonus: Bool = false) {
+    init(
+        id: UUID = UUID(),
+        label: String,
+        warmupMinutes: Int,
+        intervals: [Interval],
+        cooldownMinutes: Int,
+        isBonus: Bool = false
+    ) {
         self.id = id
         self.label = label
         self.warmupMinutes = warmupMinutes
@@ -73,9 +77,9 @@ struct Session: Codable, Identifiable {
 
     /// Estimated total session duration in seconds
     var estimatedDurationSeconds: Int {
-        let warmup  = warmupMinutes * 60
-        let cool    = cooldownMinutes * 60
-        let work    = intervals.reduce(0) { $0 + $1.totalSeconds }
+        let warmup = warmupMinutes * 60
+        let cool = cooldownMinutes * 60
+        let work = intervals.reduce(0) { $0 + $1.totalSeconds }
         return warmup + work + cool
     }
 }
@@ -85,22 +89,24 @@ struct Session: Codable, Identifiable {
 /// One week in the 20-week programme
 struct PlanWeek: Codable, Identifiable {
     let id: UUID
-    var weekNumber: Int          // 1–20
+    var weekNumber: Int // 1–20
     var phase: Phase
     var title: String
     var difficulty: Difficulty
     var coachTip: String
-    var badgeSlug: String        // References Badge.slug
+    var badgeSlug: String // References Badge.slug
     var plannedSessions: [Session]
 
-    init(id: UUID = UUID(),
-         weekNumber: Int,
-         phase: Phase,
-         title: String,
-         difficulty: Difficulty,
-         coachTip: String,
-         badgeSlug: String,
-         plannedSessions: [Session]) {
+    init(
+        id: UUID = UUID(),
+        weekNumber: Int,
+        phase: Phase,
+        title: String,
+        difficulty: Difficulty,
+        coachTip: String,
+        badgeSlug: String,
+        plannedSessions: [Session]
+    ) {
         self.id = id
         self.weekNumber = weekNumber
         self.phase = phase
@@ -167,9 +173,9 @@ enum RunningPlanError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .fileNotFound:
-            return "løbeprogram_20uger.json not found in app bundle."
-        case .decodingFailed(let detail):
-            return "Failed to decode running plan: \(detail)"
+            "løbeprogram_20uger.json not found in app bundle."
+        case let .decodingFailed(detail):
+            "Failed to decode running plan: \(detail)"
         }
     }
 }

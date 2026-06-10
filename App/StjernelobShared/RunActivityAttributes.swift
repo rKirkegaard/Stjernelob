@@ -1,5 +1,5 @@
-import Foundation
 import ActivityKit
+import Foundation
 
 /// Delt mellem app og widget, så Live Activity'en (under en igangværende tur,
 /// spec afsnit 10) refererer til præcis samme type i begge moduler.
@@ -15,7 +15,12 @@ public struct RunActivityAttributes: ActivityAttributes {
         public var remainingSeconds: Int
         public var totalRemainingSeconds: Int
 
-        public init(intervalLabel: String, isRunning: Bool, remainingSeconds: Int, totalRemainingSeconds: Int) {
+        public init(
+            intervalLabel: String,
+            isRunning: Bool,
+            remainingSeconds: Int,
+            totalRemainingSeconds: Int
+        ) {
             self.intervalLabel = intervalLabel
             self.isRunning = isRunning
             self.remainingSeconds = remainingSeconds

@@ -51,7 +51,7 @@ final class AdaptiveProgressTests: XCTestCase {
     }
 
     func testMissedWeekStepsBackOne() {
-        let completed = [week(2026, 1): 3, week(2026, 2): 3, week(2026, 3): 3]  // uge 4 helt misset
+        let completed = [week(2026, 1): 3, week(2026, 2): 3, week(2026, 3): 3] // uge 4 helt misset
         let result = AdaptiveProgress.evaluate(
             program: program, completedByWeek: completed,
             currentWeek: week(2026, 5), requiredSessions: required(3)
@@ -61,7 +61,7 @@ final class AdaptiveProgressTests: XCTestCase {
     }
 
     func testTwoMissedWeeksStepBackTwo() {
-        let completed = [week(2026, 1): 3, week(2026, 2): 3, week(2026, 3): 3]  // uge 4 og 5 misset
+        let completed = [week(2026, 1): 3, week(2026, 2): 3, week(2026, 3): 3] // uge 4 og 5 misset
         let result = AdaptiveProgress.evaluate(
             program: program, completedByWeek: completed,
             currentWeek: week(2026, 6), requiredSessions: required(3)

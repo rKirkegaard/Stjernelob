@@ -1,5 +1,5 @@
-import Foundation
 import CoreHaptics
+import Foundation
 
 /// Haptik via Core Haptics. Løb- og gå-skift har forskellig "følelse", så de kan
 /// kendes fra hinanden uden lyd (afsnit 4.2). Falder pænt tilbage til ingenting
@@ -33,7 +33,11 @@ final class CoreHapticsPlayer: HapticPlayer {
     }
 
     private func makePattern(_ pattern: HapticPattern) throws -> CHHapticPattern {
-        func event(intensity: Float, sharpness: Float, at relativeTime: TimeInterval) -> CHHapticEvent {
+        func event(
+            intensity: Float,
+            sharpness: Float,
+            at relativeTime: TimeInterval
+        ) -> CHHapticEvent {
             CHHapticEvent(
                 eventType: .hapticTransient,
                 parameters: [
@@ -44,24 +48,27 @@ final class CoreHapticsPlayer: HapticPlayer {
             )
         }
 
-        let events: [CHHapticEvent]
-        switch pattern {
+        let events: [CHHapticEvent] = switch pattern {
         case .runStart:
             // To skarpe slag — "klar, nu!"
-            events = [event(intensity: 1.0, sharpness: 0.9, at: 0),
-                      event(intensity: 1.0, sharpness: 0.9, at: 0.12)]
+            [
+                event(intensity: 1.0, sharpness: 0.9, at: 0),
+                event(intensity: 1.0, sharpness: 0.9, at: 0.12),
+            ]
         case .walkStart:
             // Ét blødt slag — ro.
-            events = [event(intensity: 0.6, sharpness: 0.3, at: 0)]
+            [event(intensity: 0.6, sharpness: 0.3, at: 0)]
         case .countdownTick:
-            events = [event(intensity: 0.5, sharpness: 0.7, at: 0)]
+            [event(intensity: 0.5, sharpness: 0.7, at: 0)]
         case .star:
-            events = [event(intensity: 0.7, sharpness: 0.6, at: 0)]
+            [event(intensity: 0.7, sharpness: 0.6, at: 0)]
         case .finish:
             // Fejrende lille serie.
-            events = [event(intensity: 1.0, sharpness: 0.5, at: 0),
-                      event(intensity: 0.8, sharpness: 0.5, at: 0.1),
-                      event(intensity: 1.0, sharpness: 0.7, at: 0.2)]
+            [
+                event(intensity: 1.0, sharpness: 0.5, at: 0),
+                event(intensity: 0.8, sharpness: 0.5, at: 0.1),
+                event(intensity: 1.0, sharpness: 0.7, at: 0.2),
+            ]
         }
         return try CHHapticPattern(events: events, parameters: [])
     }

@@ -1,5 +1,5 @@
-import Foundation
 import CoreLocation
+import Foundation
 
 /// Indkapsler Core Location til de personlige sikkerhedsfunktioner (spec
 /// afsnit 12): position under en tur (opt-in, slukkes ved turslut). Selve
@@ -33,12 +33,15 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         manager.stopUpdatingLocation()
     }
 
-    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    nonisolated func locationManager(
+        _: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
         let latest = locations.last
         Task { @MainActor in self.lastLocation = latest }
     }
 
-    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    nonisolated func locationManager(_: CLLocationManager, didFailWithError _: Error) {
         // Positionsfejl er ikke kritisk for selve turen — ignoreres her.
     }
 }

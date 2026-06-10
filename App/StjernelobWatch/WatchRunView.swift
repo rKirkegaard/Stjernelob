@@ -1,7 +1,7 @@
-import SwiftUI
 import Combine
-import WatchKit
 import StjernelobCore
+import SwiftUI
+import WatchKit
 
 /// Enkel tur-styring på uret: stort interval-navn, nedtælling og start/stop.
 /// Intervalskift giver haptik på håndleddet, så turen kan følges uden lyd.
@@ -75,10 +75,10 @@ final class WatchRunModel {
 
     func label(for kind: IntervalKind) -> LocalizedStringResource {
         switch kind {
-        case .warmUp: return LocalizedStringResource("watch.warmUp", defaultValue: "Opvarmning")
-        case .run: return LocalizedStringResource("watch.run", defaultValue: "Løb")
-        case .walk: return LocalizedStringResource("watch.walk", defaultValue: "Gå")
-        case .coolDown: return LocalizedStringResource("watch.coolDown", defaultValue: "Nedkøling")
+        case .warmUp: LocalizedStringResource("watch.warmUp", defaultValue: "Opvarmning")
+        case .run: LocalizedStringResource("watch.run", defaultValue: "Løb")
+        case .walk: LocalizedStringResource("watch.walk", defaultValue: "Gå")
+        case .coolDown: LocalizedStringResource("watch.coolDown", defaultValue: "Nedkøling")
         }
     }
 }

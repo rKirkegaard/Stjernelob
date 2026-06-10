@@ -1,6 +1,6 @@
-import SwiftUI
 import Combine
 import StjernelobCore
+import SwiftUI
 
 /// Under-tur-skærmen (spec afsnit 4.1): store, enkle tal der kan ses i et blik,
 /// tydelig nedtælling, interval-status og stjernepop pr. interval. Tempo/distance
@@ -63,19 +63,25 @@ struct ActiveRunView: View {
                     .font(.runCountdown)
                     .contentTransition(.numericText())
                     .accessibilityLabel(Text(Strings.ActiveRun.intervalOfTotal(
-                        current: snapshot.runOrdinal ?? 0, total: snapshot.runCount)))
+                        current: snapshot.runOrdinal ?? 0, total: snapshot.runCount
+                    )))
             }
             .frame(width: 260, height: 260)
             .padding(.vertical, Theme.Spacing.medium)
 
             HStack(spacing: Theme.Spacing.large) {
                 metric(icon: "clock", value: snapshot.totalElapsed.minutesSecondsText)
-                metric(icon: "point.topleft.down.curvedto.point.bottomright.up",
-                       value: RunFormatting.distance(meters: viewModel.distanceMeters))
-                metric(icon: "speedometer",
-                       value: RunFormatting.pace(
-                           elapsedSeconds: Double(snapshot.totalElapsed.wholeSeconds),
-                           meters: viewModel.distanceMeters))
+                metric(
+                    icon: "point.topleft.down.curvedto.point.bottomright.up",
+                    value: RunFormatting.distance(meters: viewModel.distanceMeters)
+                )
+                metric(
+                    icon: "speedometer",
+                    value: RunFormatting.pace(
+                        elapsedSeconds: Double(snapshot.totalElapsed.wholeSeconds),
+                        meters: viewModel.distanceMeters
+                    )
+                )
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
@@ -147,16 +153,18 @@ struct ActiveRunView: View {
                 Button {
                     viewModel.resume()
                 } label: {
-                    Label { Text(Strings.ActiveRun.resume) } icon: { Image(systemName: "play.fill") }
-                        .frame(maxWidth: .infinity)
+                    Label { Text(Strings.ActiveRun.resume) } icon: { Image(systemName: "play.fill")
+                    }
+                    .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
             } else {
                 Button {
                     viewModel.pause()
                 } label: {
-                    Label { Text(Strings.ActiveRun.pause) } icon: { Image(systemName: "pause.fill") }
-                        .frame(maxWidth: .infinity)
+                    Label { Text(Strings.ActiveRun.pause) } icon: { Image(systemName: "pause.fill")
+                    }
+                    .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
             }

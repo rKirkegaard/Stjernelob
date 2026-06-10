@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import StjernelobCore
+import SwiftUI
 
 /// Tur-resumé med fejring (spec afsnit 4.4 / 7.5): konfetti, dagens stjerner, en
 /// opmuntrende besked, et blidt "Hvordan føltes det?", et kropssignal-tjek
@@ -119,15 +119,19 @@ struct SummaryView: View {
                             .foregroundStyle(.primary)
                         Spacer()
                         if bodySignal == signal {
-                            Image(systemName: "checkmark.circle.fill").foregroundStyle(Theme.Colors.brand)
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(Theme.Colors.brand)
                         }
                     }
                     .padding(Theme.Spacing.small)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(
                         RoundedRectangle(cornerRadius: Theme.Radius.button)
-                            .stroke(bodySignal == signal ? Theme.Colors.brand : Color.secondary.opacity(0.25),
-                                    lineWidth: bodySignal == signal ? 2 : 1)
+                            .stroke(
+                                bodySignal == signal ? Theme.Colors.brand : Color.secondary
+                                    .opacity(0.25),
+                                lineWidth: bodySignal == signal ? 2 : 1
+                            )
                     )
                 }
                 .buttonStyle(.plain)
@@ -150,7 +154,10 @@ struct SummaryView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Theme.Spacing.medium)
-        .background(Theme.Colors.running.opacity(0.10), in: RoundedRectangle(cornerRadius: Theme.Radius.card))
+        .background(
+            Theme.Colors.running.opacity(0.10),
+            in: RoundedRectangle(cornerRadius: Theme.Radius.card)
+        )
         .padding(.horizontal, Theme.Spacing.large)
         .transition(.opacity.combined(with: .move(edge: .top)))
     }

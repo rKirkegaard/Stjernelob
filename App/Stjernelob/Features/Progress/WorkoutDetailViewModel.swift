@@ -14,7 +14,11 @@ final class WorkoutDetailViewModel {
     /// Indlæste billeddata pr. billede-id (til visning).
     private(set) var imageData: [UUID: Data] = [:]
 
-    init(workout: CompletedWorkoutDTO, environment: AppEnvironment, now: @escaping () -> Date = { Date() }) {
+    init(
+        workout: CompletedWorkoutDTO,
+        environment: AppEnvironment,
+        now: @escaping () -> Date = { Date() }
+    ) {
         self.workout = workout
         self.environment = environment
         self.now = now
@@ -36,7 +40,9 @@ final class WorkoutDetailViewModel {
     }
 
     private func reload() {
-        if let updated = (try? environment.workoutRepository.all())?.first(where: { $0.id == workout.id }) {
+        if let updated = (try? environment.workoutRepository.all())?
+            .first(where: { $0.id == workout.id })
+        {
             workout = updated
         }
         load()

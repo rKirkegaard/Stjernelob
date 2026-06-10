@@ -25,8 +25,10 @@ struct WeekPlannerView: View {
                                 .font(.subheadline.weight(.semibold))
                                 .padding(.vertical, Theme.Spacing.small)
                                 .frame(maxWidth: .infinity)
-                                .background(Theme.Colors.brand.opacity(0.15),
-                                            in: RoundedRectangle(cornerRadius: Theme.Radius.button))
+                                .background(
+                                    Theme.Colors.brand.opacity(0.15),
+                                    in: RoundedRectangle(cornerRadius: Theme.Radius.button)
+                                )
                         }
                     }
                 } header: {

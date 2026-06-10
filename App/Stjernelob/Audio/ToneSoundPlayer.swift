@@ -21,7 +21,7 @@ final class ToneSoundPlayer: SoundPlayer {
         }
     }
 
-    // Toner (Hz) i den lille skala vi bygger signalerne af.
+    /// Toner (Hz) i den lille skala vi bygger signalerne af.
     private enum Pitch {
         static let c5: Float = 523.25
         static let e5: Float = 659.25
@@ -84,7 +84,8 @@ final class ToneSoundPlayer: SoundPlayer {
                 let when = AVAudioTime(sampleTime: sampleTime, atRate: SoundGenerator.sampleRate)
                 player.scheduleBuffer(buffer, at: when, options: [], completionHandler: nil)
             }
-            sampleTime += AVAudioFramePosition(SoundGenerator.sampleRate * Double(note.duration + note.gap))
+            sampleTime +=
+                AVAudioFramePosition(SoundGenerator.sampleRate * Double(note.duration + note.gap))
         }
         player.play()
     }
@@ -106,7 +107,7 @@ final class ToneSoundPlayer: SoundPlayer {
         case .fanfare:
             return [
                 Note(Pitch.c5, duration: 0.1), Note(Pitch.e5, duration: 0.1),
-                Note(Pitch.g5, duration: 0.1), Note(Pitch.c6, duration: 0.26, gap: 0)
+                Note(Pitch.g5, duration: 0.1), Note(Pitch.c6, duration: 0.26, gap: 0),
             ]
         }
     }
@@ -116,18 +117,28 @@ final class ToneSoundPlayer: SoundPlayer {
         switch signal {
         case .energetic:
             // Stigende "power-up": C5 → E5 → G5.
-            return [Note(Pitch.c5, duration: 0.08), Note(Pitch.e5, duration: 0.08), Note(Pitch.g5, duration: 0.08, gap: 0)]
+            [
+                Note(Pitch.c5, duration: 0.08),
+                Note(Pitch.e5, duration: 0.08),
+                Note(Pitch.g5, duration: 0.08, gap: 0),
+            ]
         case .soft:
             // Faldende, blød "landing": G5 → C5.
-            return [Note(Pitch.g5, duration: 0.16, amplitude: 0.6), Note(Pitch.c5, duration: 0.18, gap: 0, amplitude: 0.6)]
+            [
+                Note(Pitch.g5, duration: 0.16, amplitude: 0.6),
+                Note(Pitch.c5, duration: 0.18, gap: 0, amplitude: 0.6),
+            ]
         case .bell:
-            return [Note(Pitch.e6, duration: 0.45, gap: 0, amplitude: 0.7)]
+            [Note(Pitch.e6, duration: 0.45, gap: 0, amplitude: 0.7)]
         case .chime:
-            return [Note(Pitch.g5, duration: 0.12), Note(Pitch.c6, duration: 0.18, gap: 0)]
+            [Note(Pitch.g5, duration: 0.12), Note(Pitch.c6, duration: 0.18, gap: 0)]
         case .whistle:
-            return [Note(Pitch.a6, duration: 0.09), Note(Pitch.a6, duration: 0.12, gap: 0)]
+            [Note(Pitch.a6, duration: 0.09), Note(Pitch.a6, duration: 0.12, gap: 0)]
         case .marimba:
-            return [Note(Pitch.c5, duration: 0.1, amplitude: 0.7), Note(Pitch.g5, duration: 0.12, gap: 0, amplitude: 0.7)]
+            [
+                Note(Pitch.c5, duration: 0.1, amplitude: 0.7),
+                Note(Pitch.g5, duration: 0.12, gap: 0, amplitude: 0.7),
+            ]
         }
     }
 }

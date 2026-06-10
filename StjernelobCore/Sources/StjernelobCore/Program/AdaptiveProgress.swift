@@ -44,7 +44,11 @@ public enum AdaptiveProgress {
     ) -> AdaptiveProgressResult {
         // Ingen ture endnu → ingen progression og ingen straf (man er ikke i gang).
         guard let firstWeek = completedByWeek.keys.min() else {
-            return AdaptiveProgressResult(weekIndex: 0, consecutiveMissedWeeks: 0, completedThisWeek: 0)
+            return AdaptiveProgressResult(
+                weekIndex: 0,
+                consecutiveMissedWeeks: 0,
+                completedThisWeek: 0
+            )
         }
 
         var index = program.firstWeekIndex
@@ -60,11 +64,16 @@ public enum AdaptiveProgress {
 
             if completed == 0 {
                 consecutiveMissed += 1
-                index = indexAfterMissedWeek(index: index, consecutiveMissed: consecutiveMissed, program: program)
+                index = indexAfterMissedWeek(
+                    index: index,
+                    consecutiveMissed: consecutiveMissed,
+                    program: program
+                )
             } else {
                 consecutiveMissed = 0
                 if AdaptivePlanner.isWeekComplete(required: required, completed: completed),
-                   !weekFeltTooHard(week) {
+                   !weekFeltTooHard(week)
+                {
                     index = min(index + 1, program.lastWeekIndex)
                 }
                 // Ellers: under tærsklen, eller ugen føltes for hård → bliv på ugen.
@@ -78,7 +87,8 @@ public enum AdaptiveProgress {
         let completedThisWeek = completedByWeek[currentWeek] ?? 0
         let requiredNow = requiredSessions(program.week(at: index))
         if AdaptivePlanner.isWeekComplete(required: requiredNow, completed: completedThisWeek),
-           !weekFeltTooHard(currentWeek) {
+           !weekFeltTooHard(currentWeek)
+        {
             index = min(index + 1, program.lastWeekIndex)
         }
 

@@ -1,7 +1,7 @@
-import WidgetKit
-import SwiftUI
 import ActivityKit
 import StjernelobShared
+import SwiftUI
+import WidgetKit
 
 /// Live Activity under en igangværende tur (spec afsnit 10): låseskærm og
 /// Dynamic Island viser aktuelt interval og nedtælling — neutralt, intet pres.
