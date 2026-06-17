@@ -10,7 +10,9 @@ import WidgetKit
 struct WidgetUpdater {
     let environment: AppEnvironment
 
-    func refresh() {
+    /// Byg det delte øjebliksbillede ud fra brugerens data. Ren og testbar —
+    /// rører hverken delt lagring eller WidgetKit.
+    func makeSnapshot(now: Date = Date()) -> WidgetSnapshot {
         let profile = try? environment.profileRepository.load()
         let engine = ProgressionEngine(
             state: ProgressionState(weekIndex: profile?.currentWeekIndex ?? 0)
@@ -26,20 +28,24 @@ struct WidgetUpdater {
             total: "\(minutes) min"
         ))
 
-        WidgetSharedStore.save(WidgetSnapshot(
+        return WidgetSnapshot(
             nextRunDetail: detail,
-            streakWeeks: currentStreakWeeks(),
-            updatedAt: Date()
-        ))
+            streakWeeks: currentStreakWeeks(now: now),
+            updatedAt: now
+        )
+    }
+
+    func refresh() {
+        WidgetSharedStore.save(makeSnapshot())
         WidgetCenter.shared.reloadAllTimelines()
     }
 
-    private func currentStreakWeeks() -> Int {
+    private func currentStreakWeeks(now: Date) -> Int {
         let service = WeeklyStatusService(
             weeklyPlanRepository: environment.weeklyPlanRepository,
             workoutRepository: environment.workoutRepository
         )
         guard let tracker = try? service.tracker() else { return 0 }
-        return tracker.currentStreak(asOf: WeekIdentifier(date: Date()))
+        return tracker.currentStreak(asOf: WeekIdentifier(date: now))
     }
 }

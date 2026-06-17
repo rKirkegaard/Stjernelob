@@ -36,11 +36,15 @@ final class PhoneSyncService: NSObject, WCSessionDelegate {
     }
 
     private func saveCompletion(_ data: Data) {
-        guard let environment,
-              let payload = try? JSONDecoder().decode(WatchCompletionPayload.self, from: data)
+        guard let payload = try? JSONDecoder().decode(WatchCompletionPayload.self, from: data)
         else { return }
-        // Idempotens: hvis turen allerede er gemt (samme id), så spring over —
-        // beskeden kan i sjældne tilfælde blive leveret mere end én gang.
+        handleCompletion(payload)
+    }
+
+    /// Gem en tur modtaget fra uret. Intern (ikke private), så den kan testes med
+    /// dummy data. Idempotent: en allerede gemt tur (samme id) springes over.
+    func handleCompletion(_ payload: WatchCompletionPayload) {
+        guard let environment else { return }
         let existing = (try? environment.workoutRepository.all()) ?? []
         guard !existing.contains(where: { $0.id == payload.id }) else { return }
 

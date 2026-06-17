@@ -93,6 +93,7 @@ targets:
       - path: StjernelobTests
     dependencies:
       - target: Stjernelob
+      - target: StjernelobShared
 
   StjernelobUITests:
     type: bundle.ui-testing
