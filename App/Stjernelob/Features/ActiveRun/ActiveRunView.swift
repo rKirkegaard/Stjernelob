@@ -3,11 +3,14 @@ import StjernelobCore
 import SwiftUI
 
 /// Under-tur-skærmen (spec afsnit 4.1): store, enkle tal der kan ses i et blik,
-/// tydelig nedtælling, interval-status og stjernepop pr. interval. Tempo/distance
-/// kommer med GPS-integrationen (Core Location) i et senere trin.
+/// tydelig nedtælling, interval-status og stjernepop pr. interval. Tempo og
+/// distance (målt via GPS/Core Motion) vises kun, hvis brugeren selv slår det
+/// til i indstillinger — som standard er fokus på tid og gennemførsel, ikke fart.
 struct ActiveRunView: View {
     @State var viewModel: ActiveRunViewModel
     var onClose: () -> Void
+
+    @Environment(AppEnvironment.self) private var environment
 
     @State private var starScale: CGFloat = 0.1
     @State private var starVisible = false
@@ -21,7 +24,9 @@ struct ActiveRunView: View {
                 viewModel.saveResult(
                     perceivedEffort: result.effort,
                     bodySignal: result.bodySignal,
-                    reflection: result.reflection
+                    reflection: result.reflection,
+                    stretchedAfter: result.stretchedAfter,
+                    drankWater: result.drankWater
                 )
                 onClose()
             }
@@ -71,17 +76,19 @@ struct ActiveRunView: View {
 
             HStack(spacing: Theme.Spacing.large) {
                 metric(icon: "clock", value: snapshot.totalElapsed.minutesSecondsText)
-                metric(
-                    icon: "point.topleft.down.curvedto.point.bottomright.up",
-                    value: RunFormatting.distance(meters: viewModel.distanceMeters)
-                )
-                metric(
-                    icon: "speedometer",
-                    value: RunFormatting.pace(
-                        elapsedSeconds: Double(snapshot.totalElapsed.wholeSeconds),
-                        meters: viewModel.distanceMeters
+                if environment.settings.showPaceAndDistance {
+                    metric(
+                        icon: "point.topleft.down.curvedto.point.bottomright.up",
+                        value: RunFormatting.distance(meters: viewModel.distanceMeters)
                     )
-                )
+                    metric(
+                        icon: "speedometer",
+                        value: RunFormatting.pace(
+                            elapsedSeconds: Double(snapshot.totalElapsed.wholeSeconds),
+                            meters: viewModel.distanceMeters
+                        )
+                    )
+                }
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)

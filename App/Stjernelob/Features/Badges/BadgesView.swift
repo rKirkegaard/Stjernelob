@@ -65,7 +65,9 @@ struct BadgesView: View {
 
     private func categorySection(_ section: BadgesViewModel.CategorySection) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.medium) {
-            Text(section.category.displayName).font(.headline)
+            Text(section.category.displayName)
+                .font(.headline)
+                .accessibilityAddTraits(.isHeader)
             LazyVGrid(columns: columns, spacing: Theme.Spacing.medium) {
                 ForEach(section.badges) { badge in
                     let earned = viewModel.isEarned(badge)

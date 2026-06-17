@@ -216,7 +216,10 @@ final class GamificationTests: XCTestCase {
                 totalRunIntervals: 1000,
                 maxRunIntervalsInOneRun: 8,
                 totalActiveWeeks: 52,
-                totalStars: 1000
+                totalStars: 1000,
+                didStretchAfterRun: true,
+                didDrinkWaterBeforeAndAfter: true,
+                longestContinuousRunMinutes: 30
             ),
             BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 7, day: 1),
             BadgeContext(totalCompletedWorkouts: 1, currentStreakWeeks: 1, month: 10, day: 1),
@@ -335,5 +338,59 @@ final class GamificationTests: XCTestCase {
             .sessionFourIntervals,
         ]
         XCTAssertTrue(milestones.allSatisfy { !$0.isManual })
+    }
+
+    // MARK: - Vane- og sammenhængende-løb-mærker (automatiske)
+
+    func testStretchAndWaterAreAutomaticNow() {
+        // Stræk-stjerne og vand-dronning tildeles ud fra et lille ja efter turen.
+        XCTAssertFalse(Badge.stretchStar.isManual)
+        XCTAssertFalse(Badge.waterQueen.isManual)
+
+        let stretched = BadgeContext(
+            totalCompletedWorkouts: 1,
+            currentStreakWeeks: 0,
+            didStretchAfterRun: true
+        )
+        XCTAssertTrue(earnedMilestones(stretched).contains(.stretchStar))
+        XCTAssertFalse(earnedMilestones(stretched).contains(.waterQueen))
+
+        let drank = BadgeContext(
+            totalCompletedWorkouts: 1,
+            currentStreakWeeks: 0,
+            didDrinkWaterBeforeAndAfter: true
+        )
+        XCTAssertTrue(earnedMilestones(drank).contains(.waterQueen))
+        XCTAssertFalse(earnedMilestones(drank).contains(.stretchStar))
+    }
+
+    func testStretchAndWaterNotAwardedWithoutTheLittleYes() {
+        // Uden et ja gives ingen af vane-mærkerne — aldrig pres, aldrig som krav.
+        let none = BadgeContext(totalCompletedWorkouts: 5, currentStreakWeeks: 2)
+        let earned = earnedMilestones(none)
+        XCTAssertFalse(earned.contains(.stretchStar))
+        XCTAssertFalse(earned.contains(.waterQueen))
+    }
+
+    func testContinuousRunMilestones() {
+        func earned(minutes: Int) -> Set<Badge> {
+            earnedMilestones(BadgeContext(
+                totalCompletedWorkouts: 1,
+                currentStreakWeeks: 0,
+                longestContinuousRunMinutes: minutes
+            ))
+        }
+        XCTAssertFalse(earned(minutes: 4).contains(.continuousRun5))
+        XCTAssertEqual(
+            earned(minutes: 5).intersection([
+                .continuousRun5, .continuousRun10, .continuousRun20, .continuousRun30,
+            ]),
+            [.continuousRun5]
+        )
+        XCTAssertTrue(earned(minutes: 20).isSuperset(of: [
+            .continuousRun5, .continuousRun10, .continuousRun20,
+        ]))
+        XCTAssertFalse(earned(minutes: 20).contains(.continuousRun30))
+        XCTAssertTrue(earned(minutes: 30).contains(.continuousRun30))
     }
 }

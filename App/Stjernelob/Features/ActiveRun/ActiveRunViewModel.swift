@@ -180,12 +180,15 @@ final class ActiveRunViewModel {
     func saveResult(
         perceivedEffort: Int?,
         bodySignal: BodySignal? = nil,
-        reflection: String? = nil
+        reflection: String? = nil,
+        stretchedAfter: Bool = false,
+        drankWater: Bool = false
     ) {
         guard case let .finished(summary) = phase, !didSave else { return }
         didSave = true
 
         let trimmedReflection = reflection?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let longestRun = summary.longestRunInterval
         let workout = CompletedWorkoutDTO(
             id: UUID(),
             date: now(),
@@ -201,6 +204,11 @@ final class ActiveRunViewModel {
             distanceMeters: distanceMeters > 0 ? distanceMeters : nil,
             bodySignal: bodySignal,
             reflection: (trimmedReflection?.isEmpty == false) ? trimmedReflection : nil,
+            stretchedAfter: stretchedAfter,
+            drankWater: drankWater,
+            longestRunSeconds: longestRun > .zero
+                ? Double(longestRun.components.seconds)
+                : nil,
             photos: []
         )
         try? environment.workoutRepository.add(workout)
@@ -259,7 +267,12 @@ final class ActiveRunViewModel {
             totalRunIntervals: workouts.reduce(0) { $0 + $1.runIntervalsCompleted },
             maxRunIntervalsInOneRun: workouts.map(\.runIntervalsCompleted).max() ?? 0,
             totalActiveWeeks: Set(workouts.map { WeekIdentifier(date: $0.date) }).count,
-            totalStars: workouts.reduce(0) { $0 + $1.starsEarned }
+            totalStars: workouts.reduce(0) { $0 + $1.starsEarned },
+            didStretchAfterRun: workouts.contains { $0.stretchedAfter },
+            didDrinkWaterBeforeAndAfter: workouts.contains { $0.drankWater },
+            longestContinuousRunMinutes: Int(
+                (workouts.compactMap(\.longestRunSeconds).max() ?? 0) / 60
+            )
         )
         let already = (try? environment.badgeRepository.earned()) ?? []
         for badge in BadgeEvaluator.newlyEarned(context: context, alreadyEarned: already) {

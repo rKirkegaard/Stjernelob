@@ -66,6 +66,16 @@ struct SettingsView: View {
             .disabled(!settings.feedback.soundEnabled)
 
             Section {
+                Toggle(isOn: $settings.showPaceAndDistance) {
+                    Text(Strings.Settings.showPaceAndDistance)
+                }
+            } header: {
+                Text(Strings.Settings.duringRunSection)
+            } footer: {
+                Text(Strings.Settings.showPaceAndDistanceNote)
+            }
+
+            Section {
                 Toggle(isOn: $settings.remindersEnabled) { Text(Strings.Settings.remindersEnabled) }
                 if settings.remindersEnabled {
                     Stepper(value: $settings.reminderHour, in: 6...22) {

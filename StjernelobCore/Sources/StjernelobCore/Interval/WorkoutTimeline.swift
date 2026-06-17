@@ -92,17 +92,21 @@ public struct WorkoutTimeline: Sendable, Equatable {
         let total = totalDuration
         let elapsed = clamp(rawElapsed, lower: .zero, upper: total)
         let completed = intervalsCompleted(at: elapsed)
-        let runsCompleted = zip(plan.intervals, cumulativeEnd)
-            .lazy
+        let completedRunDurations = zip(plan.intervals, cumulativeEnd)
             .filter { $0.0.kind == .run && $0.1 <= elapsed }
-            .count
+            .map { $0.0.duration }
+        let runsCompleted = completedRunDurations.count
+        // Det længste fuldt gennemførte løbeinterval = det længste sammenhængende
+        // løb (løb adskilles altid af gå-intervaller i en gå/løb-tur).
+        let longestRun = completedRunDurations.max() ?? .zero
         return WorkoutSummary(
             plannedDuration: total,
             activeDuration: elapsed,
             intervalsCompleted: completed,
             plannedIntervalCount: plan.intervals.count,
             runIntervalsCompleted: runsCompleted,
-            isComplete: isComplete
+            isComplete: isComplete,
+            longestRunInterval: longestRun
         )
     }
 

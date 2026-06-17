@@ -20,6 +20,11 @@ public struct WorkoutSummary: Codable, Sendable, Equatable {
     public let runIntervalsCompleted: Int
     /// Om hele turen blev gennemført (modsat afbrudt).
     public let isComplete: Bool
+    /// Varigheden af det længste *sammenhængende* løbeinterval, der nåede at
+    /// blive gennemført fuldt ud (løb adskilles af gå-intervaller). Bruges til
+    /// milepæle som "første sammenhængende løb på X minutter" — fejrer at kunne
+    /// løbe i længere tid ad gangen, aldrig fart eller distance.
+    public let longestRunInterval: Duration
 
     public init(
         plannedDuration: Duration,
@@ -27,7 +32,8 @@ public struct WorkoutSummary: Codable, Sendable, Equatable {
         intervalsCompleted: Int,
         plannedIntervalCount: Int,
         runIntervalsCompleted: Int,
-        isComplete: Bool
+        isComplete: Bool,
+        longestRunInterval: Duration = .zero
     ) {
         self.plannedDuration = plannedDuration
         self.activeDuration = activeDuration
@@ -35,5 +41,6 @@ public struct WorkoutSummary: Codable, Sendable, Equatable {
         self.plannedIntervalCount = plannedIntervalCount
         self.runIntervalsCompleted = runIntervalsCompleted
         self.isComplete = isComplete
+        self.longestRunInterval = longestRunInterval
     }
 }

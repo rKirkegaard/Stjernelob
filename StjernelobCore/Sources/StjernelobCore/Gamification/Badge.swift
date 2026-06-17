@@ -85,6 +85,12 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
     case sessionFourIntervals = "session-4-intervaller"
     case sessionSixIntervals = "session-6-intervaller"
     case sessionEightIntervals = "session-8-intervaller"
+    // Sammenhængende løb — det længste løb uden gå-pause (tildeles automatisk).
+    // Fejrer at kunne løbe i længere tid ad gangen, aldrig fart eller distance.
+    case continuousRun5 = "uafbrudt-5"
+    case continuousRun10 = "uafbrudt-10"
+    case continuousRun20 = "uafbrudt-20"
+    case continuousRun30 = "uafbrudt-30"
     // Antal ture i alt.
     case runs1 = "tur-1"
     case runs3 = "tur-3"
@@ -134,7 +140,7 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
         case .readyToStart, .rainRunner, .fogRunner, .rainbowRunner, .birthdayRun,
              .cityRunner, .natureGirl, .newRoute, .newPlaylist, .musicInEars,
              .podcastRunner, .celebrateYourself, .cheerleader, .runningBuddy,
-             .runningDiary, .packedAndReady, .stretchStar, .sleepCollector, .waterQueen:
+             .runningDiary, .packedAndReady, .sleepCollector:
             true
         default:
             false
@@ -165,6 +171,7 @@ public enum Badge: String, Codable, Sendable, CaseIterable, Identifiable {
              .interval40, .interval50, .interval75, .interval100, .interval150, .interval200,
              .interval300, .interval500, .interval750, .interval1000,
              .sessionFourIntervals, .sessionSixIntervals, .sessionEightIntervals,
+             .continuousRun5, .continuousRun10, .continuousRun20, .continuousRun30,
              .runs3, .runs5, .runs10, .runs15, .runs20, .runs25, .runs30, .runs40, .runs50,
              .runs60, .runs75, .runs80, .runs100,
              .activeWeeks1, .activeWeeks2, .activeWeeks4, .activeWeeks6, .activeWeeks8,
@@ -233,6 +240,13 @@ public struct BadgeContext: Sendable, Equatable {
     public let totalActiveWeeks: Int
     /// Samlet antal optjente stjerner.
     public let totalStars: Int
+    /// Strakte ud efter mindst én tur (et lille, valgfrit ja efter turen).
+    public let didStretchAfterRun: Bool
+    /// Huskede vand før og efter mindst én tur (et lille, valgfrit ja).
+    public let didDrinkWaterBeforeAndAfter: Bool
+    /// Det længste sammenhængende løb til dato, i hele minutter — til
+    /// "sammenhængende løb"-mærkerne.
+    public let longestContinuousRunMinutes: Int
 
     public init(
         totalCompletedWorkouts: Int,
@@ -250,7 +264,10 @@ public struct BadgeContext: Sendable, Equatable {
         totalRunIntervals: Int = 0,
         maxRunIntervalsInOneRun: Int = 0,
         totalActiveWeeks: Int = 0,
-        totalStars: Int = 0
+        totalStars: Int = 0,
+        didStretchAfterRun: Bool = false,
+        didDrinkWaterBeforeAndAfter: Bool = false,
+        longestContinuousRunMinutes: Int = 0
     ) {
         self.totalCompletedWorkouts = totalCompletedWorkouts
         self.currentStreakWeeks = currentStreakWeeks
@@ -268,6 +285,9 @@ public struct BadgeContext: Sendable, Equatable {
         self.maxRunIntervalsInOneRun = maxRunIntervalsInOneRun
         self.totalActiveWeeks = totalActiveWeeks
         self.totalStars = totalStars
+        self.didStretchAfterRun = didStretchAfterRun
+        self.didDrinkWaterBeforeAndAfter = didDrinkWaterBeforeAndAfter
+        self.longestContinuousRunMinutes = longestContinuousRunMinutes
     }
 }
 
@@ -316,6 +336,14 @@ public enum BadgeEvaluator {
         case .sessionFourIntervals: context.maxRunIntervalsInOneRun >= 4
         case .sessionSixIntervals: context.maxRunIntervalsInOneRun >= 6
         case .sessionEightIntervals: context.maxRunIntervalsInOneRun >= 8
+        // Sammenhængende løb — længste løb uden gå-pause.
+        case .continuousRun5: context.longestContinuousRunMinutes >= 5
+        case .continuousRun10: context.longestContinuousRunMinutes >= 10
+        case .continuousRun20: context.longestContinuousRunMinutes >= 20
+        case .continuousRun30: context.longestContinuousRunMinutes >= 30
+        // Vaner — små, valgfrie ja efter turen.
+        case .stretchStar: context.didStretchAfterRun
+        case .waterQueen: context.didDrinkWaterBeforeAndAfter
         case .runs1: context.totalCompletedWorkouts >= 1
         case .runs3: context.totalCompletedWorkouts >= 3
         case .runs5: context.totalCompletedWorkouts >= 5
@@ -352,7 +380,7 @@ public enum BadgeEvaluator {
         case .readyToStart, .rainRunner, .fogRunner, .rainbowRunner, .birthdayRun,
              .cityRunner, .natureGirl, .newRoute, .newPlaylist, .musicInEars,
              .podcastRunner, .celebrateYourself, .cheerleader, .runningBuddy,
-             .runningDiary, .packedAndReady, .stretchStar, .sleepCollector, .waterQueen:
+             .runningDiary, .packedAndReady, .sleepCollector:
             false
         }
     }

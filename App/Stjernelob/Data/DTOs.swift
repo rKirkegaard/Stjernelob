@@ -46,6 +46,13 @@ struct CompletedWorkoutDTO: Equatable, Identifiable {
     var bodySignal: BodySignal?
     /// Brugerens egen lille note efter turen ("hvad gik bedre end sidst?"). Valgfri.
     var reflection: String?
+    /// Strakte ud bagefter — et lille, valgfrit ja efter turen (mærke-grundlag).
+    var stretchedAfter: Bool = false
+    /// Huskede vand før og efter — et lille, valgfrit ja efter turen.
+    var drankWater: Bool = false
+    /// Det længste sammenhængende løb på turen, i sekunder (til "sammenhængende
+    /// løb"-mærker). Vises aldrig som præstation; bruges kun til milepæle.
+    var longestRunSeconds: Double?
     var photos: [WorkoutPhotoDTO]
 }
 
@@ -115,6 +122,9 @@ extension CompletedWorkoutDTO {
             distanceMeters: entity.distanceMeters,
             bodySignal: entity.bodySignalRawValue.flatMap(BodySignal.init(rawValue:)),
             reflection: entity.reflection,
+            stretchedAfter: entity.stretchedAfter,
+            drankWater: entity.drankWater,
+            longestRunSeconds: entity.longestRunSeconds,
             photos: entity.photos
                 .sorted { $0.createdAt < $1.createdAt }
                 .map(WorkoutPhotoDTO.init(entity:))

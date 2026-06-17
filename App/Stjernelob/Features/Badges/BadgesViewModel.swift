@@ -48,6 +48,7 @@ final class BadgesViewModel {
             .interval1000,
         ],
         [.sessionFourIntervals, .sessionSixIntervals, .sessionEightIntervals],
+        [.continuousRun5, .continuousRun10, .continuousRun20, .continuousRun30],
         [
             .runs1,
             .runs3,

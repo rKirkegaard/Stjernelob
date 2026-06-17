@@ -130,6 +130,32 @@ final class IntervalEngineTests: XCTestCase {
         XCTAssertEqual(engine.status, .finished)
     }
 
+    // MARK: - Længste sammenhængende løb
+
+    func testLongestRunIntervalReflectsTheLongestCompletedRun() {
+        // Plan med to løb af forskellig længde: 10s og 20s.
+        let plan = WorkoutPlan(intervals: [
+            .warmUp(.seconds(5)),
+            .run(.seconds(10)),
+            .walk(.seconds(5)),
+            .run(.seconds(20)),
+            .coolDown(.seconds(5)),
+        ])
+        let timeline = WorkoutTimeline(plan: plan)
+
+        // Hele turen gennemført: det længste løb er 20s.
+        let full = timeline.summary(at: .seconds(45), isComplete: true)
+        XCTAssertEqual(full.longestRunInterval, .seconds(20))
+
+        // Afbrudt efter første løb (men før det lange): kun 10s tæller.
+        let early = timeline.summary(at: .seconds(16), isComplete: false)
+        XCTAssertEqual(early.longestRunInterval, .seconds(10))
+
+        // Afbrudt før noget løb er fuldført: intet sammenhængende løb endnu.
+        let none = timeline.summary(at: .seconds(3), isComplete: false)
+        XCTAssertEqual(none.longestRunInterval, .zero)
+    }
+
     // MARK: - Drift-frihed (baggrund / låst skærm)
 
     /// Selv hvis motoren først kaldes igen efter at HELE turen er gået (fx skærm

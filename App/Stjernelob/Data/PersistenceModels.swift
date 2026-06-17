@@ -69,6 +69,13 @@ final class CompletedWorkoutEntity {
     var bodySignalRawValue: String?
     /// Brugerens egen lille note efter turen. Valgfri.
     var reflection: String?
+    /// Strakte ud bagefter — et lille, valgfrit ja efter turen. Standard nej, så
+    /// et ubesvaret spørgsmål aldrig tæller imod barnet.
+    var stretchedAfter: Bool = false
+    /// Huskede vand før og efter — et lille, valgfrit ja efter turen.
+    var drankWater: Bool = false
+    /// Det længste sammenhængende løb på turen, i sekunder (mærke-grundlag).
+    var longestRunSeconds: Double?
 
     @Relationship(deleteRule: .cascade, inverse: \WorkoutPhotoEntity.workout)
     var photos: [WorkoutPhotoEntity]
@@ -88,6 +95,9 @@ final class CompletedWorkoutEntity {
         distanceMeters: Double? = nil,
         bodySignalRawValue: String? = nil,
         reflection: String? = nil,
+        stretchedAfter: Bool = false,
+        drankWater: Bool = false,
+        longestRunSeconds: Double? = nil,
         photos: [WorkoutPhotoEntity] = []
     ) {
         self.id = id
@@ -104,6 +114,9 @@ final class CompletedWorkoutEntity {
         self.distanceMeters = distanceMeters
         self.bodySignalRawValue = bodySignalRawValue
         self.reflection = reflection
+        self.stretchedAfter = stretchedAfter
+        self.drankWater = drankWater
+        self.longestRunSeconds = longestRunSeconds
         self.photos = photos
     }
 }

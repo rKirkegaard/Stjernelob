@@ -15,6 +15,12 @@ final class SettingsStore {
         forKey: Keys.streakFreeze
     ) } }
     var healthKitEnabled: Bool { didSet { defaults.set(healthKitEnabled, forKey: Keys.healthKit) } }
+    /// Vis tempo og distance under turen. Som standard fra: fokus er på tid og
+    /// gennemførsel, ikke fart/distance (jf. velbefindende-reglerne).
+    var showPaceAndDistance: Bool { didSet { defaults.set(
+        showPaceAndDistance,
+        forKey: Keys.showPaceAndDistance
+    ) } }
     // Forælder-deling — alt opt-in (privacy by default, afsnit 11.2/14).
     var shareStreak: Bool { didSet { defaults.set(shareStreak, forKey: Keys.shareStreak) } }
     var shareWorkouts: Bool { didSet { defaults.set(shareWorkouts, forKey: Keys.shareWorkouts) } }
@@ -45,6 +51,7 @@ final class SettingsStore {
         static let reminderHour = "settings.reminderHour"
         static let streakFreeze = "settings.streakFreezeEnabled"
         static let healthKit = "settings.healthKitEnabled"
+        static let showPaceAndDistance = "settings.showPaceAndDistance"
         static let shareStreak = "settings.shareStreak"
         static let shareWorkouts = "settings.shareWorkouts"
         static let shareMilestones = "settings.shareMilestones"
@@ -68,6 +75,7 @@ final class SettingsStore {
         reminderHour = defaults.object(forKey: Keys.reminderHour) as? Int ?? 17
         streakFreezeEnabled = defaults.object(forKey: Keys.streakFreeze) as? Bool ?? true
         healthKitEnabled = defaults.object(forKey: Keys.healthKit) as? Bool ?? false
+        showPaceAndDistance = defaults.object(forKey: Keys.showPaceAndDistance) as? Bool ?? false
         shareStreak = defaults.object(forKey: Keys.shareStreak) as? Bool ?? false
         shareWorkouts = defaults.object(forKey: Keys.shareWorkouts) as? Bool ?? false
         shareMilestones = defaults.object(forKey: Keys.shareMilestones) as? Bool ?? false

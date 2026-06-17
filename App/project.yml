@@ -46,8 +46,9 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         MARKETING_VERSION: "0.1.0"
         INFOPLIST_KEY_NSSupportsLiveActivities: YES
-        # Baggrundslyd: signaltoner skal kunne høres med låst skærm (intervallyd).
-        INFOPLIST_KEY_UIBackgroundModes: audio
+        # Baggrund: signaltoner skal kunne høres med låst skærm (intervallyd), og
+        # GPS-distancen skal blive ved med at måle, mens skærmen er låst under turen.
+        INFOPLIST_KEY_UIBackgroundModes: audio location
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES

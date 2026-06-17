@@ -15,12 +15,16 @@ struct SummaryView: View {
         var effort: Int?
         var bodySignal: BodySignal?
         var reflection: String?
+        var stretchedAfter: Bool = false
+        var drankWater: Bool = false
     }
 
     @State private var effort: Double = 5
     @State private var didRate = false
     @State private var bodySignal: BodySignal? = nil
     @State private var reflection: String = ""
+    @State private var stretchedAfter = false
+    @State private var drankWater = false
 
     private var stars: Int { Stars.earned(for: summary) }
 
@@ -48,6 +52,7 @@ struct SummaryView: View {
                     effortPicker
                     bodyCheckIn
                     if bodySignal == .specificPain { careCard }
+                    habitsCheckIn
                     reflectionField
 
                     Button {
@@ -74,7 +79,9 @@ struct SummaryView: View {
         SummaryResult(
             effort: didRate ? Int(effort) : nil,
             bodySignal: bodySignal,
-            reflection: reflection.trimmingCharacters(in: .whitespacesAndNewlines)
+            reflection: reflection.trimmingCharacters(in: .whitespacesAndNewlines),
+            stretchedAfter: stretchedAfter,
+            drankWater: drankWater
         )
     }
 
@@ -160,6 +167,28 @@ struct SummaryView: View {
         )
         .padding(.horizontal, Theme.Spacing.large)
         .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    /// To små, valgfrie ja efter turen. Helt frivilligt og uden pres — de låser
+    /// blot et par fine vane-mærker op, hvis hun selv markerer dem.
+    private var habitsCheckIn: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.small) {
+            Text(Strings.Summary.habitsTitle)
+                .font(.headline)
+            Toggle(isOn: $stretchedAfter) {
+                Label { Text(Strings.Summary.stretchedToggle) } icon: {
+                    Image(systemName: "figure.cooldown").foregroundStyle(Theme.Colors.accent)
+                }
+            }
+            Toggle(isOn: $drankWater) {
+                Label { Text(Strings.Summary.waterToggle) } icon: {
+                    Image(systemName: "drop.fill").foregroundStyle(Theme.Colors.accent)
+                }
+            }
+        }
+        .padding(Theme.Spacing.medium)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
+        .padding(.horizontal, Theme.Spacing.large)
     }
 
     private var reflectionField: some View {

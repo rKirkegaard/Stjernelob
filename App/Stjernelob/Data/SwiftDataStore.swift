@@ -92,7 +92,10 @@ extension SwiftDataStore: WorkoutRepository {
             perceivedEffort: workout.perceivedEffort,
             distanceMeters: workout.distanceMeters,
             bodySignalRawValue: workout.bodySignal?.rawValue,
-            reflection: workout.reflection
+            reflection: workout.reflection,
+            stretchedAfter: workout.stretchedAfter,
+            drankWater: workout.drankWater,
+            longestRunSeconds: workout.longestRunSeconds
         )
         context.insert(entity)
         for photo in workout.photos {

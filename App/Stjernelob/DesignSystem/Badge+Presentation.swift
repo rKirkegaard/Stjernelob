@@ -65,6 +65,10 @@ extension Badge {
         case .sessionFourIntervals: "⚡"
         case .sessionSixIntervals: "⚡"
         case .sessionEightIntervals: "⚡"
+        case .continuousRun5: "🏃‍♀️"
+        case .continuousRun10: "🏃‍♀️"
+        case .continuousRun20: "🔥"
+        case .continuousRun30: "🌟"
         case .runs1: "🏃"
         case .runs3: "🏃"
         case .runs5: "🏃"
@@ -167,6 +171,22 @@ extension Badge {
         case .sessionEightIntervals: .init(
                 "badge.session-8-intervaller.title",
                 defaultValue: "8 i træk"
+            )
+        case .continuousRun5: .init(
+                "badge.uafbrudt-5.title",
+                defaultValue: "5 minutter i træk"
+            )
+        case .continuousRun10: .init(
+                "badge.uafbrudt-10.title",
+                defaultValue: "10 minutter i træk"
+            )
+        case .continuousRun20: .init(
+                "badge.uafbrudt-20.title",
+                defaultValue: "20 minutter i træk"
+            )
+        case .continuousRun30: .init(
+                "badge.uafbrudt-30.title",
+                defaultValue: "30 minutter i træk"
             )
         case .runs1: .init("badge.tur-1.title", defaultValue: "1 tur")
         case .runs3: .init("badge.tur-3.title", defaultValue: "3 ture")
@@ -415,6 +435,22 @@ extension Badge {
                 "badge.session-8-intervaller.detail",
                 defaultValue: "8 løbeintervaller i én og samme tur — kæmpe!"
             )
+        case .continuousRun5: .init(
+                "badge.uafbrudt-5.detail",
+                defaultValue: "Du løb 5 minutter uden en gå-pause. Stor milepæl!"
+            )
+        case .continuousRun10: .init(
+                "badge.uafbrudt-10.detail",
+                defaultValue: "10 minutters sammenhængende løb — hold da op, godt gået!"
+            )
+        case .continuousRun20: .init(
+                "badge.uafbrudt-20.detail",
+                defaultValue: "20 minutter i ét stræk — et kæmpe spring fra dag ét!"
+            )
+        case .continuousRun30: .init(
+                "badge.uafbrudt-30.detail",
+                defaultValue: "En halv time i ét stræk. Det er stort, og det er dit."
+            )
         case .runs1: .init(
                 "badge.tur-1.detail",
                 defaultValue: "Din allerførste løbetur — den sværeste af dem alle"
@@ -562,7 +598,8 @@ extension Badge {
         case .interval5, .interval10, .interval15, .interval20, .interval25,
              .interval30, .interval40, .interval50, .interval75, .interval100,
              .interval150, .interval200, .interval300, .interval500, .interval750, .interval1000,
-             .sessionFourIntervals, .sessionSixIntervals, .sessionEightIntervals:
+             .sessionFourIntervals, .sessionSixIntervals, .sessionEightIntervals,
+             .continuousRun5, .continuousRun10, .continuousRun20, .continuousRun30:
             ("E1F5EE", "085041")
         case .runs1, .runs3, .runs5, .runs10, .runs15, .runs20, .runs25,
              .runs30, .runs40, .runs50, .runs60, .runs75, .runs80, .runs100:

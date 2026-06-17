@@ -178,6 +178,18 @@ enum Strings {
         static let reflectionPlaceholder = LocalizedStringResource(
             "summary.reflectionPlaceholder", defaultValue: "En lille ting, du er glad for …"
         )
+
+        /// Små, valgfrie gode vaner efter turen (grundlag for vane-mærker).
+        /// Helt frivilligt — et ubesvaret spørgsmål tæller aldrig imod dig.
+        static let habitsTitle = LocalizedStringResource(
+            "summary.habitsTitle", defaultValue: "Små gode vaner (valgfrit)"
+        )
+        static let stretchedToggle = LocalizedStringResource(
+            "summary.stretchedToggle", defaultValue: "Jeg strakte ud bagefter"
+        )
+        static let waterToggle = LocalizedStringResource(
+            "summary.waterToggle", defaultValue: "Jeg huskede vand før og efter"
+        )
     }
 
     enum RestDay {
@@ -458,6 +470,17 @@ enum Strings {
         )
         static let remindersNote = LocalizedStringResource(
             "settings.remindersNote", defaultValue: "Blide opfordringer — aldrig pres eller skyld."
+        )
+
+        static let duringRunSection = LocalizedStringResource(
+            "settings.duringRun", defaultValue: "Under turen"
+        )
+        static let showPaceAndDistance = LocalizedStringResource(
+            "settings.showPaceAndDistance", defaultValue: "Vis tempo og distance"
+        )
+        static let showPaceAndDistanceNote = LocalizedStringResource(
+            "settings.showPaceAndDistanceNote",
+            defaultValue: "Som standard viser vi kun tiden — det handler om at komme afsted og have det sjovt, ikke om fart. Slå til, hvis du selv gerne vil følge tempo og distance undervejs."
         )
 
         static let streakSection = LocalizedStringResource("settings.streak", defaultValue: "Stime")
