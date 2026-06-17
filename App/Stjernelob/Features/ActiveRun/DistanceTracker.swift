@@ -50,13 +50,28 @@ final class DistanceTracker: NSObject, CLLocationManagerDelegate {
         pedometer.stopUpdates()
     }
 
-    /// Start GPS-måling med baggrundsopdateringer, så distancen ikke fryser ved
-    /// låst skærm under turen (kræver "location" i UIBackgroundModes). Kaldes kun,
-    /// når der er givet lokationstilladelse.
+    /// Start GPS-måling. Slår baggrundsopdateringer til, så distancen ikke fryser
+    /// ved låst skærm under turen — men kun når det rent faktisk er tilladt.
+    /// `allowsBackgroundLocationUpdates = true` er en hård assertion, der crasher,
+    /// hvis appen ikke er "backgroundable" (fx på simulator eller hvis "location"
+    /// ikke er i UIBackgroundModes). Kaldes kun, når der er givet lokationstilladelse.
     private func beginLocationUpdates() {
-        locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.pausesLocationUpdatesAutomatically = false
+        if Self.backgroundLocationAllowed {
+            locationManager.allowsBackgroundLocationUpdates = true
+            locationManager.pausesLocationUpdatesAutomatically = false
+        }
         locationManager.startUpdatingLocation()
+    }
+
+    /// Om baggrundslokation er tilladt i dette miljø. Falsk på simulator (ikke
+    /// understøttet) og hvis Info.plist ikke erklærer "location"-baggrundstilstand.
+    private static var backgroundLocationAllowed: Bool {
+        #if targetEnvironment(simulator)
+            false
+        #else
+            let modes = Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String]
+            return modes?.contains("location") ?? false
+        #endif
     }
 
     private func startPedometer() {

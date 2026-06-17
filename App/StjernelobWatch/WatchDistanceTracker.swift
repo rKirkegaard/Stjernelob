@@ -44,10 +44,14 @@ final class WatchDistanceTracker: NSObject, CLLocationManagerDelegate {
         pedometer.stopUpdates()
     }
 
-    /// Start GPS-måling med baggrundsopdateringer, så distancen måles videre, mens
-    /// håndleddet er nede (sammen med en aktiv HKWorkoutSession).
+    /// Start GPS-måling. Slår baggrundsopdateringer til (sammen med en aktiv
+    /// HKWorkoutSession), så distancen måles videre med håndleddet nede — men kun
+    /// når det er tilladt. `allowsBackgroundLocationUpdates = true` crasher hårdt
+    /// på simulatoren, så vi sætter det kun på et rigtigt ur.
     private func beginLocationUpdates() {
-        locationManager.allowsBackgroundLocationUpdates = true
+        #if !targetEnvironment(simulator)
+            locationManager.allowsBackgroundLocationUpdates = true
+        #endif
         locationManager.startUpdatingLocation()
     }
 
