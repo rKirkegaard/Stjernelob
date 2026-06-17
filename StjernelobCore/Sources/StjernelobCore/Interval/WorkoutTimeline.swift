@@ -94,7 +94,7 @@ public struct WorkoutTimeline: Sendable, Equatable {
         let completed = intervalsCompleted(at: elapsed)
         let completedRunDurations = zip(plan.intervals, cumulativeEnd)
             .filter { $0.0.kind == .run && $0.1 <= elapsed }
-            .map { $0.0.duration }
+            .map(\.0.duration)
         let runsCompleted = completedRunDurations.count
         // Det længste fuldt gennemførte løbeinterval = det længste sammenhængende
         // løb (løb adskilles altid af gå-intervaller i en gå/løb-tur).
