@@ -18,14 +18,14 @@ final class TrainingIntensityTests: XCTestCase {
 
     func testHarderLengthensRunAndShortensWalk() {
         let scaled = TrainingIntensity.harder.scaled(plan())
-        XCTAssertEqual(scaled.intervals[1].duration, .seconds(110)) // 100 * 1.1
-        XCTAssertEqual(scaled.intervals[2].duration, .seconds(54)) // 60 * 0.9
+        XCTAssertEqual(scaled.intervals[1].duration, .seconds(130)) // 100 * 1.3
+        XCTAssertEqual(scaled.intervals[2].duration, .seconds(45)) // 60 * 0.75
     }
 
     func testLighterShortensRunAndLengthensWalk() {
         let scaled = TrainingIntensity.lighter.scaled(plan())
-        XCTAssertEqual(scaled.intervals[1].duration, .seconds(80)) // 100 * 0.8
-        XCTAssertEqual(scaled.intervals[2].duration, .seconds(72)) // 60 * 1.2
+        XCTAssertEqual(scaled.intervals[1].duration, .seconds(70)) // 100 * 0.7
+        XCTAssertEqual(scaled.intervals[2].duration, .seconds(78)) // 60 * 1.3
     }
 
     func testWarmUpAndCoolDownAreNeverScaled() {
