@@ -126,6 +126,9 @@ struct HomeView: View {
                     Text(Strings.Difficulty.section)
                 }
                 .pickerStyle(.segmented)
+                Text(Strings.Difficulty.note)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             Button {

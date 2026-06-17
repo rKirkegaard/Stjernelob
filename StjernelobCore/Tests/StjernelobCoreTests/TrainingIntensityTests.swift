@@ -18,8 +18,8 @@ final class TrainingIntensityTests: XCTestCase {
 
     func testHarderLengthensRunAndShortensWalk() {
         let scaled = TrainingIntensity.harder.scaled(plan())
-        XCTAssertEqual(scaled.intervals[1].duration, .seconds(120)) // 100 * 1.2
-        XCTAssertEqual(scaled.intervals[2].duration, .seconds(51)) // 60 * 0.85
+        XCTAssertEqual(scaled.intervals[1].duration, .seconds(110)) // 100 * 1.1
+        XCTAssertEqual(scaled.intervals[2].duration, .seconds(54)) // 60 * 0.9
     }
 
     func testLighterShortensRunAndLengthensWalk() {

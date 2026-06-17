@@ -147,17 +147,17 @@ enum Strings {
             "difficulty.section", defaultValue: "Sværhedsgrad"
         )
         static let lighter = LocalizedStringResource(
-            "difficulty.lighter", defaultValue: "Lettere"
+            "difficulty.lighter", defaultValue: "Roligere"
         )
         static let standard = LocalizedStringResource(
             "difficulty.standard", defaultValue: "Normal"
         )
         static let harder = LocalizedStringResource(
-            "difficulty.harder", defaultValue: "Hårdere"
+            "difficulty.harder", defaultValue: "Udfordrende"
         )
         static let note = LocalizedStringResource(
             "difficulty.note",
-            defaultValue: "Skru op eller ned, som det passer dig. Hårdere betyder lidt længere løb og kortere gå-pauser — aldrig højere fart. Opvarmning og hvile er der altid."
+            defaultValue: "Tilpas turen til, hvordan du har det i dag — roligere er lige så godt et valg som mere udfordrende, og du kan altid skrue ned igen. Det handler om tid, aldrig om fart, og opvarmning og hvile røres aldrig."
         )
     }
 

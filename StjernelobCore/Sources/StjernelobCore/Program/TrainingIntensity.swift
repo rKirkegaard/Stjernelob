@@ -12,21 +12,25 @@ public enum TrainingIntensity: String, Codable, Sendable, CaseIterable, Identifi
 
     public var id: String { rawValue }
 
-    /// Faktor for løbeintervaller (mere løb = hårdere).
+    /// Faktor for løbeintervaller (mere løb = hårdere). "Hårdere" holdes bevidst
+    /// inden for ~10 % (jf. "blid, gradvis progression, maks ~10 % mere om ugen"),
+    /// så den ikke lægger for meget oven på forløbets egen ugentlige progression.
+    /// "Lettere" må gerne lette mere generøst.
     private var runFactor: Double {
         switch self {
         case .lighter: 0.8
         case .standard: 1
-        case .harder: 1.2
+        case .harder: 1.1
         }
     }
 
-    /// Faktor for gå-pauser (kortere pause = hårdere).
+    /// Faktor for gå-pauser (kortere pause = hårdere). "Hårdere" forkorter højst
+    /// ~10 % af restitutionspausen.
     private var walkFactor: Double {
         switch self {
         case .lighter: 1.2
         case .standard: 1
-        case .harder: 0.85
+        case .harder: 0.9
         }
     }
 
