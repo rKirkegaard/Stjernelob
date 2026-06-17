@@ -68,6 +68,7 @@ final class PhoneSyncService: NSObject, WCSessionDelegate {
             isComplete: payload.isComplete,
             starsEarned: Stars.earned(for: summary),
             perceivedEffort: nil,
+            distanceMeters: payload.distanceMeters,
             photos: []
         )
         try? environment.workoutRepository.add(workout)

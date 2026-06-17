@@ -18,6 +18,14 @@ final class WatchSyncService: NSObject, WCSessionDelegate {
         decodeSession(from: WCSession.default.receivedApplicationContext)
     }
 
+    /// Om telefonen er i nærheden og kan nås nu. Bruges til at afgøre, om uret
+    /// skal måle sin egen GPS/distance (kun når telefonen ikke er med på turen).
+    var isPhoneReachable: Bool {
+        WCSession.isSupported()
+            && WCSession.default.activationState == .activated
+            && WCSession.default.isReachable
+    }
+
     func sendCompletion(_ payload: WatchCompletionPayload) {
         guard WCSession.isSupported() else { return }
         if let data = try? JSONEncoder().encode(payload) {

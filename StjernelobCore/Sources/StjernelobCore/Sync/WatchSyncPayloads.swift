@@ -30,6 +30,10 @@ public struct WatchCompletionPayload: Codable, Sendable, Equatable {
     public let plannedIntervalCount: Int
     public let runIntervalsCompleted: Int
     public let isComplete: Bool
+    /// Målt distance i meter, hvis uret kørte turen selvstændigt (uden telefonen)
+    /// og selv målte via GPS/skridt. `nil`, hvis distance ikke blev målt på uret
+    /// (fx fordi telefonen var med og måler den). Vises neutralt, aldrig belønning.
+    public let distanceMeters: Double?
 
     public init(
         id: UUID = UUID(),
@@ -39,7 +43,8 @@ public struct WatchCompletionPayload: Codable, Sendable, Equatable {
         intervalsCompleted: Int,
         plannedIntervalCount: Int,
         runIntervalsCompleted: Int,
-        isComplete: Bool
+        isComplete: Bool,
+        distanceMeters: Double? = nil
     ) {
         self.id = id
         self.programWeekId = programWeekId
@@ -49,5 +54,6 @@ public struct WatchCompletionPayload: Codable, Sendable, Equatable {
         self.plannedIntervalCount = plannedIntervalCount
         self.runIntervalsCompleted = runIntervalsCompleted
         self.isComplete = isComplete
+        self.distanceMeters = distanceMeters
     }
 }

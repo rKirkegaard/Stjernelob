@@ -10,13 +10,27 @@ import WatchKit
 @Observable
 final class WatchRunModel {
     private let sync = WatchSyncService()
+    private let workout = WatchWorkoutController()
+    private let distanceTracker = WatchDistanceTracker()
     private var engine: IntervalEngine?
     private var programWeekId = 1
     private var programPhase: ProgramPhase = .base
+    /// Måler uret selv distance på denne tur? Kun når telefonen ikke er med.
+    private var measuringDistance = false
 
     private(set) var snapshot: WorkoutSnapshot?
     private(set) var started = false
     private(set) var finished = false
+    /// Vist distance i meter — kun når uret måler selv (telefonen ikke med).
+    private(set) var distanceMeters: Double = 0
+
+    /// Om der vises distance på uret (uret kører selvstændigt og måler selv).
+    var showsDistance: Bool { measuringDistance }
+
+    /// Forbered sensorer (HealthKit) før turen. Kaldes fra view'ets `.task`.
+    func prepare() async {
+        await workout.requestAuthorization()
+    }
 
     func start() {
         let plan: WorkoutPlan
@@ -30,6 +44,13 @@ final class WatchRunModel {
             programWeekId = week.id
             programPhase = week.phase
         }
+
+        // Mål kun egen GPS/distance, hvis telefonen ikke er med på turen — så vi
+        // ikke dobbeltmåler, og uret sparer batteri når telefonen alligevel måler.
+        measuringDistance = !sync.isPhoneReachable
+        workout.start()
+        if measuringDistance { distanceTracker.start() }
+
         let engine = IntervalEngine(plan: plan, clock: SystemMonotonicClock())
         self.engine = engine
         started = true
@@ -51,6 +72,7 @@ final class WatchRunModel {
             }
         }
         snapshot = engine.snapshot()
+        if measuringDistance { distanceMeters = distanceTracker.distanceMeters }
     }
 
     func stop() {
@@ -61,6 +83,11 @@ final class WatchRunModel {
     private func complete(_ summary: WorkoutSummary) {
         guard !finished else { return }
         finished = true
+        if measuringDistance {
+            distanceMeters = distanceTracker.distanceMeters
+            distanceTracker.stop()
+        }
+        workout.end()
         WKInterfaceDevice.current().play(.success)
         sync.sendCompletion(WatchCompletionPayload(
             programWeekId: programWeekId,
@@ -69,7 +96,8 @@ final class WatchRunModel {
             intervalsCompleted: summary.intervalsCompleted,
             plannedIntervalCount: summary.plannedIntervalCount,
             runIntervalsCompleted: summary.runIntervalsCompleted,
-            isComplete: summary.isComplete
+            isComplete: summary.isComplete,
+            distanceMeters: (measuringDistance && distanceMeters > 0) ? distanceMeters : nil
         ))
     }
 
@@ -98,6 +126,12 @@ struct WatchRunView: View {
                 Text(timeText(Int(snapshot.remainingInInterval.components.seconds)))
                     .font(.system(size: 44, weight: .bold, design: .rounded))
                     .monospacedDigit()
+                if model.showsDistance {
+                    Text(distanceText(model.distanceMeters))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                }
                 Button(role: .destructive) {
                     model.stop()
                 } label: {
@@ -112,9 +146,14 @@ struct WatchRunView: View {
             }
         }
         .onReceive(ticker) { _ in model.tick() }
+        .task { await model.prepare() }
     }
 
     private func timeText(_ seconds: Int) -> String {
         String(format: "%d:%02d", max(0, seconds) / 60, max(0, seconds) % 60)
+    }
+
+    private func distanceText(_ meters: Double) -> String {
+        String(format: "%.2f km", meters / 1000)
     }
 }

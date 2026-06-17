@@ -48,6 +48,7 @@ targets:
         com.apple.developer.icloud-container-identifiers: [iCloud.com.rkirkegaard.stjernelob]
         com.apple.developer.icloud-services: [CloudKit]
         com.apple.security.application-groups: [group.com.rkirkegaard.stjernelob]
+        com.apple.developer.healthkit: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rkirkegaard.stjernelob
@@ -79,12 +80,26 @@ targets:
       - path: StjernelobWatch
     dependencies:
       - package: StjernelobCore
+    # HealthKit (workout-session) + lokation/bevægelse, så uret kan køre en tur
+    # selvstændigt og måle distance. workout-processing holder turen i live, mens
+    # skærmen er slukket. Kræver konto/signering for at virke på et device.
+    info:
+      path: StjernelobWatch/Info.plist
+      properties:
+        WKApplication: true
+        CFBundleDisplayName: Stjerneløb
+        WKBackgroundModes: [workout-processing]
+        NSHealthShareUsageDescription: "Stjerneløb bruger en træningssession, så din tur kan køre med skærmen slukket — kun mens du løber."
+        NSHealthUpdateUsageDescription: "Stjerneløb kan gemme din tur som en træning, hvis du vælger det."
+        NSLocationWhenInUseUsageDescription: "Stjerneløb måler din distance under en tur, hvis du løber uden telefonen. Slukkes, når turen slutter."
+        NSMotionUsageDescription: "Stjerneløb bruger bevægelsessensoren til at måle distance, når GPS ikke er tilgængelig."
+    entitlements:
+      path: StjernelobWatch/StjernelobWatch.entitlements
+      properties:
+        com.apple.developer.healthkit: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rkirkegaard.stjernelob.watchkitapp
-        GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_WKApplication: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Stjerneløb
 
   StjernelobTests:
     type: bundle.unit-test
