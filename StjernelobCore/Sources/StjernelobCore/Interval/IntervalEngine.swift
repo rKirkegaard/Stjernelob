@@ -23,9 +23,9 @@ public final class IntervalEngine {
 
     public private(set) var status: Status = .notStarted
 
-    private let timeline: WorkoutTimeline
+    private var timeline: WorkoutTimeline
     private let clock: MonotonicClock
-    private let schedule: [WorkoutTimeline.ScheduledEvent]
+    private var schedule: [WorkoutTimeline.ScheduledEvent]
 
     /// Urets aflæsning da turen blev startet.
     private var startInstant: Duration = .zero
@@ -95,6 +95,34 @@ public final class IntervalEngine {
             status = .finished
         }
         return due
+    }
+
+    /// Mindste varighed et interval kan forkortes til (så det aldrig bliver
+    /// meningsløst kort).
+    public static let minimumIntervalDuration: Duration = .seconds(5)
+
+    /// Forlæng eller forkort det interval, der kører lige nu — brugerstyret
+    /// fleksibilitet (fx løbe lidt længere, når det går godt, eller skære lidt af).
+    /// Kun det nuværende interval ændres; de efterfølgende skubbes tilsvarende.
+    /// Kan ikke forkortes under den tid, der allerede er gået i intervallet, og
+    /// holder et lille gulv. Deterministisk: bygger blot en ny plan og tidslinje;
+    /// uret og det forløbne røres ikke, så motoren forbliver drift-fri.
+    @discardableResult
+    public func adjustCurrentInterval(by delta: Duration) -> WorkoutSnapshot {
+        guard status == .active else { return snapshot() }
+        let elapsed = rawElapsed
+        let index = timeline.intervalIndex(at: elapsed)
+        let intervalStart = timeline.start(ofInterval: index)
+        let elapsedInInterval = elapsed - intervalStart
+        let current = timeline.plan.intervals[index]
+        let lower = max(elapsedInInterval, Self.minimumIntervalDuration)
+        let newDuration = clamp(current.duration + delta, lower: lower, upper: .seconds(3600))
+
+        var intervals = timeline.plan.intervals
+        intervals[index] = Interval(kind: current.kind, duration: newDuration)
+        timeline = WorkoutTimeline(plan: WorkoutPlan(intervals: intervals))
+        schedule = timeline.scheduledEvents()
+        return timeline.snapshot(at: elapsed, phase: .active)
     }
 
     /// Sæt turen på pause. Tiden står stille, indtil `resume()` kaldes.

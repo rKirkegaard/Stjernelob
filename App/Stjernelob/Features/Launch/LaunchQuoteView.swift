@@ -3,6 +3,11 @@ import SwiftUI
 /// Kort opstartsskærm med en legende, opmuntrende replik (jf. docs/qutoes.md).
 /// Sætter en varm tone fra det øjeblik appen åbnes — uden pres.
 struct LaunchQuoteView: View {
+    /// Om appen er klar bag forsiden (profil indlæst). Først da er GO aktiv.
+    var isReady: Bool = true
+    /// Kaldes når brugeren trykker GO og vil videre ind i appen.
+    var onGo: () -> Void = {}
+
     @State private var quote = LoadingQuotes.random()
     @State private var appeared = false
 
@@ -35,11 +40,27 @@ struct LaunchQuoteView: View {
                     .padding(.horizontal, Theme.Spacing.large)
                     .opacity(appeared ? 1 : 0)
 
-                ProgressView()
-                    .tint(.white)
-                    .padding(.top, Theme.Spacing.small)
-
                 Spacer()
+
+                if isReady {
+                    Button(action: onGo) {
+                        Text(Strings.Launch.go)
+                            .font(.title2.weight(.bold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, Theme.Spacing.medium)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.white)
+                    .foregroundStyle(Theme.Colors.brand)
+                    .padding(.horizontal, Theme.Spacing.xLarge)
+                    .padding(.bottom, Theme.Spacing.large)
+                    .accessibilityLabel(Text(Strings.Launch.go))
+                    .accessibilityHint(Text(Strings.Launch.tagline))
+                } else {
+                    ProgressView()
+                        .tint(.white)
+                        .padding(.bottom, Theme.Spacing.large)
+                }
             }
             .padding(Theme.Spacing.large)
         }

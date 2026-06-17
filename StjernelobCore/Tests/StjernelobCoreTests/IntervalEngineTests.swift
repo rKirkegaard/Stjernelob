@@ -156,6 +156,58 @@ final class IntervalEngineTests: XCTestCase {
         XCTAssertEqual(none.longestRunInterval, .zero)
     }
 
+    // MARK: - Justering af det aktuelle interval
+
+    func testExtendingCurrentIntervalDelaysItsCompletion() {
+        let clock = ManualClock()
+        let engine = IntervalEngine(plan: makePlan(), clock: clock)
+        engine.start()
+        clock.advance(seconds: 8) // 3s inde i løbeintervallet (5–15)
+        engine.update()
+        engine.adjustCurrentInterval(by: .seconds(10)) // løb 10s → 20s
+        XCTAssertEqual(engine.plan.totalDuration, .seconds(45))
+
+        // Ved 16s ville det gamle løb (slut 15s) være færdigt — nu slutter det 25s.
+        clock.advance(seconds: 8) // i alt 16s
+        let events = engine.update()
+        XCTAssertFalse(events.contains { if case .intervalCompleted = $0 { true } else { false } })
+        XCTAssertEqual(engine.snapshot().intervalIndex, 1)
+        XCTAssertEqual(engine.snapshot().interval.kind, .run)
+    }
+
+    func testShorteningCurrentIntervalEndsItSooner() {
+        let clock = ManualClock()
+        let engine = IntervalEngine(plan: makePlan(), clock: clock)
+        engine.start()
+        clock.advance(seconds: 8) // 3s inde i løbeintervallet
+        engine.update()
+        engine.adjustCurrentInterval(by: .seconds(-3)) // løb 10s → 7s (slut nu 12s)
+
+        clock.advance(seconds: 4) // i alt 12s
+        let events = engine.update()
+        XCTAssertTrue(events.contains {
+            if case let .intervalCompleted(index, _) = $0 { index == 1 } else { false }
+        })
+        XCTAssertEqual(engine.snapshot().interval.kind, .walk) // næste interval er gå
+    }
+
+    func testCannotShortenBelowAlreadyElapsed() {
+        let clock = ManualClock()
+        let engine = IntervalEngine(plan: makePlan(), clock: clock)
+        engine.start()
+        clock.advance(seconds: 8) // 3s inde i løbeintervallet
+        engine.update()
+        engine.adjustCurrentInterval(by: .seconds(-100)) // vil forkorte voldsomt
+        // Gulvet er max(forløbet 3s, minimum 5s) = 5s.
+        XCTAssertEqual(engine.plan.intervals[1].duration, .seconds(5))
+    }
+
+    func testAdjustIsIgnoredBeforeStart() {
+        let engine = IntervalEngine(plan: makePlan(), clock: ManualClock())
+        engine.adjustCurrentInterval(by: .seconds(30))
+        XCTAssertEqual(engine.plan.totalDuration, .seconds(35)) // uændret
+    }
+
     // MARK: - Drift-frihed (baggrund / låst skærm)
 
     /// Selv hvis motoren først kaldes igen efter at HELE turen er gået (fx skærm

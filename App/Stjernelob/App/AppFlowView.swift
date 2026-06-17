@@ -11,16 +11,17 @@ struct AppFlowView: View {
         ZStack {
             content
             if launching {
-                LaunchQuoteView()
-                    .transition(.opacity)
+                LaunchQuoteView(
+                    isReady: onboardingComplete != nil,
+                    onGo: { withAnimation(.easeOut(duration: 0.45)) { launching = false } }
+                )
+                .transition(.opacity)
             }
         }
         .task {
+            // Forsiden bliver stående, indtil brugeren selv trykker GO.
             let profile = try? environment.profileRepository.load()
             onboardingComplete = profile?.onboardingComplete ?? false
-            // Vis opstartsreplikken kort, og ton den så blidt ud.
-            try? await Task.sleep(for: .seconds(2.2))
-            withAnimation(.easeOut(duration: 0.45)) { launching = false }
         }
     }
 

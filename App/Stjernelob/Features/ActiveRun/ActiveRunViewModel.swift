@@ -109,6 +109,19 @@ final class ActiveRunViewModel {
         }
     }
 
+    /// Forlæng eller forkort det interval, der kører lige nu (brugerstyret
+    /// fleksibilitet — fx løbe lidt længere, når det går godt, eller skære lidt
+    /// af, hvis benene siger fra). Positiv = længere, negativ = kortere.
+    func adjustCurrentInterval(bySeconds delta: Int) {
+        guard case .running = phase, delta != 0 else { return }
+        snapshot = engine.adjustCurrentInterval(by: .seconds(delta))
+        liveActivity.update(
+            snapshot: snapshot,
+            intervalLabel: String(localized: snapshot.interval.kind.label)
+        )
+        persistRecord() // så en genoptaget tur bruger den justerede plan
+    }
+
     func pause() {
         dispatch(engine.pause())
         if engine.status == .paused {
@@ -132,7 +145,7 @@ final class ActiveRunViewModel {
 
     private func persistRecord() {
         environment.runStateStore.save(ActiveRunRecord(
-            plan: plan,
+            plan: engine.plan,
             programWeekId: programWeekId,
             programPhase: programPhase,
             startDate: recordStartDate,

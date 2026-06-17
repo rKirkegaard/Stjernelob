@@ -126,6 +126,26 @@ enum Strings {
             defaultValue: "Distance"
         )
         static let pace = LocalizedStringResource("activeRun.pace", defaultValue: "Tempo")
+
+        /// Justering af det aktuelle interval ved at trække på timeren.
+        static let adjustHint = LocalizedStringResource(
+            "activeRun.adjustHint",
+            defaultValue: "Træk på uret for at gøre intervallet længere eller kortere"
+        )
+        static func longerBy(seconds: Int) -> LocalizedStringResource {
+            LocalizedStringResource("activeRun.longerBy", defaultValue: "+\(seconds) sek")
+        }
+
+        static func shorterBy(seconds: Int) -> LocalizedStringResource {
+            LocalizedStringResource("activeRun.shorterBy", defaultValue: "−\(seconds) sek")
+        }
+    }
+
+    enum Launch {
+        static let go = LocalizedStringResource("launch.go", defaultValue: "GO")
+        static let tagline = LocalizedStringResource(
+            "launch.tagline", defaultValue: "Klar, parat …"
+        )
     }
 
     enum Summary {

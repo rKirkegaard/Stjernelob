@@ -14,6 +14,8 @@ struct ActiveRunView: View {
 
     @State private var starScale: CGFloat = 0.1
     @State private var starVisible = false
+    /// Live forhåndsvisning af interval-justeringen, mens fingeren trækkes (sek).
+    @State private var dragSeconds = 0
 
     private let ticker = Timer.publish(every: 0.2, on: .main, in: .common).autoconnect()
 
@@ -67,12 +69,57 @@ struct ActiveRunView: View {
                 Text(snapshot.remainingInInterval.minutesSecondsText)
                     .font(.runCountdown)
                     .contentTransition(.numericText())
-                    .accessibilityLabel(Text(Strings.ActiveRun.intervalOfTotal(
-                        current: snapshot.runOrdinal ?? 0, total: snapshot.runCount
-                    )))
+                    .accessibilityHidden(true)
+                if dragSeconds != 0 {
+                    Text(dragSeconds > 0
+                        ? Strings.ActiveRun.longerBy(seconds: dragSeconds)
+                        : Strings.ActiveRun.shorterBy(seconds: -dragSeconds))
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(snapshot.interval.kind.color)
+                        .padding(.horizontal, Theme.Spacing.medium)
+                        .padding(.vertical, Theme.Spacing.small)
+                        .background(.thinMaterial, in: Capsule())
+                        .offset(y: 72)
+                        .accessibilityHidden(true)
+                }
             }
             .frame(width: 260, height: 260)
+            .contentShape(Circle())
+            .gesture(
+                DragGesture(minimumDistance: 8)
+                    .onChanged { value in
+                        // Træk til højre = længere, til venstre = kortere (~8 pt pr. sekund).
+                        dragSeconds = Int((value.translation.width / 8).rounded())
+                    }
+                    .onEnded { _ in
+                        if dragSeconds !=
+                            0 { viewModel.adjustCurrentInterval(bySeconds: dragSeconds) }
+                        dragSeconds = 0
+                    }
+            )
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(snapshot.interval.kind.label))
+            .accessibilityValue(Text(snapshot.remainingInInterval.minutesSecondsText))
+            .accessibilityHint(Text(Strings.ActiveRun.adjustHint))
+            .accessibilityAdjustableAction { direction in
+                switch direction {
+                case .increment: viewModel.adjustCurrentInterval(bySeconds: 10)
+                case .decrement: viewModel.adjustCurrentInterval(bySeconds: -10)
+                @unknown default: break
+                }
+            }
             .padding(.vertical, Theme.Spacing.medium)
+
+            Label {
+                Text(Strings.ActiveRun.adjustHint)
+            } icon: {
+                Image(systemName: "hand.draw")
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, Theme.Spacing.large)
+            .accessibilityHidden(true)
 
             HStack(spacing: Theme.Spacing.large) {
                 metric(icon: "clock", value: snapshot.totalElapsed.minutesSecondsText)
