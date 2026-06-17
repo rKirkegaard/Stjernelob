@@ -30,16 +30,22 @@ final class SwiftDataStore {
     static let cloudKitContainer = "iCloud.com.rkirkegaard.stjernelob"
 
     /// Standard-container. Forsøger i rækkefølge: lokal-først med spejling til
-    /// brugerens private CloudKit-database → ren lokal lagring (fx i simulator/CI
-    /// eller uden iCloud-konto) → hukommelse. En tom database er bedre end et crash.
+    /// brugerens private CloudKit-database → ren lokal lagring → hukommelse.
+    /// En tom database er bedre end et crash.
+    ///
+    /// CloudKit forsøges **kun**, når brugeren rent faktisk er logget ind i iCloud.
+    /// Uden konto (fx i simulator/CI eller en bruger uden iCloud) ville CloudKit-
+    /// laget fejle støjende og ustabilt — så dér bruges ren lokal lagring.
     static func makeDefault() -> SwiftDataStore {
-        let cloudKitConfig = ModelConfiguration(
-            schema: schema,
-            isStoredInMemoryOnly: false,
-            cloudKitDatabase: .private(cloudKitContainer)
-        )
-        if let synced = try? ModelContainer(for: schema, configurations: cloudKitConfig) {
-            return SwiftDataStore(container: synced)
+        if FileManager.default.ubiquityIdentityToken != nil {
+            let cloudKitConfig = ModelConfiguration(
+                schema: schema,
+                isStoredInMemoryOnly: false,
+                cloudKitDatabase: .private(cloudKitContainer)
+            )
+            if let synced = try? ModelContainer(for: schema, configurations: cloudKitConfig) {
+                return SwiftDataStore(container: synced)
+            }
         }
         if let persistent = try? ModelContainer(
             for: schema,
