@@ -23,76 +23,29 @@ final class BadgesViewModel {
         levelProgress = LevelSystem.standard.progress(forPoints: Points.fromStars(stars))
     }
 
-    var earnedBadges: [Badge] { Badge.allCases.filter { earned.contains($0) } }
+    var earnedBadges: [Badge] { Badge.all.filter { earned.contains($0) } }
 
-    /// Milepæls-mærker grupperet i stigende trin (intervaller, ture, aktive uger,
-    /// stjerner). Bruges til kun at vise det *næste* trin pr. gruppe, så samlingen
-    /// ikke bliver en lang væg af fjerne mål.
-    private static let milestoneGroups: [[Badge]] = [
-        [
-            .interval5,
-            .interval10,
-            .interval15,
-            .interval20,
-            .interval25,
-            .interval30,
-            .interval40,
-            .interval50,
-            .interval75,
-            .interval100,
-            .interval150,
-            .interval200,
-            .interval300,
-            .interval500,
-            .interval750,
-            .interval1000,
-        ],
-        [.sessionFourIntervals, .sessionSixIntervals, .sessionEightIntervals],
-        [.continuousRun5, .continuousRun10, .continuousRun20, .continuousRun30],
-        [
-            .runs1,
-            .runs3,
-            .runs5,
-            .runs10,
-            .runs15,
-            .runs20,
-            .runs25,
-            .runs30,
-            .runs40,
-            .runs50,
-            .runs60,
-            .runs75,
-            .runs80,
-            .runs100,
-        ],
-        [
-            .activeWeeks1,
-            .activeWeeks2,
-            .activeWeeks4,
-            .activeWeeks6,
-            .activeWeeks8,
-            .activeWeeks10,
-            .activeWeeks12,
-            .activeWeeks16,
-            .activeWeeks20,
-            .activeWeeks26,
-            .activeWeeks52,
-        ],
-        [.stars10, .stars25, .stars50, .stars100, .stars250, .stars500, .stars1000],
-    ]
-    private static let milestoneSet: Set<Badge> = Set(milestoneGroups.flatMap { $0 })
+    /// Milepæls-stigerne, hver i stigende rækkefølge (katalogets orden). Udledt
+    /// direkte af kataloget via `BadgeLadder`, så nye trin kræver ingen ændring
+    /// her. Bruges til kun at vise det *næste* trin pr. stige, så samlingen ikke
+    /// bliver en lang væg af fjerne mål.
+    private static let ladders: [[Badge]] = BadgeLadder.allCases.map { ladder in
+        Badge.all.filter { $0.ladder == ladder }
+    }
+
+    private static let ladderBadges: Set<Badge> = Set(ladders.flatMap { $0 })
 
     /// Endnu ikke optjente mærker. Hemmelige mærker skjules indtil de er låst op,
-    /// og af milepælene vises kun det næste trin i hver gruppe — så det føles som
+    /// og af milepælene vises kun det næste trin i hver stige — så det føles som
     /// et nært, opnåeligt mål frem for en uendelig liste.
     var lockedBadges: [Badge] {
-        let base = Badge.allCases.filter {
-            !earned.contains($0) && !$0.isSecret && !Self.milestoneSet.contains($0)
+        let base = Badge.all.filter {
+            !earned.contains($0) && !$0.isSecret && !Self.ladderBadges.contains($0)
         }
-        let nextMilestones = Self.milestoneGroups.compactMap { group in
-            group.first { !earned.contains($0) && !$0.isSecret }
+        let nextLadderSteps = Self.ladders.compactMap { ladder in
+            ladder.first { !earned.contains($0) && !$0.isSecret }
         }
-        return base + nextMilestones
+        return base + nextLadderSteps
     }
 
     /// En tema-gruppe i samlingen med de mærker, der skal vises.
@@ -107,7 +60,7 @@ final class BadgesViewModel {
     var sections: [CategorySection] {
         let visible = Set(earnedBadges).union(lockedBadges)
         return BadgeCategory.allCases.compactMap { category in
-            let badges = Badge.allCases.filter { visible.contains($0) && $0.category == category }
+            let badges = Badge.all.filter { visible.contains($0) && $0.category == category }
             return badges.isEmpty ? nil : CategorySection(category: category, badges: badges)
         }
     }

@@ -46,7 +46,7 @@ struct LocalSharingService: SharingService {
 
         if settings.shareMilestones {
             let earned = (try? environment.badgeRepository.earned()) ?? []
-            snapshot.milestones = Badge.allCases.filter { earned.contains($0) }
+            snapshot.milestones = Badge.all.filter { earned.contains($0) }
         }
 
         return snapshot
