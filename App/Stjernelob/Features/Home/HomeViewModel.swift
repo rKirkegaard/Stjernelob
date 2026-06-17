@@ -42,7 +42,10 @@ final class HomeViewModel {
         )
         let training = WeekScheduler.isTrainingDay(now, trainingDays: days, calendar: calendar)
         isRestDay = !training
-        todaysPlan = training ? week.plan(forSessionsPerWeek: sessionsPerWeek) : nil
+        todaysPlan = training
+            ? environment.settings.trainingIntensity
+            .scaled(week.plan(forSessionsPerWeek: sessionsPerWeek))
+            : nil
 
         let service = WeeklyStatusService(
             weeklyPlanRepository: environment.weeklyPlanRepository,

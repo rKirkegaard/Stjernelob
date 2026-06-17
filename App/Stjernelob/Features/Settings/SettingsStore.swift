@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import StjernelobCore
 
 /// Holder og persisterer brugerens indstillinger (lyd/stemme/haptik,
 /// påmindelser, streak-fryser). De mest beskyttende valg er standard, og alt
@@ -20,6 +21,12 @@ final class SettingsStore {
     var showPaceAndDistance: Bool { didSet { defaults.set(
         showPaceAndDistance,
         forKey: Keys.showPaceAndDistance
+    ) } }
+
+    /// Selvvalgt sværhedsgrad, der skalerer hver tur (lettere/normal/hårdere).
+    var trainingIntensity: TrainingIntensity { didSet { defaults.set(
+        trainingIntensity.rawValue,
+        forKey: Keys.trainingIntensity
     ) } }
     // Forælder-deling — alt opt-in (privacy by default, afsnit 11.2/14).
     var shareStreak: Bool { didSet { defaults.set(shareStreak, forKey: Keys.shareStreak) } }
@@ -52,6 +59,7 @@ final class SettingsStore {
         static let streakFreeze = "settings.streakFreezeEnabled"
         static let healthKit = "settings.healthKitEnabled"
         static let showPaceAndDistance = "settings.showPaceAndDistance"
+        static let trainingIntensity = "settings.trainingIntensity"
         static let shareStreak = "settings.shareStreak"
         static let shareWorkouts = "settings.shareWorkouts"
         static let shareMilestones = "settings.shareMilestones"
@@ -76,6 +84,9 @@ final class SettingsStore {
         streakFreezeEnabled = defaults.object(forKey: Keys.streakFreeze) as? Bool ?? true
         healthKitEnabled = defaults.object(forKey: Keys.healthKit) as? Bool ?? false
         showPaceAndDistance = defaults.object(forKey: Keys.showPaceAndDistance) as? Bool ?? false
+        trainingIntensity = TrainingIntensity(
+            rawValue: defaults.string(forKey: Keys.trainingIntensity) ?? ""
+        ) ?? .standard
         shareStreak = defaults.object(forKey: Keys.shareStreak) as? Bool ?? false
         shareWorkouts = defaults.object(forKey: Keys.shareWorkouts) as? Bool ?? false
         shareMilestones = defaults.object(forKey: Keys.shareMilestones) as? Bool ?? false

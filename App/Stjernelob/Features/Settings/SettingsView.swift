@@ -1,3 +1,4 @@
+import StjernelobCore
 import SwiftUI
 
 /// Indstillinger (spec afsnit 7.9): lyd/stemme/haptik hver for sig, påmindelser,
@@ -64,6 +65,21 @@ struct SettingsView: View {
                 Text(Strings.Settings.signalSoundsNote)
             }
             .disabled(!settings.feedback.soundEnabled)
+
+            Section {
+                Picker(selection: $settings.trainingIntensity) {
+                    ForEach(TrainingIntensity.allCases) { intensity in
+                        Text(intensity.displayName).tag(intensity)
+                    }
+                } label: {
+                    Text(Strings.Difficulty.section)
+                }
+                .pickerStyle(.segmented)
+            } header: {
+                Text(Strings.Difficulty.section)
+            } footer: {
+                Text(Strings.Difficulty.note)
+            }
 
             Section {
                 Toggle(isOn: $settings.showPaceAndDistance) {
@@ -168,6 +184,10 @@ struct SettingsView: View {
         .onChange(of: settings.reminderHour) { _, _ in Task { await reschedule() } }
         .onChange(of: settings.healthKitEnabled) { _, isOn in
             if isOn { Task { _ = await environment.healthKit.requestAuthorization() } }
+        }
+        .onChange(of: settings.trainingIntensity) { _, _ in
+            environment.refreshWidget()
+            environment.sendCurrentSessionToWatch()
         }
         .onChange(of: settings.feedback.runStartSound) { _, sound in playPreview(sound) }
         .onChange(of: settings.feedback.walkStartSound) { _, sound in playPreview(sound) }

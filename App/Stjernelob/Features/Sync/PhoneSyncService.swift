@@ -24,7 +24,9 @@ final class PhoneSyncService: NSObject, WCSessionDelegate {
         let engine =
             ProgressionEngine(state: ProgressionState(weekIndex: profile?.currentWeekIndex ?? 0))
         let week = engine.currentWeek
-        let plan = week.plan(forSessionsPerWeek: profile?.defaultWeeklySessions ?? 3)
+        let plan = environment.settings.trainingIntensity.scaled(
+            week.plan(forSessionsPerWeek: profile?.defaultWeeklySessions ?? 3)
+        )
         let payload = WatchSessionPayload(
             plan: plan,
             programWeekId: week.id,

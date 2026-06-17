@@ -141,6 +141,26 @@ enum Strings {
         }
     }
 
+    /// Selvvalgt sværhedsgrad (skalerer turen).
+    enum Difficulty {
+        static let section = LocalizedStringResource(
+            "difficulty.section", defaultValue: "Sværhedsgrad"
+        )
+        static let lighter = LocalizedStringResource(
+            "difficulty.lighter", defaultValue: "Lettere"
+        )
+        static let standard = LocalizedStringResource(
+            "difficulty.standard", defaultValue: "Normal"
+        )
+        static let harder = LocalizedStringResource(
+            "difficulty.harder", defaultValue: "Hårdere"
+        )
+        static let note = LocalizedStringResource(
+            "difficulty.note",
+            defaultValue: "Skru op eller ned, som det passer dig. Hårdere betyder lidt længere løb og kortere gå-pauser — aldrig højere fart. Opvarmning og hvile er der altid."
+        )
+    }
+
     enum Launch {
         static let go = LocalizedStringResource("launch.go", defaultValue: "GO")
         static let tagline = LocalizedStringResource(

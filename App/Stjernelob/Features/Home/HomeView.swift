@@ -8,6 +8,22 @@ struct HomeView: View {
     var onStartRun: (RunRequest) -> Void = { _ in }
     var onAdjustWeek: () -> Void = {}
 
+    @Environment(AppEnvironment.self) private var environment
+
+    /// Sværhedsgrad bundet til de delte indstillinger. Når den ændres, genberegnes
+    /// dagens (skalerede) plan, og ur + widget opdateres.
+    private var intensityBinding: Binding<TrainingIntensity> {
+        Binding(
+            get: { environment.settings.trainingIntensity },
+            set: { newValue in
+                environment.settings.trainingIntensity = newValue
+                viewModel.load()
+                environment.refreshWidget()
+                environment.sendCurrentSessionToWatch()
+            }
+        )
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: Theme.Spacing.large) {
@@ -97,6 +113,20 @@ struct HomeView: View {
                 .font(.headline)
 
             PlanSummaryView(plan: plan)
+
+            VStack(alignment: .leading, spacing: Theme.Spacing.small) {
+                Text(Strings.Difficulty.section)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Picker(selection: intensityBinding) {
+                    ForEach(TrainingIntensity.allCases) { intensity in
+                        Text(intensity.displayName).tag(intensity)
+                    }
+                } label: {
+                    Text(Strings.Difficulty.section)
+                }
+                .pickerStyle(.segmented)
+            }
 
             Button {
                 if let week = viewModel.currentWeek {

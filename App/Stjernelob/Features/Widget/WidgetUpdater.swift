@@ -18,7 +18,9 @@ struct WidgetUpdater {
             state: ProgressionState(weekIndex: profile?.currentWeekIndex ?? 0)
         )
         let week = engine.currentWeek
-        let plan = week.plan(forSessionsPerWeek: profile?.defaultWeeklySessions ?? 3)
+        let plan = environment.settings.trainingIntensity.scaled(
+            week.plan(forSessionsPerWeek: profile?.defaultWeeklySessions ?? 3)
+        )
 
         let totalSeconds = plan.intervals.reduce(Duration.zero) { $0 + $1.duration }
             .components.seconds
