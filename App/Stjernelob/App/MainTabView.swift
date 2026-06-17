@@ -55,6 +55,7 @@ struct MainTabView: View {
         .task {
             environment.activateWatchSync()
             environment.sendCurrentSessionToWatch()
+            environment.refreshWidget()
             if let record = environment.runStateStore.load(), record.isResumable(asOf: Date()) {
                 resumableRecord = record
             }
@@ -78,7 +79,10 @@ struct MainTabView: View {
         .sheet(isPresented: $showPlanner) {
             WeekPlannerView(viewModel: WeekPlannerViewModel(
                 environment: environment,
-                onSaved: { environment.sendCurrentSessionToWatch() }
+                onSaved: {
+                    environment.sendCurrentSessionToWatch()
+                    environment.refreshWidget()
+                }
             ))
         }
         .fullScreenCover(item: $runRequest) { request in

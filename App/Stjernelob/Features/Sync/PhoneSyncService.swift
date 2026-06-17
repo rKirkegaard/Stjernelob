@@ -39,6 +39,11 @@ final class PhoneSyncService: NSObject, WCSessionDelegate {
         guard let environment,
               let payload = try? JSONDecoder().decode(WatchCompletionPayload.self, from: data)
         else { return }
+        // Idempotens: hvis turen allerede er gemt (samme id), så spring over —
+        // beskeden kan i sjældne tilfælde blive leveret mere end én gang.
+        let existing = (try? environment.workoutRepository.all()) ?? []
+        guard !existing.contains(where: { $0.id == payload.id }) else { return }
+
         let summary = WorkoutSummary(
             plannedDuration: .seconds(payload.activeSeconds),
             activeDuration: .seconds(payload.activeSeconds),
@@ -48,7 +53,7 @@ final class PhoneSyncService: NSObject, WCSessionDelegate {
             isComplete: payload.isComplete
         )
         let workout = CompletedWorkoutDTO(
-            id: UUID(),
+            id: payload.id,
             date: Date(),
             programWeekId: payload.programWeekId,
             phase: payload.programPhase,
@@ -64,6 +69,7 @@ final class PhoneSyncService: NSObject, WCSessionDelegate {
         try? environment.workoutRepository.add(workout)
         ProgressionCoordinator(environment: environment)
             .registerCompletedWorkout(programWeekId: payload.programWeekId)
+        environment.refreshWidget()
     }
 
     // MARK: - WCSessionDelegate (nonisolated; hopper til MainActor)

@@ -6,23 +6,28 @@ import SwiftData
 // ruter gemmes som filer med Data Protection, ikke i databasen). De mappes til
 // og fra Sendable DTO'er (se DTOs.swift), så domæne- og præsentationslag aldrig
 // rører persistensen direkte.
+//
+// CloudKit-kompatibilitet (privat synk): for at SwiftData kan spejle skemaet til
+// brugerens private CloudKit-database må der ikke bruges `@Attribute(.unique)`,
+// alle attributter skal have en defaultværdi, og relationer skal være optionelle.
+// Entydighed (badges, uger) håndhæves derfor i koden i stedet for i skemaet.
 
 /// Brugerens profil og placering i forløbet. Der findes præcis én pr. enhed.
 @Model
 final class ProfileEntity {
-    var hasRunBefore: Bool
-    var defaultWeeklySessions: Int
-    var currentWeekIndex: Int
+    var hasRunBefore: Bool = false
+    var defaultWeeklySessions: Int = 3
+    var currentWeekIndex: Int = 0
     /// Antal ture gennemført på den aktuelle programuge — nulstilles, når ugen
     /// vurderes og forløbet rykker (frem/gentag/tilbage).
-    var completedSessionsThisProgramWeek: Int
-    var roleRawValue: String
-    var onboardingComplete: Bool
+    var completedSessionsThisProgramWeek: Int = 0
+    var roleRawValue: String = UserRole.runner.rawValue
+    var onboardingComplete: Bool = false
     // Helbredsscreening fra onboarding (afsnit 7.1) — minimal og kun lokalt.
-    var hasPainOrInjury: Bool
-    var hasHeartOrLungCondition: Bool
-    var advisedToConsultDoctor: Bool
-    var createdAt: Date
+    var hasPainOrInjury: Bool = false
+    var hasHeartOrLungCondition: Bool = false
+    var advisedToConsultDoctor: Bool = false
+    var createdAt: Date = Date()
 
     init(
         hasRunBefore: Bool = false,
@@ -52,16 +57,16 @@ final class ProfileEntity {
 /// En gennemført (eller afbrudt) tur i historikken.
 @Model
 final class CompletedWorkoutEntity {
-    @Attribute(.unique) var id: UUID
-    var date: Date
-    var programWeekId: Int
-    var phaseRawValue: String
-    var plannedIntervalCount: Int
-    var intervalsCompleted: Int
-    var runIntervalsCompleted: Int
-    var activeSeconds: Double
-    var isComplete: Bool
-    var starsEarned: Int
+    var id: UUID = UUID()
+    var date: Date = Date()
+    var programWeekId: Int = 0
+    var phaseRawValue: String = ""
+    var plannedIntervalCount: Int = 0
+    var intervalsCompleted: Int = 0
+    var runIntervalsCompleted: Int = 0
+    var activeSeconds: Double = 0
+    var isComplete: Bool = false
+    var starsEarned: Int = 0
     var perceivedEffort: Int?
     /// Målt distance i meter (valgfrit; vist neutralt, aldrig grundlag for belønning).
     var distanceMeters: Double?
@@ -78,7 +83,7 @@ final class CompletedWorkoutEntity {
     var longestRunSeconds: Double?
 
     @Relationship(deleteRule: .cascade, inverse: \WorkoutPhotoEntity.workout)
-    var photos: [WorkoutPhotoEntity]
+    var photos: [WorkoutPhotoEntity]?
 
     init(
         id: UUID = UUID(),
@@ -125,10 +130,10 @@ final class CompletedWorkoutEntity {
 /// disk med Data Protection — her gemmes kun filnavn og metadata (afsnit 14.2).
 @Model
 final class WorkoutPhotoEntity {
-    @Attribute(.unique) var id: UUID
-    var fileName: String
+    var id: UUID = UUID()
+    var fileName: String = ""
     var caption: String?
-    var createdAt: Date
+    var createdAt: Date = Date()
     var workout: CompletedWorkoutEntity?
 
     init(id: UUID = UUID(), fileName: String, caption: String? = nil, createdAt: Date = Date()) {
@@ -142,9 +147,9 @@ final class WorkoutPhotoEntity {
 /// Brugerens valgte ugemål for en bestemt uge (afsnit 6.2).
 @Model
 final class WeeklyGoalEntity {
-    var yearForWeekOfYear: Int
-    var weekOfYear: Int
-    var targetSessions: Int
+    var yearForWeekOfYear: Int = 0
+    var weekOfYear: Int = 0
+    var targetSessions: Int = 0
 
     init(yearForWeekOfYear: Int, weekOfYear: Int, targetSessions: Int) {
         self.yearForWeekOfYear = yearForWeekOfYear
@@ -156,10 +161,10 @@ final class WeeklyGoalEntity {
 /// Frys/pause-status for en uge (tilgivende streak, afsnit 5.3).
 @Model
 final class WeekStatusEntity {
-    var yearForWeekOfYear: Int
-    var weekOfYear: Int
-    var isFrozen: Bool
-    var isPaused: Bool
+    var yearForWeekOfYear: Int = 0
+    var weekOfYear: Int = 0
+    var isFrozen: Bool = false
+    var isPaused: Bool = false
 
     init(yearForWeekOfYear: Int, weekOfYear: Int, isFrozen: Bool = false, isPaused: Bool = false) {
         self.yearForWeekOfYear = yearForWeekOfYear
@@ -169,11 +174,12 @@ final class WeekStatusEntity {
     }
 }
 
-/// Et optjent badge (afsnit 5.4).
+/// Et optjent badge (afsnit 5.4). Entydighed på `rawValue` håndhæves i koden
+/// (se `BadgeRepository.award`), da CloudKit-synk ikke tillader unikke felter.
 @Model
 final class EarnedBadgeEntity {
-    @Attribute(.unique) var rawValue: String
-    var earnedAt: Date
+    var rawValue: String = ""
+    var earnedAt: Date = Date()
 
     init(rawValue: String, earnedAt: Date = Date()) {
         self.rawValue = rawValue

@@ -215,6 +215,7 @@ final class ActiveRunViewModel {
         awardBadges(for: summary)
         ProgressionCoordinator(environment: environment)
             .registerCompletedWorkout(programWeekId: programWeekId, now: now())
+        environment.refreshWidget()
 
         if environment.settings.healthKitEnabled {
             let end = now()

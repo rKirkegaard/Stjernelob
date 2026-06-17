@@ -39,6 +39,15 @@ targets:
         embed: true
       - target: StjernelobWidget
         embed: true
+    # iCloud (privat CloudKit-synk af SwiftData) + App Group (delt lagring til
+    # widget'en). Container-id'erne forudsætter en Apple Developer-konto; CI
+    # bygger koden, men selve synk/deling kører først på et signeret device.
+    entitlements:
+      path: Stjernelob/Stjernelob.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers: [iCloud.com.rkirkegaard.stjernelob]
+        com.apple.developer.icloud-services: [CloudKit]
+        com.apple.security.application-groups: [group.com.rkirkegaard.stjernelob]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rkirkegaard.stjernelob
@@ -46,9 +55,10 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         MARKETING_VERSION: "0.1.0"
         INFOPLIST_KEY_NSSupportsLiveActivities: YES
-        # Baggrund: signaltoner skal kunne høres med låst skærm (intervallyd), og
-        # GPS-distancen skal blive ved med at måle, mens skærmen er låst under turen.
-        INFOPLIST_KEY_UIBackgroundModes: audio location
+        # Baggrund: signaltoner skal kunne høres med låst skærm (intervallyd),
+        # GPS-distancen skal blive ved med at måle ved låst skærm under turen, og
+        # remote-notification lader CloudKit synke i baggrunden.
+        INFOPLIST_KEY_UIBackgroundModes: audio location remote-notification
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
@@ -109,6 +119,11 @@ targets:
     dependencies:
       - target: StjernelobShared
         embed: false
+    # Samme App Group som appen, så widget'en kan læse den delte snapshot.
+    entitlements:
+      path: StjernelobWidget/StjernelobWidget.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.rkirkegaard.stjernelob]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rkirkegaard.stjernelob.widget

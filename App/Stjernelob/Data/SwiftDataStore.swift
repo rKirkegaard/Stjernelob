@@ -25,10 +25,22 @@ final class SwiftDataStore {
         EarnedBadgeEntity.self,
     ])
 
-    /// Standard-container. Forsøger vedvarende lagring; falder tilbage til
-    /// hukommelse, så appen altid kan starte (og en tom database er bedre end
-    /// et crash).
+    /// Identifikator for den private CloudKit-container (lokal-først; skyen er
+    /// backup/synk, jf. arkitektur.md). Forudsætter iCloud-entitlement + konto.
+    static let cloudKitContainer = "iCloud.com.rkirkegaard.stjernelob"
+
+    /// Standard-container. Forsøger i rækkefølge: lokal-først med spejling til
+    /// brugerens private CloudKit-database → ren lokal lagring (fx i simulator/CI
+    /// eller uden iCloud-konto) → hukommelse. En tom database er bedre end et crash.
     static func makeDefault() -> SwiftDataStore {
+        let cloudKitConfig = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: false,
+            cloudKitDatabase: .private(cloudKitContainer)
+        )
+        if let synced = try? ModelContainer(for: schema, configurations: cloudKitConfig) {
+            return SwiftDataStore(container: synced)
+        }
         if let persistent = try? ModelContainer(
             for: schema,
             configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)

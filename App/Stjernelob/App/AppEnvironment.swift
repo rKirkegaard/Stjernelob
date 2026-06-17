@@ -1,6 +1,8 @@
 import Foundation
 import Observation
 import StjernelobCore
+import StjernelobShared
+import WidgetKit
 
 /// Appens afhængigheds-container. Samler de tjenester, som ViewModels og views
 /// får injiceret (jf. `arkitektur.md`: afhængigheder injiceres, ingen skjulte
@@ -46,6 +48,12 @@ final class AppEnvironment {
         phoneSync?.sendCurrentSession()
     }
 
+    /// Opdatér det delte widget-øjebliksbillede (næste tur + stime) og bed
+    /// WidgetKit genindlæse. Kaldes ved appstart og når data ændrer sig.
+    func refreshWidget() {
+        WidgetUpdater(environment: self).refresh()
+    }
+
     init(
         clock: any MonotonicClock = SystemMonotonicClock(),
         store: SwiftDataStore? = nil,
@@ -60,11 +68,14 @@ final class AppEnvironment {
         self.settings = settings ?? SettingsStore()
     }
 
-    /// Fuld datasletning (GDPR, afsnit 14): rydder lokal database og billedfiler.
-    /// (Synk til delt CloudKit-zone ryddes i synk-laget, når det kobles på.)
+    /// Fuld datasletning (GDPR, afsnit 14): rydder lokal database, billedfiler og
+    /// det delte widget-øjebliksbillede. Den lokale sletning forplanter sig til
+    /// brugerens private CloudKit-database via SwiftDatas spejling.
     func eraseAllData() {
         try? store.eraseAllData()
         photoStore.deleteAll()
+        WidgetSharedStore.clear()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     /// Bekvemmelig in-memory-opsætning til previews.

@@ -125,7 +125,7 @@ extension CompletedWorkoutDTO {
             stretchedAfter: entity.stretchedAfter,
             drankWater: entity.drankWater,
             longestRunSeconds: entity.longestRunSeconds,
-            photos: entity.photos
+            photos: (entity.photos ?? [])
                 .sorted { $0.createdAt < $1.createdAt }
                 .map(WorkoutPhotoDTO.init(entity:))
         )

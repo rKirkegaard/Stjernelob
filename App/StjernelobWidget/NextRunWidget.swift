@@ -1,22 +1,30 @@
+import StjernelobShared
 import SwiftUI
 import WidgetKit
 
 /// Home Screen-widget med en blid, evig påmindelse (spec afsnit 10). Viser
-/// bevidst ingen pres-tal — bare en venlig opfordring. Rigtige data (næste tur,
-/// stime) kobles på via en App Group, når delt lagring sættes op.
+/// bevidst ingen pres-tal — bare en venlig opfordring og, hvis der er data, en
+/// kort beskrivelse af næste tur og en varm stime. Data læses fra en App Group,
+/// som appen opdaterer (`WidgetSharedStore`).
 struct NextRunEntry: TimelineEntry {
     let date: Date
+    let snapshot: WidgetSnapshot?
 }
 
 struct NextRunProvider: TimelineProvider {
-    func placeholder(in _: Context) -> NextRunEntry { NextRunEntry(date: .now) }
+    func placeholder(in _: Context) -> NextRunEntry {
+        NextRunEntry(date: .now, snapshot: nil)
+    }
 
     func getSnapshot(in _: Context, completion: @escaping (NextRunEntry) -> Void) {
-        completion(NextRunEntry(date: .now))
+        completion(NextRunEntry(date: .now, snapshot: WidgetSharedStore.load()))
     }
 
     func getTimeline(in _: Context, completion: @escaping (Timeline<NextRunEntry>) -> Void) {
-        completion(Timeline(entries: [NextRunEntry(date: .now)], policy: .never))
+        let entry = NextRunEntry(date: .now, snapshot: WidgetSharedStore.load())
+        // Appen genindlæser selv ved ændringer; en daglig opdatering holder det friskt.
+        let nextUpdate = Calendar.current.date(byAdding: .day, value: 1, to: .now) ?? .now
+        completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
     }
 }
 
@@ -31,6 +39,20 @@ struct NextRunWidgetView: View {
             Text(LocalizedStringResource("widget.nextRun", defaultValue: "Klar til en lille tur?"))
                 .font(.caption)
                 .multilineTextAlignment(.center)
+            if let detail = entry.snapshot?.nextRunDetail, !detail.isEmpty {
+                Text(detail)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            if let weeks = entry.snapshot?.streakWeeks, weeks > 0 {
+                Text(LocalizedStringResource(
+                    "widget.streak",
+                    defaultValue: "🌟 \(weeks) ugers stime"
+                ))
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.tint)
+            }
         }
         .containerBackground(.fill.tertiary, for: .widget)
     }

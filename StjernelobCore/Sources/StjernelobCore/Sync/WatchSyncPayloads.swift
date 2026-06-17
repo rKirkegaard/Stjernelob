@@ -20,6 +20,9 @@ public struct WatchSessionPayload: Codable, Sendable, Equatable {
 /// Ur → telefon: resultatet af en tur gennemført på uret, så telefonen kan gemme
 /// den i historikken (belønning for gennemførsel, ikke fart).
 public struct WatchCompletionPayload: Codable, Sendable, Equatable {
+    /// Stabil identitet for turen, så telefonen kan undgå at gemme den samme
+    /// gennemførsel to gange, hvis beskeden skulle blive leveret mere end én gang.
+    public let id: UUID
     public let programWeekId: Int
     public let programPhase: ProgramPhase
     public let activeSeconds: Double
@@ -29,6 +32,7 @@ public struct WatchCompletionPayload: Codable, Sendable, Equatable {
     public let isComplete: Bool
 
     public init(
+        id: UUID = UUID(),
         programWeekId: Int,
         programPhase: ProgramPhase,
         activeSeconds: Double,
@@ -37,6 +41,7 @@ public struct WatchCompletionPayload: Codable, Sendable, Equatable {
         runIntervalsCompleted: Int,
         isComplete: Bool
     ) {
+        self.id = id
         self.programWeekId = programWeekId
         self.programPhase = programPhase
         self.activeSeconds = activeSeconds
