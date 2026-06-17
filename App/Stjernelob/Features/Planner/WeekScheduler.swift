@@ -30,4 +30,20 @@ enum WeekScheduler {
         trainingDays(sessionsPerWeek: sessionsPerWeek)
             .contains(weekdayMondayBased(date, calendar: calendar))
     }
+
+    /// De træningsdage, der faktisk gælder: brugerens egne valgte dage, hvis hun
+    /// har valgt nogen — ellers det automatiske forslag ud fra antal ture.
+    static func resolvedTrainingDays(chosen: [Int], sessionsPerWeek: Int) -> [Int] {
+        let valid = chosen.filter { (0...6).contains($0) }
+        return valid.isEmpty ? trainingDays(sessionsPerWeek: sessionsPerWeek) : Set(valid).sorted()
+    }
+
+    /// Er en given dag en træningsdag ud fra et konkret sæt valgte dage?
+    static func isTrainingDay(
+        _ date: Date,
+        trainingDays days: [Int],
+        calendar: Calendar = .iso8601Monday
+    ) -> Bool {
+        days.contains(weekdayMondayBased(date, calendar: calendar))
+    }
 }

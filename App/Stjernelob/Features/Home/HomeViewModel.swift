@@ -36,11 +36,11 @@ final class HomeViewModel {
         let week = engine.currentWeek
         currentWeek = week
 
-        let training = WeekScheduler.isTrainingDay(
-            now,
-            sessionsPerWeek: sessionsPerWeek,
-            calendar: calendar
+        let days = WeekScheduler.resolvedTrainingDays(
+            chosen: profile?.trainingDays ?? [],
+            sessionsPerWeek: sessionsPerWeek
         )
+        let training = WeekScheduler.isTrainingDay(now, trainingDays: days, calendar: calendar)
         isRestDay = !training
         todaysPlan = training ? week.plan(forSessionsPerWeek: sessionsPerWeek) : nil
 

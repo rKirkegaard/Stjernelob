@@ -28,6 +28,8 @@ final class ProfileEntity {
     var hasHeartOrLungCondition: Bool = false
     var advisedToConsultDoctor: Bool = false
     var createdAt: Date = Date()
+    /// Selvvalgte træningsdage (mandag-baseret 0...6). Tom = brug auto-forslag.
+    var trainingDays: [Int] = []
 
     init(
         hasRunBefore: Bool = false,
@@ -39,7 +41,8 @@ final class ProfileEntity {
         hasPainOrInjury: Bool = false,
         hasHeartOrLungCondition: Bool = false,
         advisedToConsultDoctor: Bool = false,
-        createdAt: Date = Date()
+        createdAt: Date = Date(),
+        trainingDays: [Int] = []
     ) {
         self.hasRunBefore = hasRunBefore
         self.defaultWeeklySessions = defaultWeeklySessions
@@ -51,6 +54,7 @@ final class ProfileEntity {
         self.hasHeartOrLungCondition = hasHeartOrLungCondition
         self.advisedToConsultDoctor = advisedToConsultDoctor
         self.createdAt = createdAt
+        self.trainingDays = trainingDays
     }
 }
 

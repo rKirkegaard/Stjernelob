@@ -303,6 +303,27 @@ enum Strings {
             "planner.restDayNote",
             defaultValue: "Vi lægger altid en hviledag ind imellem — hvile er en del af træningen."
         )
+
+        static let chooseDays = LocalizedStringResource(
+            "planner.chooseDays", defaultValue: "Vælg dine træningsdage"
+        )
+        static func daysPerWeek(_ count: Int) -> LocalizedStringResource {
+            LocalizedStringResource(
+                "planner.daysPerWeek",
+                defaultValue: "Du træner \(count) dage om ugen"
+            )
+        }
+
+        static let chooseDaysNote = LocalizedStringResource(
+            "planner.chooseDaysNote",
+            defaultValue: "Tryk på de dage, du vil løbe. Du bestemmer selv — og hviledage imellem gør dig stærkere."
+        )
+        static let suggestEvenly = LocalizedStringResource(
+            "planner.suggestEvenly", defaultValue: "Foreslå jævnt fordelt"
+        )
+        static let pickAtLeastOne = LocalizedStringResource(
+            "planner.pickAtLeastOne", defaultValue: "Vælg mindst én dag"
+        )
     }
 
     enum Progress {

@@ -16,8 +16,13 @@ final class WeekPlannerViewModel {
         return calendar
     }()
 
-    var sessionsPerWeek = 3
+    /// Brugerens valgte træningsdage (mandag-baseret 0...6). Antallet af valgte
+    /// dage er samtidig ugens antal ture — man vælger selv hvilke dage.
+    private(set) var selectedDays: Set<Int> = []
     private let onSaved: () -> Void
+
+    /// Alle ugedage i visningsrækkefølge (mandag først).
+    let allDays = Array(0...6)
 
     init(environment: AppEnvironment, onSaved: @escaping () -> Void = {}) {
         self.environment = environment
@@ -29,17 +34,39 @@ final class WeekPlannerViewModel {
     }
 
     func load() {
-        if let goal = try? environment.weeklyPlanRepository.goal(for: currentWeek) {
-            sessionsPerWeek = goal.targetSessions
-        } else if let profile = try? environment.profileRepository.load() {
-            sessionsPerWeek = profile.defaultWeeklySessions
+        let profile = try? environment.profileRepository.load()
+        let sessions = (try? environment.weeklyPlanRepository.goal(for: currentWeek))?
+            .targetSessions ?? profile?.defaultWeeklySessions ?? 3
+        if let chosen = profile?.trainingDays, !chosen.isEmpty {
+            selectedDays = Set(chosen.filter { (0...6).contains($0) })
+        } else {
+            // Ingen valgt endnu: start fra det jævne forslag, så man bare kan justere.
+            selectedDays = Set(WeekScheduler.trainingDays(sessionsPerWeek: sessions))
         }
     }
 
-    /// Mandag-baserede ugedags-indeks, der foreslås som træningsdage.
-    var trainingDays: [Int] {
-        WeekScheduler.trainingDays(sessionsPerWeek: sessionsPerWeek)
+    /// Slå en dag til/fra som træningsdag.
+    func toggle(_ day: Int) {
+        if selectedDays.contains(day) {
+            selectedDays.remove(day)
+        } else {
+            selectedDays.insert(day)
+        }
     }
+
+    func isSelected(_ day: Int) -> Bool { selectedDays.contains(day) }
+
+    /// Fyld med et jævnt fordelt forslag ud fra det aktuelle antal valgte dage
+    /// (mindst 3, hvis intet er valgt) — en hurtig genvej man stadig kan justere.
+    func suggestEvenly() {
+        let count = max(3, selectedDays.count)
+        selectedDays = Set(WeekScheduler.trainingDays(sessionsPerWeek: count))
+    }
+
+    /// Antal valgte dage = ugens antal ture.
+    var sessionCount: Int { selectedDays.count }
+    /// Mindst én dag skal være valgt, før man kan gemme.
+    var canSave: Bool { !selectedDays.isEmpty }
 
     /// Lokaliseret, kort ugedagsnavn for et mandag-baseret indeks (0 = mandag).
     func weekdayName(_ mondayBasedIndex: Int) -> String {
@@ -49,11 +76,15 @@ final class WeekPlannerViewModel {
     }
 
     func save() {
+        let days = selectedDays.sorted()
+        guard !days.isEmpty else { return }
+        let sessions = days.count
         try? environment.weeklyPlanRepository.setGoal(
-            WeeklyGoalDTO(week: currentWeek, targetSessions: sessionsPerWeek)
+            WeeklyGoalDTO(week: currentWeek, targetSessions: sessions)
         )
         if var profile = try? environment.profileRepository.load() {
-            profile.defaultWeeklySessions = sessionsPerWeek
+            profile.defaultWeeklySessions = sessions
+            profile.trainingDays = days
             try? environment.profileRepository.save(profile)
         }
         onSaved()

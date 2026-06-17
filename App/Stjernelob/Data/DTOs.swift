@@ -26,6 +26,9 @@ struct ProfileDTO: Equatable {
     var role: UserRole
     var onboardingComplete: Bool
     var health: HealthScreening
+    /// Brugerens selvvalgte træningsdage (mandag-baseret 0...6). Tom = ingen
+    /// valgt endnu; så bruges det automatiske forslag ud fra antal ture.
+    var trainingDays: [Int] = []
 }
 
 /// Sendable repræsentation af en gennemført tur.
@@ -77,7 +80,8 @@ extension ProfileDTO {
             health: HealthScreening(
                 hasPainOrInjury: entity.hasPainOrInjury,
                 hasHeartOrLungCondition: entity.hasHeartOrLungCondition
-            )
+            ),
+            trainingDays: entity.trainingDays
         )
     }
 
@@ -91,6 +95,7 @@ extension ProfileDTO {
         entity.hasPainOrInjury = health.hasPainOrInjury
         entity.hasHeartOrLungCondition = health.hasHeartOrLungCondition
         entity.advisedToConsultDoctor = health.shouldAdviseDoctor
+        entity.trainingDays = trainingDays
     }
 }
 

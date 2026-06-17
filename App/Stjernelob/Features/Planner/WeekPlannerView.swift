@@ -10,29 +10,32 @@ struct WeekPlannerView: View {
         NavigationStack {
             Form {
                 Section {
-                    Stepper(value: $viewModel.sessionsPerWeek, in: 1...5) {
-                        Text(Strings.Planner.sessionsValue(viewModel.sessionsPerWeek))
-                            .monospacedDigit()
-                    }
-                } header: {
-                    Text(Strings.Planner.sessionsQuestion)
-                }
-
-                Section {
                     HStack(spacing: Theme.Spacing.small) {
-                        ForEach(viewModel.trainingDays, id: \.self) { day in
-                            Text(viewModel.weekdayName(day))
-                                .font(.subheadline.weight(.semibold))
-                                .padding(.vertical, Theme.Spacing.small)
-                                .frame(maxWidth: .infinity)
-                                .background(
-                                    Theme.Colors.brand.opacity(0.15),
-                                    in: RoundedRectangle(cornerRadius: Theme.Radius.button)
-                                )
+                        ForEach(viewModel.allDays, id: \.self) { day in
+                            dayToggle(day)
+                        }
+                    }
+                    .padding(.vertical, Theme.Spacing.small)
+
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) { viewModel.suggestEvenly() }
+                    } label: {
+                        Label { Text(Strings.Planner.suggestEvenly) } icon: {
+                            Image(systemName: "wand.and.stars")
                         }
                     }
                 } header: {
-                    Text(Strings.Planner.suggestedDays)
+                    Text(Strings.Planner.chooseDays)
+                } footer: {
+                    Text(Strings.Planner.chooseDaysNote)
+                }
+
+                Section {
+                    Text(viewModel.canSave
+                        ? Strings.Planner.daysPerWeek(viewModel.sessionCount)
+                        : Strings.Planner.pickAtLeastOne)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(viewModel.canSave ? Theme.Colors.brand : .secondary)
                 } footer: {
                     Text(Strings.Planner.restDayNote)
                 }
@@ -46,10 +49,32 @@ struct WeekPlannerView: View {
                     } label: {
                         Text(Strings.Common.save)
                     }
+                    .disabled(!viewModel.canSave)
                 }
             }
             .onAppear { viewModel.load() }
         }
+    }
+
+    /// Én ugedag som en knap, man kan slå til/fra som træningsdag.
+    private func dayToggle(_ day: Int) -> some View {
+        let selected = viewModel.isSelected(day)
+        return Button {
+            withAnimation(.easeInOut(duration: 0.15)) { viewModel.toggle(day) }
+        } label: {
+            Text(viewModel.weekdayName(day))
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(selected ? Color.white : .primary)
+                .padding(.vertical, Theme.Spacing.small)
+                .frame(maxWidth: .infinity)
+                .background(
+                    selected ? Theme.Colors.brand : Theme.Colors.brand.opacity(0.12),
+                    in: RoundedRectangle(cornerRadius: Theme.Radius.button)
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(viewModel.weekdayName(day)))
+        .accessibilityAddTraits(selected ? [.isSelected, .isButton] : .isButton)
     }
 }
 

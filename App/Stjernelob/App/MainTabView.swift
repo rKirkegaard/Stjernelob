@@ -82,6 +82,7 @@ struct MainTabView: View {
                 onSaved: {
                     environment.sendCurrentSessionToWatch()
                     environment.refreshWidget()
+                    Task { await environment.rescheduleReminders() }
                 }
             ))
         }

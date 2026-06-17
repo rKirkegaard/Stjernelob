@@ -54,6 +54,23 @@ final class AppEnvironment {
         WidgetUpdater(environment: self).refresh()
     }
 
+    /// Planlæg venlige påmindelser på brugerens valgte træningsdage (eller det
+    /// automatiske forslag, hvis ingen er valgt). Kaldes når dage/påmindelser
+    /// ændres, så reminders altid matcher den aktuelle plan.
+    func rescheduleReminders() async {
+        let profile = try? profileRepository.load()
+        let sessions = profile?.defaultWeeklySessions ?? 3
+        let days = WeekScheduler.resolvedTrainingDays(
+            chosen: profile?.trainingDays ?? [],
+            sessionsPerWeek: sessions
+        )
+        await notificationScheduler.reschedule(
+            enabled: settings.remindersEnabled,
+            hour: settings.reminderHour,
+            mondayBasedDays: days
+        )
+    }
+
     init(
         clock: any MonotonicClock = SystemMonotonicClock(),
         store: SwiftDataStore? = nil,

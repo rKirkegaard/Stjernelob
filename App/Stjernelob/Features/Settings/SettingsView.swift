@@ -201,11 +201,6 @@ struct SettingsView: View {
     }
 
     private func reschedule() async {
-        let sessions = (try? environment.profileRepository.load())?.defaultWeeklySessions ?? 3
-        await environment.notificationScheduler.reschedule(
-            enabled: settings.remindersEnabled,
-            hour: settings.reminderHour,
-            mondayBasedDays: WeekScheduler.trainingDays(sessionsPerWeek: sessions)
-        )
+        await environment.rescheduleReminders()
     }
 }
