@@ -72,11 +72,14 @@ jobs:
           # Find en tilgængelig iPhone-simulator dynamisk (navne varierer pr. runner-image).
           DEVICE_ID=$(xcrun simctl list devices available | grep -m1 -oE 'iPhone[^(]*\(([0-9A-F-]{36})\)' | grep -oE '[0-9A-F-]{36}')
           echo "Bruger simulator: $DEVICE_ID"
+          # Ingen CODE_SIGNING_ALLOWED=NO her: UI-testen launcher appen som en
+          # selvstændig proces, og en usigneret app med iCloud/App Group-
+          # entitlements kan ikke launches. Lad xcodebuild ad-hoc-signere til
+          # simulatoren i stedet (kræver ikke team/profil).
           xcodebuild test \
             -project Stjernelob.xcodeproj \
             -scheme Stjernelob \
-            -destination "id=$DEVICE_ID" \
-            CODE_SIGNING_ALLOWED=NO
+            -destination "id=$DEVICE_ID"
 
   # watchOS-ledsageren bygges for watchOS-simulator.
   watch-build:
