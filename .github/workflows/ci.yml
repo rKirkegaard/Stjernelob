@@ -76,10 +76,15 @@ jobs:
           # selvstændig proces, og en usigneret app med iCloud/App Group-
           # entitlements kan ikke launches. Lad xcodebuild ad-hoc-signere til
           # simulatoren i stedet (kræver ikke team/profil).
+          # UI-testens app-launch er lejlighedsvis flaky på CI-simulatoren
+          # ("Failed to get background assertion"). Genprøv en fejlet test et par
+          # gange, så et enkelt flaky launch ikke fælder hele kørslen.
           xcodebuild test \
             -project Stjernelob.xcodeproj \
             -scheme Stjernelob \
-            -destination "id=$DEVICE_ID"
+            -destination "id=$DEVICE_ID" \
+            -retry-tests-on-failure \
+            -test-iterations 3
 
   # watchOS-ledsageren bygges for watchOS-simulator.
   watch-build:

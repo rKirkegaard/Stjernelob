@@ -97,14 +97,31 @@ struct HistoryView: View {
 }
 
 /// Kompakt kalender: seneste uger med markering på dage med en gennemført tur.
+/// Ugedags-række øverst og en måneds-overskrift, der vises hver gang måneden
+/// skifter, så man altid kan se hvilken måned man kigger på.
 private struct CalendarGridView: View {
     let weeks: [[Date]]
     let trainingDays: Set<Date>
     private let calendar = Calendar.iso8601Monday
 
+    /// Dansk kalender til lokaliserede ugedags-/måneds-navne (mandag-først).
+    private static let localized: Calendar = {
+        var calendar = Calendar(identifier: .iso8601)
+        calendar.locale = Locale(identifier: "da_DK")
+        return calendar
+    }()
+
     var body: some View {
         VStack(spacing: Theme.Spacing.small) {
-            ForEach(Array(weeks.enumerated()), id: \.offset) { _, week in
+            weekdayHeader
+            ForEach(Array(weeks.enumerated()), id: \.offset) { index, week in
+                if let label = monthLabel(for: week, previous: index > 0 ? weeks[index - 1] : nil) {
+                    Text(label)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.top, Theme.Spacing.small)
+                }
                 HStack(spacing: Theme.Spacing.small) {
                     ForEach(week, id: \.self) { day in
                         dayCell(day)
@@ -112,6 +129,37 @@ private struct CalendarGridView: View {
                 }
             }
         }
+    }
+
+    /// Ugedags-overskrift (Man, Tir, … Søn), lokaliseret og mandag-først.
+    private var weekdayHeader: some View {
+        let symbols = Self.localized.shortWeekdaySymbols // [søn, man, … lør]
+        let mondayFirst = (1...7).map { symbols[$0 % 7] } // man … søn
+        return HStack(spacing: Theme.Spacing.small) {
+            ForEach(Array(mondayFirst.enumerated()), id: \.offset) { _, name in
+                Text(name.capitalized)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+    }
+
+    /// Måneds-overskrift for en uge, hvis dens måned er en anden end den forrige
+    /// uges (ellers `nil`). Bruger ugens midt-dag (torsdag), så en uge der spænder
+    /// over et månedsskift henføres til den måned, hvor størstedelen ligger.
+    private func monthLabel(for week: [Date], previous: [Date]?) -> String? {
+        guard let day = representativeDay(of: week) else { return nil }
+        if let previous, let previousDay = representativeDay(of: previous),
+           calendar.isDate(day, equalTo: previousDay, toGranularity: .month)
+        {
+            return nil
+        }
+        return day.formatted(.dateTime.month(.wide).year()).capitalized
+    }
+
+    private func representativeDay(of week: [Date]) -> Date? {
+        week.count >= 4 ? week[3] : week.first
     }
 
     private func dayCell(_ day: Date) -> some View {
@@ -129,6 +177,8 @@ private struct CalendarGridView: View {
                     Circle().fill(Theme.Colors.star).frame(width: 5, height: 5).padding(.bottom, 3)
                 }
             }
+            .accessibilityLabel(Text(day.formatted(date: .complete, time: .omitted)))
+            .accessibilityValue(isTraining ? Text(Strings.Progress.completedTag) : Text(""))
     }
 }
 
