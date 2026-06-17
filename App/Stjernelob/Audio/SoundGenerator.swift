@@ -6,6 +6,11 @@ import AVFoundation
 enum SoundGenerator {
     static let sampleRate: Double = 44100
 
+    /// Det fælles (mono) lydformat, tonerne genereres i. Afspilleren SKAL forbindes
+    /// med præcis dette format — ellers crasher AVAudioEngine, fordi bufferens
+    /// kanalantal (mono) ikke matcher nodens (som arver mixerens stereo-format).
+    static let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1)
+
     /// Lav en enkelt tone som en PCM-buffer. Returnerer `nil`, hvis lydformatet
     /// ikke kan oprettes (i stedet for at `force unwrap`'e).
     static func tone(
@@ -13,9 +18,7 @@ enum SoundGenerator {
         duration: Float,
         amplitude: Float = 0.85
     ) -> AVAudioPCMBuffer? {
-        guard duration > 0, frequency > 0,
-              let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1)
-        else { return nil }
+        guard duration > 0, frequency > 0, let format else { return nil }
 
         let frameCount = AVAudioFrameCount(sampleRate * Double(duration))
         guard frameCount > 0,

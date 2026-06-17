@@ -38,7 +38,9 @@ final class ToneSoundPlayer: SoundPlayer {
 
     init() {
         engine.attach(player)
-        engine.connect(player, to: engine.mainMixerNode, format: nil)
+        // Forbind med tonernes eget (mono) format. Mixeren opmixer selv til
+        // hardwarens stereo-output — ellers crasher scheduleBuffer på kanalantal.
+        engine.connect(player, to: engine.mainMixerNode, format: SoundGenerator.format)
     }
 
     // MARK: - Lydsession
