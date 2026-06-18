@@ -72,7 +72,7 @@ public struct Workout: Sendable, Equatable, Codable, Identifiable {
     /// automatisk en opvarmning/nedkøling på, hvis turen ikke selv har dem
     /// (spec afsnit 3). Returnerer `nil`, hvis der ikke er nogen kørbare tids-
     /// intervaller (fx en tom eller rent distance-baseret tur).
-    func timeBasedPlan(
+    public func timeBasedPlan(
         autoWarmUp: Duration = .minutes(5),
         autoCoolDown: Duration = .minutes(5)
     ) -> WorkoutPlan? {
