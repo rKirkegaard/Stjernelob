@@ -237,6 +237,88 @@ enum Strings {
         static func runCount(_ count: Int) -> LocalizedStringResource {
             LocalizedStringResource("workout.runCount", defaultValue: "\(count) løbeintervaller")
         }
+
+        static let plansSection = LocalizedStringResource(
+            "workout.plansSection", defaultValue: "Mine planer"
+        )
+        static let noPlans = LocalizedStringResource(
+            "workout.noPlans", defaultValue: "Ingen importerede planer endnu."
+        )
+        static let activeTag = LocalizedStringResource("workout.activeTag", defaultValue: "Aktiv")
+        static let usePlan = LocalizedStringResource(
+            "workout.usePlan", defaultValue: "Brug som min plan"
+        )
+        static let useBuiltIn = LocalizedStringResource(
+            "workout.useBuiltIn", defaultValue: "Brug det indbyggede program"
+        )
+        static func planWeekCount(_ count: Int) -> LocalizedStringResource {
+            LocalizedStringResource("workout.planWeekCount", defaultValue: "\(count) uger")
+        }
+    }
+
+    /// Import af plan (spec afsnit 5).
+    enum PlanImport {
+        static let title = LocalizedStringResource(
+            "planImport.title",
+            defaultValue: "Importér plan"
+        )
+        static let intro = LocalizedStringResource(
+            "planImport.intro",
+            defaultValue: "Vælg en planfil (.json) — fx fra en træner. Du ser en forhåndsvisning, før den aktiveres."
+        )
+        static let chooseFile = LocalizedStringResource(
+            "planImport.chooseFile", defaultValue: "Vælg fil"
+        )
+        static let errorTitle = LocalizedStringResource(
+            "planImport.errorTitle", defaultValue: "Vi kunne ikke læse planen"
+        )
+        static let errorBody = LocalizedStringResource(
+            "planImport.errorBody",
+            defaultValue: "Tjek at det er en gyldig planfil, og prøv igen."
+        )
+        static func weekCount(_ count: Int) -> LocalizedStringResource {
+            LocalizedStringResource("planImport.weekCount", defaultValue: "\(count) uger")
+        }
+
+        static let weeksSection = LocalizedStringResource(
+            "planImport.weeksSection", defaultValue: "Uger"
+        )
+        static func weekSummary(week: Int, workouts: Int, minutes: Int) -> LocalizedStringResource {
+            LocalizedStringResource(
+                "planImport.weekSummary",
+                defaultValue: "Uge \(week) · \(workouts) ture · ca. \(minutes) min"
+            )
+        }
+
+        static let nudgeTitle = LocalizedStringResource(
+            "planImport.nudgeTitle", defaultValue: "Vil du tage den lidt blødere?"
+        )
+        static let saveAndUse = LocalizedStringResource(
+            "planImport.saveAndUse", defaultValue: "Gem og brug som min plan"
+        )
+        static let saveOnly = LocalizedStringResource(
+            "planImport.saveOnly", defaultValue: "Gem til senere"
+        )
+    }
+
+    /// Validator-beskeder (blid nudge, blokerer ikke).
+    enum PlanCheck {
+        static let bigJump = LocalizedStringResource(
+            "planCheck.bigJump",
+            defaultValue: "Den her plan er et stort hop fra det, du løber nu. Vil du starte et par uger inde i stedet?"
+        )
+        static let fastIncrease = LocalizedStringResource(
+            "planCheck.fastIncrease",
+            defaultValue: "Planen stiger ret hurtigt fra uge til uge. Det er blidere at øge lidt ad gangen."
+        )
+        static let tooFewRestDays = LocalizedStringResource(
+            "planCheck.tooFewRestDays",
+            defaultValue: "Der er løb næsten hver dag. Hviledage gør dig stærkere — overvej et par stykker imellem."
+        )
+        static let veryLong = LocalizedStringResource(
+            "planCheck.veryLong",
+            defaultValue: "Nogle af turene er ret lange for en begynder. Det er helt fint at gøre dem kortere."
+        )
     }
 
     enum Launch {

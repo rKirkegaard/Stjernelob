@@ -9,6 +9,8 @@ import SwiftUI
 final class PlanLibraryViewModel {
     let environment: AppEnvironment
     private(set) var workouts: [Workout] = []
+    private(set) var plans: [TrainingPlan] = []
+    private(set) var activePlanId: UUID?
 
     init(environment: AppEnvironment) {
         self.environment = environment
@@ -16,10 +18,41 @@ final class PlanLibraryViewModel {
 
     func load() {
         workouts = (try? environment.planLibraryRepository.savedWorkouts()) ?? []
+        plans = (try? environment.planLibraryRepository.savedPlans()) ?? []
+        activePlanId = (try? environment.profileRepository.load())?.activePlanId
     }
 
     func delete(_ workout: Workout) {
         try? environment.planLibraryRepository.deleteWorkout(id: workout.id)
+        load()
+    }
+
+    func isActive(_ plan: TrainingPlan) -> Bool { plan.id == activePlanId }
+
+    /// Sæt en egen/importeret plan som den aktive (driver hjemmeskærmen).
+    func activate(_ plan: TrainingPlan) {
+        setActivePlan(plan.id, week: 1)
+    }
+
+    /// Gå tilbage til det indbyggede program.
+    func useBuiltIn() {
+        setActivePlan(nil, week: 1)
+    }
+
+    func deletePlan(_ plan: TrainingPlan) {
+        try? environment.planLibraryRepository.deletePlan(id: plan.id)
+        if activePlanId == plan.id { setActivePlan(nil, week: 1) }
+        load()
+    }
+
+    private func setActivePlan(_ id: UUID?, week: Int) {
+        if var profile = try? environment.profileRepository.load() {
+            profile.activePlanId = id
+            profile.activePlanWeek = week
+            try? environment.profileRepository.save(profile)
+            environment.refreshWidget()
+            environment.sendCurrentSessionToWatch()
+        }
         load()
     }
 
@@ -53,6 +86,31 @@ struct PlanLibraryView: View {
                         Label { Text(Strings.Workout.buildTitle) } icon: {
                             Image(systemName: "slider.horizontal.3")
                         }
+                    }
+                    NavigationLink {
+                        ImportPlanView(viewModel: ImportPlanViewModel(environment: viewModel
+                                .environment))
+                    } label: {
+                        Label { Text(Strings.PlanImport.title) } icon: {
+                            Image(systemName: "square.and.arrow.down")
+                        }
+                    }
+                }
+
+                if !viewModel.plans.isEmpty || viewModel.activePlanId != nil {
+                    Section {
+                        ForEach(viewModel.plans) { plan in
+                            planRow(plan)
+                        }
+                        if viewModel.activePlanId != nil {
+                            Button { viewModel.useBuiltIn() } label: {
+                                Label { Text(Strings.Workout.useBuiltIn) } icon: {
+                                    Image(systemName: "star.fill")
+                                }
+                            }
+                        }
+                    } header: {
+                        Text(Strings.Workout.plansSection)
                     }
                 }
 
@@ -99,6 +157,36 @@ struct PlanLibraryView: View {
         }
         .swipeActions {
             Button(role: .destructive) { viewModel.delete(workout) } label: {
+                Label { Text(Strings.Common.delete) } icon: { Image(systemName: "trash") }
+            }
+        }
+    }
+
+    private func planRow(_ plan: TrainingPlan) -> some View {
+        let active = viewModel.isActive(plan)
+        return HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(plan.name).font(.headline)
+                Text(Strings.Workout.planWeekCount(plan.weekNumbers.count))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if active {
+                Text(Strings.Workout.activeTag)
+                    .font(.caption2.weight(.bold))
+                    .padding(.horizontal, Theme.Spacing.small)
+                    .padding(.vertical, 2)
+                    .background(Theme.Colors.brand.opacity(0.2), in: Capsule())
+            } else {
+                Button { viewModel.activate(plan) } label: {
+                    Text(Strings.Workout.usePlan)
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .swipeActions {
+            Button(role: .destructive) { viewModel.deletePlan(plan) } label: {
                 Label { Text(Strings.Common.delete) } icon: { Image(systemName: "trash") }
             }
         }
