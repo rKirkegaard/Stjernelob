@@ -23,10 +23,12 @@ struct LaunchQuoteView: View {
             VStack(spacing: Theme.Spacing.large) {
                 Spacer()
 
-                Text("🌟")
-                    .font(.system(size: 72))
+                Image(systemName: "sparkles")
+                    .font(.system(size: 72, weight: .semibold))
+                    .foregroundStyle(.white)
                     .scaleEffect(appeared ? 1 : 0.6)
                     .opacity(appeared ? 1 : 0)
+                    .accessibilityHidden(true)
                 Text(LocalizedStringResource("app.name", defaultValue: "Stjerneløb"))
                     .font(.largeTitle.weight(.bold))
                     .foregroundStyle(.white)
