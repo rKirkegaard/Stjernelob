@@ -95,7 +95,7 @@ extension Badge {
     /// Metal-trinnet for et milepæls-mærke ud fra dets tærskel, ellers `nil`.
     private var milestoneTier: (top: String, bottom: String)? {
         guard definition.ladder != nil, let threshold = milestoneThreshold else { return nil }
-        switch threshold {
+        return switch threshold {
         case ..<5: ("E8A86B", "B26A28") // bronze
         case 5..<15: ("DCE3EC", "97A2B2") // sølv
         case 15..<40: ("FFD964", "E0A018") // guld
