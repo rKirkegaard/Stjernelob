@@ -12,6 +12,8 @@ final class OnboardingViewModel {
     var weeklySessions = 3
     var hasPainOrInjury = false
     var hasHeartOrLungCondition = false
+    /// Valgt startpunkt i forløbet (0-baseret uge-indeks). De fleste starter forfra.
+    var startWeekIndex = 0
 
     private let profileRepository: any ProfileRepository
     private let onCompleted: () -> Void
@@ -35,7 +37,7 @@ final class OnboardingViewModel {
         let profile = ProfileDTO(
             hasRunBefore: hasRunBefore,
             defaultWeeklySessions: weeklySessions,
-            currentWeekIndex: 0,
+            currentWeekIndex: startWeekIndex,
             role: .runner,
             onboardingComplete: true,
             health: health

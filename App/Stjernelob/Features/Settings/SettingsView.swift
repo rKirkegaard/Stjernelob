@@ -11,6 +11,7 @@ struct SettingsView: View {
     @State private var showDeleteConfirm = false
     @State private var exportURL: URL?
     @State private var role: UserRole = .runner
+    @State private var startWeekIndex = 0
     @State private var soundPreview = ToneSoundPlayer()
 
     var body: some View {
@@ -79,6 +80,21 @@ struct SettingsView: View {
                 Text(Strings.Difficulty.section)
             } footer: {
                 Text(Strings.Difficulty.note)
+            }
+
+            Section {
+                NavigationLink {
+                    StartingPointView(selectedWeekIndex: $startWeekIndex)
+                } label: {
+                    HStack {
+                        Text(Strings.StartingPoint.settingsRow)
+                        Spacer()
+                        Text(Strings.StartingPoint.week(startWeekIndex + 1))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            } header: {
+                Text(Strings.StartingPoint.title)
             }
 
             Section {
@@ -193,12 +209,23 @@ struct SettingsView: View {
         .onChange(of: settings.feedback.walkStartSound) { _, sound in playPreview(sound) }
         .onDisappear { soundPreview.deactivateSession() }
         .task {
-            if let profile = try? environment.profileRepository.load() { role = profile.role }
+            if let profile = try? environment.profileRepository.load() {
+                role = profile.role
+                startWeekIndex = profile.currentWeekIndex
+            }
         }
         .onChange(of: role) { _, newRole in
             if var profile = try? environment.profileRepository.load() {
                 profile.role = newRole
                 try? environment.profileRepository.save(profile)
+            }
+        }
+        .onChange(of: startWeekIndex) { _, newIndex in
+            if var profile = try? environment.profileRepository.load() {
+                profile.currentWeekIndex = newIndex
+                try? environment.profileRepository.save(profile)
+                environment.refreshWidget()
+                environment.sendCurrentSessionToWatch()
             }
         }
         .confirmationDialog(

@@ -161,6 +161,33 @@ enum Strings {
         )
     }
 
+    /// Valg af startpunkt i forløbet (onboarding + indstillinger).
+    enum StartingPoint {
+        static let title = LocalizedStringResource(
+            "startingPoint.title", defaultValue: "Startpunkt"
+        )
+        static let onboardingQuestion = LocalizedStringResource(
+            "startingPoint.onboardingQuestion", defaultValue: "Hvor vil du starte?"
+        )
+        static let note = LocalizedStringResource(
+            "startingPoint.note",
+            defaultValue: "De fleste starter forfra. Har du løbet lidt før, kan du starte længere inde — vælg det niveau, der føles rigtigt. Du kan altid ændre det igen."
+        )
+        static func week(_ number: Int) -> LocalizedStringResource {
+            LocalizedStringResource("startingPoint.week", defaultValue: "Uge \(number)")
+        }
+
+        static func runWalk(run: String, walk: String) -> LocalizedStringResource {
+            LocalizedStringResource(
+                "startingPoint.runWalk", defaultValue: "Løb \(run) · gå \(walk)"
+            )
+        }
+
+        static let settingsRow = LocalizedStringResource(
+            "startingPoint.settingsRow", defaultValue: "Skift startpunkt i forløbet"
+        )
+    }
+
     enum Launch {
         static let go = LocalizedStringResource("launch.go", defaultValue: "GO")
         static let tagline = LocalizedStringResource(

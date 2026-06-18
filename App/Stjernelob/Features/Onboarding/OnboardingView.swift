@@ -48,6 +48,23 @@ struct OnboardingView: View {
                 }
 
                 Section {
+                    NavigationLink {
+                        StartingPointView(selectedWeekIndex: $viewModel.startWeekIndex)
+                    } label: {
+                        HStack {
+                            Text(Strings.StartingPoint.title)
+                            Spacer()
+                            Text(Strings.StartingPoint.week(viewModel.startWeekIndex + 1))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                } header: {
+                    Text(Strings.StartingPoint.onboardingQuestion)
+                } footer: {
+                    Text(Strings.StartingPoint.note)
+                }
+
+                Section {
                     Toggle(isOn: $viewModel.hasPainOrInjury) {
                         Text(Strings.Onboarding.healthPain)
                     }
