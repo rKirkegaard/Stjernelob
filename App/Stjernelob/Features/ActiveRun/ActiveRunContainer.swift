@@ -34,7 +34,8 @@ struct ActiveRunContainer: View {
             programPhase: request.programPhase,
             environment: environment,
             feedback: feedback,
-            resumeElapsed: request.resumeElapsed
+            resumeElapsed: request.resumeElapsed,
+            countsTowardProgression: request.countsTowardProgression
         )
     }
 }

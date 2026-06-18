@@ -6,6 +6,7 @@ import SwiftUI
 struct MainTabView: View {
     @Environment(AppEnvironment.self) private var environment
     @State private var showPlanner = false
+    @State private var showLibrary = false
     @State private var runRequest: RunRequest?
     @State private var resumableRecord: ActiveRunRecord?
 
@@ -15,7 +16,8 @@ struct MainTabView: View {
                 HomeView(
                     viewModel: HomeViewModel(environment: environment),
                     onStartRun: { runRequest = $0 },
-                    onAdjustWeek: { showPlanner = true }
+                    onAdjustWeek: { showPlanner = true },
+                    onOpenLibrary: { showLibrary = true }
                 )
             }
             .tabItem {
@@ -85,6 +87,15 @@ struct MainTabView: View {
                     Task { await environment.rescheduleReminders() }
                 }
             ))
+        }
+        .sheet(isPresented: $showLibrary) {
+            PlanLibraryView(
+                viewModel: PlanLibraryViewModel(environment: environment),
+                onRun: { request in
+                    showLibrary = false
+                    runRequest = request
+                }
+            )
         }
         .fullScreenCover(item: $runRequest) { request in
             ActiveRunContainer(request: request, onClose: { runRequest = nil })

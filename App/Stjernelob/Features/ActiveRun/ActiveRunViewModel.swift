@@ -37,6 +37,9 @@ final class ActiveRunViewModel {
     private let environment: AppEnvironment
     private let now: () -> Date
     private let resumeElapsed: Duration?
+    /// Om turen tæller i det indbyggede forløbs progression (falsk for egne/
+    /// importerede ture).
+    private let countsTowardProgression: Bool
 
     // Vægur-tilstand til persistering, så turen kan genoptages efter app-luk.
     private var recordStartDate = Date(timeIntervalSince1970: 0)
@@ -50,6 +53,7 @@ final class ActiveRunViewModel {
         environment: AppEnvironment,
         feedback: WorkoutFeedbackCoordinator,
         resumeElapsed: Duration? = nil,
+        countsTowardProgression: Bool = true,
         now: @escaping () -> Date = { Date() }
     ) {
         self.plan = plan
@@ -58,6 +62,7 @@ final class ActiveRunViewModel {
         self.environment = environment
         self.feedback = feedback
         self.resumeElapsed = resumeElapsed
+        self.countsTowardProgression = countsTowardProgression
         self.now = now
         engine = IntervalEngine(plan: plan, clock: environment.clock)
         snapshot = IntervalEngine(plan: plan, clock: environment.clock).snapshot()
@@ -226,8 +231,10 @@ final class ActiveRunViewModel {
         )
         try? environment.workoutRepository.add(workout)
         awardBadges(for: summary)
-        ProgressionCoordinator(environment: environment)
-            .registerCompletedWorkout(programWeekId: programWeekId, now: now())
+        if countsTowardProgression {
+            ProgressionCoordinator(environment: environment)
+                .registerCompletedWorkout(programWeekId: programWeekId, now: now())
+        }
         environment.refreshWidget()
 
         if environment.settings.healthKitEnabled {

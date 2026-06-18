@@ -19,6 +19,7 @@ enum Strings {
         static let done = LocalizedStringResource("common.done", defaultValue: "Færdig")
         static let yes = LocalizedStringResource("common.yes", defaultValue: "Ja")
         static let no = LocalizedStringResource("common.no", defaultValue: "Nej")
+        static let delete = LocalizedStringResource("common.delete", defaultValue: "Slet")
     }
 
     enum Onboarding {
@@ -186,6 +187,56 @@ enum Strings {
         static let settingsRow = LocalizedStringResource(
             "startingPoint.settingsRow", defaultValue: "Skift startpunkt i forløbet"
         )
+    }
+
+    /// Egne ture og plan-bibliotek (spec: egne intervaller og planimport).
+    enum Workout {
+        static let defaultName = LocalizedStringResource(
+            "workout.defaultName", defaultValue: "Min tur"
+        )
+        static let name = LocalizedStringResource("workout.name", defaultValue: "Navn")
+        static let buildTitle = LocalizedStringResource(
+            "workout.buildTitle", defaultValue: "Byg din egen tur"
+        )
+        static let intervalsSection = LocalizedStringResource(
+            "workout.intervalsSection", defaultValue: "Intervaller"
+        )
+        static let intervalsNote = LocalizedStringResource(
+            "workout.intervalsNote",
+            defaultValue: "Tilføj løb- og gå-blokke, og gentag hele mønsteret. Opvarmning og nedkøling lægges på automatisk."
+        )
+        static func repeats(_ count: Int) -> LocalizedStringResource {
+            LocalizedStringResource(
+                "workout.repeats",
+                defaultValue: "Gentag hele mønsteret ×\(count)"
+            )
+        }
+
+        static let previewSection = LocalizedStringResource(
+            "workout.previewSection", defaultValue: "Forhåndsvisning"
+        )
+        static func summary(time: String, runs: Int) -> LocalizedStringResource {
+            LocalizedStringResource("workout.summary", defaultValue: "Samlet \(time) · \(runs) løb")
+        }
+
+        static let gentleNudge = LocalizedStringResource(
+            "workout.gentleNudge",
+            defaultValue: "Det her er en lang tur — tag den gerne lidt blødere, hvis det føles for meget."
+        )
+        static let runNow = LocalizedStringResource("workout.runNow", defaultValue: "Kør nu")
+        static let libraryTitle = LocalizedStringResource(
+            "workout.libraryTitle", defaultValue: "Mine ture & planer"
+        )
+        static let mySection = LocalizedStringResource(
+            "workout.mySection", defaultValue: "Mine ture"
+        )
+        static let noneSaved = LocalizedStringResource(
+            "workout.noneSaved",
+            defaultValue: "Du har ingen egne ture endnu — byg din første ovenfor."
+        )
+        static func runCount(_ count: Int) -> LocalizedStringResource {
+            LocalizedStringResource("workout.runCount", defaultValue: "\(count) løbeintervaller")
+        }
     }
 
     enum Launch {

@@ -7,6 +7,7 @@ struct HomeView: View {
     @State var viewModel: HomeViewModel
     var onStartRun: (RunRequest) -> Void = { _ in }
     var onAdjustWeek: () -> Void = {}
+    var onOpenLibrary: () -> Void = {}
 
     @Environment(AppEnvironment.self) private var environment
 
@@ -43,6 +44,18 @@ struct HomeView: View {
                         Text(Strings.Home.adjustWeek)
                     } icon: {
                         Image(systemName: "calendar")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+
+                Button {
+                    onOpenLibrary()
+                } label: {
+                    Label {
+                        Text(Strings.Workout.libraryTitle)
+                    } icon: {
+                        Image(systemName: "square.stack.3d.up")
                     }
                     .frame(maxWidth: .infinity)
                 }
