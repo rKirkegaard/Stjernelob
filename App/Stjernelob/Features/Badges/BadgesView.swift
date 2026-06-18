@@ -1,6 +1,5 @@
 import StjernelobCore
 import SwiftUI
-import UIKit
 
 /// Samling: niveau-fremgang og badges (optjente fremhævet, resten dæmpede).
 /// Nogle mærker kan appen ikke måle — dem låser barnet selv op ved at trykke.
@@ -83,19 +82,15 @@ struct BadgesView: View {
         }
     }
 
-    /// Det tegnede badge-ikon (SVG fra asset-kataloget), eller emoji-i-cirkel som
-    /// fallback for mærker uden egen tegning (fx milepæls-trinene).
-    @ViewBuilder
+    /// Badge-ikonet: et SF Symbol tonet med mærkets palet i en farvet cirkel.
+    /// SF Symbols tegnes altid (modsat emoji, der bokser på simulatoren og ikke
+    /// kan rasteriseres i en SVG).
     private func badgeIcon(_ badge: Badge) -> some View {
-        if UIImage(named: badge.slug) != nil {
-            Image(badge.slug)
-                .resizable()
-                .scaledToFit()
-        } else {
-            ZStack {
-                Circle().fill(badge.paletteBackground)
-                Text(badge.emoji).font(.system(size: 30))
-            }
+        ZStack {
+            Circle().fill(badge.paletteBackground)
+            Image(systemName: badge.symbolName)
+                .font(.system(size: 26, weight: .semibold))
+                .foregroundStyle(badge.paletteInk)
         }
     }
 

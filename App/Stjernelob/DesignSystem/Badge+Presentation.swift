@@ -9,6 +9,59 @@ extension Badge {
     /// Det tegnede mærkes emoji (samme som i SVG-grafikken).
     var emoji: String { definition.emoji }
 
+    /// SF Symbol til mærket — et skarpt vektor-ikon, der altid kan tegnes (modsat
+    /// emoji, der bokser på simulatoren og slet ikke kan rasteriseres i en SVG).
+    /// Milepæls-trin uden eget motiv falder tilbage på deres stige-ikon.
+    var symbolName: String {
+        switch slug {
+        case "første-skridt": "figure.walk"
+        case "modig-starter": "figure.run"
+        case "klar-til-start": "flag.checkered"
+        case "tidlig-fugl": "sunrise.fill"
+        case "aftenstjerne": "moon.stars.fill"
+        case "en-uge-i-traek": "calendar"
+        case "2-i-en-uge", "3-i-en-uge", "3-ugers-streak": "flame.fill"
+        case "ubrydelig": "trophy.fill"
+        case "maanedshelt": "crown.fill"
+        case "tilbage-igen": "arrow.uturn.left.circle.fill"
+        case "foraarsluft": "leaf.fill"
+        case "efteraarsloeber": "wind"
+        case "is-i-maven": "snowflake"
+        case "solskinsloeber": "sun.max.fill"
+        case "regnvejrsloeber": "cloud.rain.fill"
+        case "taagelober": "cloud.fog.fill"
+        case "regnbue-runner": "rainbow"
+        case "juleloeber": "gift.fill"
+        case "nytaarsstart": "sparkles"
+        case "foedselsdag": "balloon.fill"
+        case "byloeber": "building.2.fill"
+        case "naturpige": "tree.fill"
+        case "ny-rute": "map.fill"
+        case "tur-foto": "camera.fill"
+        case "ny-playlist": "music.note.list"
+        case "musik-i-oererne": "headphones"
+        case "podcast-runner": "mic.fill"
+        case "aldrig-give-op": "medal.fill"
+        case "fejer-dig-selv": "party.popper.fill"
+        case "hepperen": "megaphone.fill"
+        case "loebemakker": "person.2.fill"
+        case "loebedagbog": "book.fill"
+        case "pakket-og-klar": "bag.fill"
+        case "straek-stjerne": "figure.cooldown"
+        case "soevn-samler": "moon.zzz.fill"
+        case "vand-dronning": "drop.fill"
+        default:
+            switch ladder {
+            case .runs, .intervals: "figure.run"
+            case .sessionIntervals: "bolt.fill"
+            case .continuousRun: "flame.fill"
+            case .activeWeeks: "calendar"
+            case .stars: "star.fill"
+            case .none: "rosette"
+            }
+        }
+    }
+
     /// Den danske kildetekst, pakket som lokaliserbar ressource. (Appen er
     /// dansk-først; teksten ligger i kataloget, ikke hardkodet i views.)
     var displayTitle: LocalizedStringResource {
