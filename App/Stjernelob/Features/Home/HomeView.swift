@@ -31,7 +31,9 @@ struct HomeView: View {
                 heroCard
                 statsRow
 
-                if viewModel.isRestDay {
+                if let activePlan = viewModel.activePlan {
+                    activePlanCard(activePlan)
+                } else if viewModel.isRestDay {
                     RestDayView()
                 } else if let plan = viewModel.todaysPlan {
                     nextSessionCard(plan)
@@ -161,6 +163,67 @@ struct HomeView: View {
         }
         .padding(Theme.Spacing.medium)
         .background(.thinMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
+    }
+
+    /// Kort for en aktiv egen/importeret plan: ugenavigation + ugens ture.
+    private func activePlanCard(_ plan: TrainingPlan) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.medium) {
+            Text(plan.name).font(.headline)
+
+            HStack {
+                Button { viewModel.goToPreviousPlanWeek() } label: {
+                    Image(systemName: "chevron.left")
+                }
+                .disabled(!viewModel.canGoToPreviousPlanWeek)
+                .accessibilityLabel(Text(Strings.Home.previousWeek))
+                Spacer()
+                Text(Strings.Home.planWeek(
+                    week: viewModel.activePlanWeek,
+                    of: viewModel.activePlanWeekCount
+                ))
+                .font(.subheadline.weight(.semibold))
+                Spacer()
+                Button { viewModel.advancePlanWeek() } label: {
+                    Image(systemName: "chevron.right")
+                }
+                .disabled(!viewModel.canAdvancePlanWeek)
+                .accessibilityLabel(Text(Strings.Home.nextWeek))
+            }
+            .buttonStyle(.bordered)
+
+            if viewModel.activePlanWorkouts.isEmpty {
+                Text(Strings.Home.planRestDay)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(viewModel.activePlanWorkouts) { workout in
+                    planWorkoutRow(workout)
+                }
+            }
+        }
+        .padding(Theme.Spacing.medium)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
+    }
+
+    private func planWorkoutRow(_ workout: Workout) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(workout.name).font(.subheadline.weight(.semibold))
+                Text(Strings.Workout.runCount(workout.runIntervalCount))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Button {
+                if let request = viewModel.runRequest(for: workout) { onStartRun(request) }
+            } label: {
+                Image(systemName: "play.circle.fill").font(.title2)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Theme.Colors.brand)
+            .accessibilityLabel(Text(Strings.Workout.runNow))
+        }
+        .padding(.vertical, 2)
     }
 }
 

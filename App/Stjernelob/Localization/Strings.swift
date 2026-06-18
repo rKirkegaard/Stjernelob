@@ -89,6 +89,18 @@ enum Strings {
             "home.adjustWeek",
             defaultValue: "Tilpas ugen"
         )
+        static func planWeek(week: Int, of total: Int) -> LocalizedStringResource {
+            LocalizedStringResource("home.planWeek", defaultValue: "Uge \(week) af \(total)")
+        }
+
+        static let previousWeek = LocalizedStringResource(
+            "home.previousWeek", defaultValue: "Forrige"
+        )
+        static let nextWeek = LocalizedStringResource("home.nextWeek", defaultValue: "Næste")
+        static let planRestDay = LocalizedStringResource(
+            "home.planRestDay",
+            defaultValue: "Ingen ture i denne uge — en hel uges hvile er også helt fint."
+        )
     }
 
     enum ActiveRun {
