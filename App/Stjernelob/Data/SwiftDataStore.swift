@@ -23,6 +23,8 @@ final class SwiftDataStore {
         WeeklyGoalEntity.self,
         WeekStatusEntity.self,
         EarnedBadgeEntity.self,
+        SavedWorkoutEntity.self,
+        SavedPlanEntity.self,
     ])
 
     /// Identifikator for den private CloudKit-container (lokal-først; skyen er
@@ -265,6 +267,76 @@ extension SwiftDataStore: BadgeRepository {
     }
 }
 
+// MARK: - PlanLibraryRepository
+
+extension SwiftDataStore: PlanLibraryRepository {
+    func savedWorkouts() throws -> [Workout] {
+        try context.fetch(FetchDescriptor<SavedWorkoutEntity>(
+            sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
+        )).compactMap { try? JSONDecoder().decode(Workout.self, from: $0.workoutData) }
+    }
+
+    func saveWorkout(_ workout: Workout) throws {
+        let data = try JSONEncoder().encode(workout)
+        let id = workout.id
+        let existing = try context.fetch(
+            FetchDescriptor<SavedWorkoutEntity>(predicate: #Predicate { $0.id == id })
+        ).first
+        if let existing {
+            existing.name = workout.name
+            existing.workoutData = data
+        } else {
+            context.insert(SavedWorkoutEntity(
+                id: workout.id,
+                name: workout.name,
+                workoutData: data
+            ))
+        }
+        try context.save()
+    }
+
+    func deleteWorkout(id: UUID) throws {
+        try context.delete(model: SavedWorkoutEntity.self, where: #Predicate { $0.id == id })
+        try context.save()
+    }
+
+    func savedPlans() throws -> [TrainingPlan] {
+        try context.fetch(FetchDescriptor<SavedPlanEntity>(
+            sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
+        )).compactMap { try? JSONDecoder().decode(TrainingPlan.self, from: $0.planData) }
+    }
+
+    func plan(id: UUID) throws -> TrainingPlan? {
+        try context.fetch(
+            FetchDescriptor<SavedPlanEntity>(predicate: #Predicate { $0.id == id })
+        ).first.flatMap { try? JSONDecoder().decode(TrainingPlan.self, from: $0.planData) }
+    }
+
+    func savePlan(_ plan: TrainingPlan) throws {
+        let data = try JSONEncoder().encode(plan)
+        let id = plan.id
+        let existing = try context.fetch(
+            FetchDescriptor<SavedPlanEntity>(predicate: #Predicate { $0.id == id })
+        ).first
+        if let existing {
+            existing.name = plan.name
+            existing.sourceRawValue = plan.source.rawValue
+            existing.planData = data
+        } else {
+            context.insert(SavedPlanEntity(
+                id: plan.id, name: plan.name,
+                sourceRawValue: plan.source.rawValue, planData: data
+            ))
+        }
+        try context.save()
+    }
+
+    func deletePlan(id: UUID) throws {
+        try context.delete(model: SavedPlanEntity.self, where: #Predicate { $0.id == id })
+        try context.save()
+    }
+}
+
 // MARK: - DataEraser
 
 extension SwiftDataStore: DataEraser {
@@ -274,6 +346,8 @@ extension SwiftDataStore: DataEraser {
         try context.delete(model: WeeklyGoalEntity.self)
         try context.delete(model: WeekStatusEntity.self)
         try context.delete(model: EarnedBadgeEntity.self)
+        try context.delete(model: SavedWorkoutEntity.self)
+        try context.delete(model: SavedPlanEntity.self)
         try context.delete(model: ProfileEntity.self)
         try context.save()
         // Billedfiler på disk slettes af et separat fil-lag (kommer med foto-UI).

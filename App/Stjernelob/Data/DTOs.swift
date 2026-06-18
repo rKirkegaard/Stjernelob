@@ -29,6 +29,10 @@ struct ProfileDTO: Equatable {
     /// Brugerens selvvalgte træningsdage (mandag-baseret 0...6). Tom = ingen
     /// valgt endnu; så bruges det automatiske forslag ud fra antal ture.
     var trainingDays: [Int] = []
+    /// Aktiv egen/importeret plan (id). `nil` = det indbyggede 20-ugers program.
+    var activePlanId: UUID?
+    /// Aktuel uge i den aktive egen/importerede plan (1-baseret).
+    var activePlanWeek: Int = 1
 }
 
 /// Sendable repræsentation af en gennemført tur.
@@ -81,7 +85,9 @@ extension ProfileDTO {
                 hasPainOrInjury: entity.hasPainOrInjury,
                 hasHeartOrLungCondition: entity.hasHeartOrLungCondition
             ),
-            trainingDays: entity.trainingDays
+            trainingDays: entity.trainingDays,
+            activePlanId: entity.activePlanId,
+            activePlanWeek: entity.activePlanWeek
         )
     }
 
@@ -96,6 +102,8 @@ extension ProfileDTO {
         entity.hasHeartOrLungCondition = health.hasHeartOrLungCondition
         entity.advisedToConsultDoctor = health.shouldAdviseDoctor
         entity.trainingDays = trainingDays
+        entity.activePlanId = activePlanId
+        entity.activePlanWeek = activePlanWeek
     }
 }
 

@@ -1,4 +1,5 @@
 import Foundation
+import StjernelobCore
 import SwiftData
 
 // SwiftData-modeller — kilden til sandhed lokalt på enheden (jf. arkitektur.md).
@@ -30,6 +31,10 @@ final class ProfileEntity {
     var createdAt: Date = Date()
     /// Selvvalgte træningsdage (mandag-baseret 0...6). Tom = brug auto-forslag.
     var trainingDays: [Int] = []
+    /// Aktiv egen/importeret plan. `nil` = det indbyggede program.
+    var activePlanId: UUID?
+    /// Aktuel uge i den aktive egen/importerede plan (1-baseret).
+    var activePlanWeek: Int = 1
 
     init(
         hasRunBefore: Bool = false,
@@ -42,7 +47,9 @@ final class ProfileEntity {
         hasHeartOrLungCondition: Bool = false,
         advisedToConsultDoctor: Bool = false,
         createdAt: Date = Date(),
-        trainingDays: [Int] = []
+        trainingDays: [Int] = [],
+        activePlanId: UUID? = nil,
+        activePlanWeek: Int = 1
     ) {
         self.hasRunBefore = hasRunBefore
         self.defaultWeeklySessions = defaultWeeklySessions
@@ -55,6 +62,49 @@ final class ProfileEntity {
         self.advisedToConsultDoctor = advisedToConsultDoctor
         self.createdAt = createdAt
         self.trainingDays = trainingDays
+        self.activePlanId = activePlanId
+        self.activePlanWeek = activePlanWeek
+    }
+}
+
+/// En gemt egen-bygget tur (genbrugelig). Selve turen ligger som JSON (`Workout`
+/// er Codable), så datamodellen er enkel og fremtidssikret.
+@Model
+final class SavedWorkoutEntity {
+    var id: UUID = UUID()
+    var name: String = ""
+    var workoutData: Data = Data()
+    var createdAt: Date = Date()
+
+    init(id: UUID = UUID(), name: String, workoutData: Data, createdAt: Date = Date()) {
+        self.id = id
+        self.name = name
+        self.workoutData = workoutData
+        self.createdAt = createdAt
+    }
+}
+
+/// En gemt egen/importeret træningsplan. `TrainingPlan` gemmes som JSON.
+@Model
+final class SavedPlanEntity {
+    var id: UUID = UUID()
+    var name: String = ""
+    var sourceRawValue: String = PlanSource.imported.rawValue
+    var planData: Data = Data()
+    var createdAt: Date = Date()
+
+    init(
+        id: UUID = UUID(),
+        name: String,
+        sourceRawValue: String,
+        planData: Data,
+        createdAt: Date = Date()
+    ) {
+        self.id = id
+        self.name = name
+        self.sourceRawValue = sourceRawValue
+        self.planData = planData
+        self.createdAt = createdAt
     }
 }
 

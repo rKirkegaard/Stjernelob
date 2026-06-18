@@ -50,6 +50,19 @@ protocol BadgeRepository {
     func award(_ badge: Badge) throws
 }
 
+/// Bibliotek af egne ture og egne/importerede planer (spec: egne intervaller og
+/// planimport). Personlige data — lokalt/privat iCloud som resten.
+@MainActor
+protocol PlanLibraryRepository {
+    func savedWorkouts() throws -> [Workout]
+    func saveWorkout(_ workout: Workout) throws
+    func deleteWorkout(id: UUID) throws
+    func savedPlans() throws -> [TrainingPlan]
+    func plan(id: UUID) throws -> TrainingPlan?
+    func savePlan(_ plan: TrainingPlan) throws
+    func deletePlan(id: UUID) throws
+}
+
 /// GDPR: "slet alle mine data" skal kaskadere (afsnit 14, arkitektur.md).
 @MainActor
 protocol DataEraser {

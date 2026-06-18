@@ -105,5 +105,6 @@ final class AppEnvironment {
     var workoutRepository: any WorkoutRepository { store }
     var weeklyPlanRepository: any WeeklyPlanRepository { store }
     var badgeRepository: any BadgeRepository { store }
+    var planLibraryRepository: any PlanLibraryRepository { store }
     var dataEraser: any DataEraser { store }
 }
