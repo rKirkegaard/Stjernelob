@@ -27,6 +27,22 @@ final class PlanLibraryViewModel {
         load()
     }
 
+    func deleteWorkouts(at offsets: IndexSet) {
+        offsets.map { workouts[$0].id }
+            .forEach { try? environment.planLibraryRepository.deleteWorkout(id: $0) }
+        load()
+    }
+
+    func deletePlans(at offsets: IndexSet) {
+        let removed = offsets.map { plans[$0] }
+        removed.forEach { try? environment.planLibraryRepository.deletePlan(id: $0.id) }
+        if let active = activePlanId, removed.contains(where: { $0.id == active }) {
+            setActivePlan(nil, week: 1) // ryd aktiv hvis den blev slettet (reloader selv)
+        } else {
+            load()
+        }
+    }
+
     func isActive(_ plan: TrainingPlan) -> Bool { plan.id == activePlanId }
 
     /// Sæt en egen/importeret plan som den aktive (driver hjemmeskærmen).
@@ -102,6 +118,7 @@ struct PlanLibraryView: View {
                         ForEach(viewModel.plans) { plan in
                             planRow(plan)
                         }
+                        .onDelete { viewModel.deletePlans(at: $0) }
                         if viewModel.activePlanId != nil {
                             Button { viewModel.useBuiltIn() } label: {
                                 Label { Text(Strings.Workout.useBuiltIn) } icon: {
@@ -122,6 +139,7 @@ struct PlanLibraryView: View {
                         ForEach(viewModel.workouts) { workout in
                             workoutRow(workout)
                         }
+                        .onDelete { viewModel.deleteWorkouts(at: $0) }
                     }
                 } header: {
                     Text(Strings.Workout.mySection)
@@ -129,6 +147,11 @@ struct PlanLibraryView: View {
             }
             .navigationTitle(Text(Strings.Workout.libraryTitle))
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if !viewModel.workouts.isEmpty || !viewModel.plans.isEmpty {
+                        EditButton()
+                    }
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button { dismiss() } label: { Text(Strings.Common.done) }
                 }
@@ -155,11 +178,6 @@ struct PlanLibraryView: View {
             .foregroundStyle(Theme.Colors.brand)
             .accessibilityLabel(Text(Strings.Workout.runNow))
         }
-        .swipeActions {
-            Button(role: .destructive) { viewModel.delete(workout) } label: {
-                Label { Text(Strings.Common.delete) } icon: { Image(systemName: "trash") }
-            }
-        }
     }
 
     private func planRow(_ plan: TrainingPlan) -> some View {
@@ -183,11 +201,6 @@ struct PlanLibraryView: View {
                     Text(Strings.Workout.usePlan)
                 }
                 .buttonStyle(.bordered)
-            }
-        }
-        .swipeActions {
-            Button(role: .destructive) { viewModel.deletePlan(plan) } label: {
-                Label { Text(Strings.Common.delete) } icon: { Image(systemName: "trash") }
             }
         }
     }
