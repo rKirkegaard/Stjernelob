@@ -72,10 +72,54 @@ extension Badge {
         LocalizedStringResource(stringLiteral: definition.detail)
     }
 
-    /// Baggrundsfarve for mærket (matcher SVG-grafikken).
+    /// Bleg baggrundsfarve (bruges fx i forhåndsvisninger).
     var paletteBackground: Color { Color(badgeHex: definition.palette.hex.background) }
     /// Tekst-/forgrundsfarve for mærket.
     var paletteInk: Color { Color(badgeHex: definition.palette.hex.ink) }
+
+    /// Livlig tema-gradient (top → bund) — bruges af de tematiske mærker.
+    var gradientTop: Color { Color(badgeHex: definition.palette.vivid.top) }
+    var gradientBottom: Color { Color(badgeHex: definition.palette.vivid.bottom) }
+
+    /// Medaljens gradient-farver (top, bund). Milepæls-mærker (en stige) får et
+    /// eskalerende metal-look à la Strava — bronze → sølv → guld → platin — så de
+    /// ikke længere ligner hinanden. Tematiske mærker beholder deres tema-farve.
+    var medalColors: [Color] {
+        if let tier = milestoneTier {
+            [Color(badgeHex: tier.top), Color(badgeHex: tier.bottom)]
+        } else {
+            [gradientTop, gradientBottom]
+        }
+    }
+
+    /// Metal-trinnet for et milepæls-mærke ud fra dets tærskel, ellers `nil`.
+    private var milestoneTier: (top: String, bottom: String)? {
+        guard definition.ladder != nil, let threshold = milestoneThreshold else { return nil }
+        switch threshold {
+        case ..<5: ("E8A86B", "B26A28") // bronze
+        case 5..<15: ("DCE3EC", "97A2B2") // sølv
+        case 15..<40: ("FFD964", "E0A018") // guld
+        default: ("BDEBFF", "5FAAD8") // platin / diamant
+        }
+    }
+
+    /// Tal-tærsklen bag en milepælsregel (fx 5 ture), ellers `nil`.
+    private var milestoneThreshold: Int? {
+        switch definition.rule {
+        case let .totalWorkouts(n),
+             let .streakWeeks(n),
+             let .sessionsThisWeek(n),
+             let .workoutsThisMonth(n),
+             let .totalRunIntervals(n),
+             let .runIntervalsInOneRun(n),
+             let .longestContinuousRunMinutes(n),
+             let .totalActiveWeeks(n),
+             let .totalStars(n):
+            n
+        default:
+            nil
+        }
+    }
 }
 
 extension BadgePalette {
@@ -88,6 +132,18 @@ extension BadgePalette {
         case .green: ("EAF3DE", "173404")
         case .pink: ("FBEAF0", "4B1528")
         case .sand: ("FAEEDA", "412402")
+        }
+    }
+
+    /// Mættede gradient-farver til de "rigtige" medaljer (top, bund).
+    var vivid: (top: String, bottom: String) {
+        switch self {
+        case .purple: ("9B7BFF", "5B34D8")
+        case .teal: ("2BD4B6", "0A8E78")
+        case .blue: ("5AB4FF", "1E63DA")
+        case .green: ("8FD94A", "3F9B2E")
+        case .pink: ("FF7FB0", "E23B73")
+        case .sand: ("FFC04A", "E8870F")
         }
     }
 }

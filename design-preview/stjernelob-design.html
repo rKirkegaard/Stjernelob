@@ -131,8 +131,19 @@
   /* badges grid */
   .grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
   .badge { text-align:center; }
-  .badge .b-svg { width:100%; height:auto; display:block; }
-  .badge .b-ico { font-size:26px; }
+  .badge .b-svg { width:100%; height:auto; display:block; border-radius:50%;
+    box-shadow:0 3px 7px rgba(0,0,0,0.28); }
+  /* medaljer: levende gradient, hvidt glyph, lys ring + blød skygge (à la Strava) */
+  .badge .b-medal { width:60px; height:60px; margin:0 auto; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:26px;
+    border:2px solid rgba(255,255,255,0.65);
+    box-shadow:0 3px 7px rgba(0,0,0,0.30), inset 0 6px 10px rgba(255,255,255,0.35); }
+  /* milepæls-trin får eskalerende metal-tiers efter målets størrelse */
+  .badge .b-medal.bronze   { background:linear-gradient(135deg,#E8A86B,#B26A28); }
+  .badge .b-medal.silver   { background:linear-gradient(135deg,#DCE3EC,#97A2B2); }
+  .badge .b-medal.gold     { background:linear-gradient(135deg,#FFD964,#E0A018); }
+  .badge .b-medal.platinum { background:linear-gradient(135deg,#BDEBFF,#5FAAD8); }
+  .badge .b-medal.mystery  { background:linear-gradient(135deg,#8E8E93,#3A3A3C); }
   .badge .b-lab { font-size:10px; margin-top:4px; }
   .badge.locked { opacity:0.4; filter:grayscale(0.5); }
 
@@ -397,18 +408,18 @@
         <div class="small muted" style="margin-top:10px">Nogle mærker giver du dig selv, når du har gjort tingen (fx løbet med en makker).</div>
         <div class="section-h">Milepæle (låses op automatisk)</div>
         <div class="grid">
-          <div class="badge locked"><div class="b-ico">👟</div><div class="b-lab">5 intervaller</div></div>
-          <div class="badge locked"><div class="b-ico">👟</div><div class="b-lab">10 intervaller</div></div>
-          <div class="badge locked"><div class="b-ico">👟</div><div class="b-lab">15 intervaller</div></div>
-          <div class="badge locked"><div class="b-ico">👟</div><div class="b-lab">20 intervaller</div></div>
-          <div class="badge locked"><div class="b-ico">👟</div><div class="b-lab">30 intervaller</div></div>
-          <div class="badge locked"><div class="b-ico">⚡</div><div class="b-lab">4 i træk</div></div>
-          <div class="badge locked"><div class="b-ico">🏃</div><div class="b-lab">5 ture</div></div>
-          <div class="badge locked"><div class="b-ico">🏃</div><div class="b-lab">10 ture</div></div>
-          <div class="badge locked"><div class="b-ico">📆</div><div class="b-lab">4 aktive uger</div></div>
-          <div class="badge locked"><div class="b-ico">⭐️</div><div class="b-lab">50 stjerner</div></div>
-          <div class="badge locked"><div class="b-ico">🌠</div><div class="b-lab">250 stjerner</div></div>
-          <div class="badge locked"><div class="b-ico">🔒</div><div class="b-lab">Hemmeligt</div></div>
+          <div class="badge locked"><div class="b-medal silver">👟</div><div class="b-lab">5 intervaller</div></div>
+          <div class="badge locked"><div class="b-medal silver">👟</div><div class="b-lab">10 intervaller</div></div>
+          <div class="badge locked"><div class="b-medal gold">👟</div><div class="b-lab">15 intervaller</div></div>
+          <div class="badge locked"><div class="b-medal gold">👟</div><div class="b-lab">20 intervaller</div></div>
+          <div class="badge locked"><div class="b-medal gold">👟</div><div class="b-lab">30 intervaller</div></div>
+          <div class="badge locked"><div class="b-medal bronze">⚡</div><div class="b-lab">4 i træk</div></div>
+          <div class="badge locked"><div class="b-medal silver">🏃</div><div class="b-lab">5 ture</div></div>
+          <div class="badge locked"><div class="b-medal silver">🏃</div><div class="b-lab">10 ture</div></div>
+          <div class="badge locked"><div class="b-medal bronze">📆</div><div class="b-lab">4 aktive uger</div></div>
+          <div class="badge locked"><div class="b-medal platinum">⭐️</div><div class="b-lab">50 stjerner</div></div>
+          <div class="badge locked"><div class="b-medal platinum">🌠</div><div class="b-lab">250 stjerner</div></div>
+          <div class="badge locked"><div class="b-medal mystery">🔒</div><div class="b-lab">Hemmeligt</div></div>
         </div>
         <div class="small muted" style="margin-top:10px">Tæt stige af milepæle for intervaller (5, 10, 15, 20, 25, 30, 40 …), ture, aktive uger og stjerner — der er altid et nært næste mål. I appen vises kun det næste trin pr. gruppe.</div>
       </div></div>

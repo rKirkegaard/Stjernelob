@@ -82,21 +82,45 @@ struct BadgesView: View {
         }
     }
 
-    /// Badge-ikonet: et SF Symbol tonet med mærkets palet i en farvet cirkel.
-    /// SF Symbols tegnes altid (modsat emoji, der bokser på simulatoren og ikke
-    /// kan rasteriseres i en SVG).
-    private func badgeIcon(_ badge: Badge) -> some View {
-        ZStack {
-            Circle().fill(badge.paletteBackground)
+    /// Badge-ikonet: en livlig gradient-medalje med et fedt hvidt SF Symbol,
+    /// en lys kant og en blød skygge — så det føles som en belønning, ikke en
+    /// flad cirkel. Optjente mærker er farverige; låste er grå (men synlige).
+    private func badgeIcon(_ badge: Badge, earned: Bool) -> some View {
+        let fill: [Color] = earned
+            ? badge.medalColors
+            : [Color(white: 0.82), Color(white: 0.6)]
+        return ZStack {
+            Circle()
+                .fill(LinearGradient(
+                    colors: fill,
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ))
+            // Glansstrejf i toppen, der giver medaljen dybde.
+            Circle()
+                .fill(LinearGradient(
+                    colors: [.white.opacity(0.45), .clear],
+                    startPoint: .top,
+                    endPoint: .center
+                ))
+            Circle()
+                .strokeBorder(.white.opacity(0.6), lineWidth: 2)
             Image(systemName: badge.symbolName)
-                .font(.system(size: 26, weight: .semibold))
-                .foregroundStyle(badge.paletteInk)
+                .font(.system(size: 28, weight: .bold))
+                .foregroundStyle(.white)
+                .shadow(color: .black.opacity(0.2), radius: 1, y: 1)
         }
+        .shadow(
+            color: (earned ? (badge.medalColors.last ?? badge.gradientBottom) : .black)
+                .opacity(earned ? 0.45 : 0.18),
+            radius: 6,
+            y: 3
+        )
     }
 
     private func badgeCell(_ badge: Badge, earned: Bool) -> some View {
         VStack(spacing: Theme.Spacing.small) {
-            badgeIcon(badge)
+            badgeIcon(badge, earned: earned)
                 .frame(width: 64, height: 64)
 
             Text(badge.displayTitle)
@@ -114,7 +138,7 @@ struct BadgesView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, Theme.Spacing.medium)
         .background(.thinMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
-        .opacity(earned ? 1 : 0.5)
+        .opacity(earned ? 1 : 0.85)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(badge.displayTitle))
         .accessibilityHint(Text(badge.displayDetail))
